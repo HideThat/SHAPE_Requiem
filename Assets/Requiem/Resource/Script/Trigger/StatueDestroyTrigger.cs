@@ -18,6 +18,10 @@ public class StatueDestroyTrigger : Trigger_Requiem
     {
         if (collision.GetComponent<RuneStatue>() != null)
         {
+            SnakeEatStatue ins = snake.GetComponent<SnakeEatStatue>();
+
+            ins.audioSource3.PlayOneShot(ins.clip4);
+
             Destroy(collision.gameObject);
             Invoke("SnakePlayEat", 2f);
             Invoke("SnakeToOrigin", 2f);

@@ -22,7 +22,7 @@ public class BloodManMoveTrigger : Trigger_Requiem
     {
         if (collision.gameObject.tag == "Player")
         {
-            bloodingMan.walkSound.gameObject.SetActive(true);
+            bloodingMan.isMove = true;
             bloodingMan.breathSound.gameObject.SetActive(true);
             bloodingMan.MoveAlongPoints();
             PlayerData.PlayerIsMove = false;

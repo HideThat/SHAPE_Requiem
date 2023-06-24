@@ -9,6 +9,14 @@ public class SnakeEatStatue : MonoBehaviour
 {
     [SerializeField] string sceneName;
     [SerializeField] string contactObjectName;
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource audioSource2;
+    [SerializeField] public AudioSource audioSource3;
+
+    [SerializeField] AudioClip clip;
+    [SerializeField] AudioClip clip2;
+    [SerializeField] public AudioClip clip3;
+    [SerializeField] public AudioClip clip4;
 
     public Image fadeOutImage; // Fade out에 사용할 이미지. 이를 위해 Canvas에 흰색 또는 검은색 Image를 추가하고 이 필드에 연결하십시오.
     public float fadeOutTime;  // Fade out에 걸리는 시간 (초)
@@ -48,6 +56,8 @@ public class SnakeEatStatue : MonoBehaviour
     {
         if (runeStatue.isActive && !isActive)
         {
+            audioSource.PlayOneShot(clip);
+            audioSource2.PlayOneShot(clip2);
             Invoke("MoveAlongPoints", startDelay);
             isActive = true;
         }
@@ -57,6 +67,7 @@ public class SnakeEatStatue : MonoBehaviour
     {
         if (collision.gameObject == runeStatue.gameObject)
         {
+            audioSource3.PlayOneShot(clip3);
             Invoke("StatueBond", 0.5f);
         }
 

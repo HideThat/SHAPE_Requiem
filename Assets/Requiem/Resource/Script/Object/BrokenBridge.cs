@@ -5,6 +5,8 @@ using UnityEngine;
 public class BrokenBridge : MonoBehaviour
 {
     [SerializeField] bool isDynamic = false;
+    [SerializeField] public AudioSource audioSource;
+    [SerializeField] public AudioClip clip;
     Transform[] fragments;
 
     void Start()

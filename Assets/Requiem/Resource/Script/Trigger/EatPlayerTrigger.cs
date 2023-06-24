@@ -29,6 +29,10 @@ public class EatPlayerTrigger : Trigger_Requiem
     {
         if (collision.transform == player)
         {
+            SnakeEatStatue ins = snake.GetComponent<SnakeEatStatue>();
+
+            ins.audioSource3.PlayOneShot(ins.clip3);
+
             snakeAni.Play("Snake_Bite");
             playerIn = true;
         }

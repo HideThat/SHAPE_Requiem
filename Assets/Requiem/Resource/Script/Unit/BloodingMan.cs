@@ -17,16 +17,32 @@ public class BloodingMan : MonoBehaviour
 
     // 이동 유형 (선형 또는 부드럽게)
     public Ease easeType = Ease.Linear;
+    private bool _isMove = false;
+
+    public bool isMove
+    {
+        get { return _isMove; }
+        set
+        {
+            if (value != _isMove && value == true)
+            {
+                StartCoroutine(walkSoundPlay());
+            }
+            _isMove = value;
+        }
+    }
 
     [SerializeField] public AudioSource walkSound;
     [SerializeField] public AudioSource breathSound;
     [SerializeField] AudioSource screamSound;
 
+    [SerializeField] AudioClip walkClip;
+    [SerializeField] float walkSoundDelay;
+
     public float delayLoadScene;
 
     private void Awake()
     {
-        walkSound.gameObject.SetActive(false);
         breathSound.gameObject.SetActive(false);
         screamSound.gameObject.SetActive(false);
     }
@@ -71,7 +87,6 @@ public class BloodingMan : MonoBehaviour
             transform.parent = collision.transform;
             Destroy(GetComponent<Rigidbody2D>());
             //Destroy(GetComponent<BloodingMan>());
-            walkSound.gameObject.SetActive(false);
             breathSound.gameObject.SetActive(false);
             screamSound.gameObject.SetActive(true);
 
@@ -83,4 +98,17 @@ public class BloodingMan : MonoBehaviour
     {
         SceneManager.LoadScene("underground_2", LoadSceneMode.Single);
     }
+
+    IEnumerator walkSoundPlay()
+    {
+        Debug.Log("Starting walkSoundPlay coroutine");
+
+        while (true)
+        {
+            Debug.Log("Playing walk sound");
+            walkSound.PlayOneShot(walkClip);
+            yield return new WaitForSeconds(walkSoundDelay);
+        }
+    }
+
 }

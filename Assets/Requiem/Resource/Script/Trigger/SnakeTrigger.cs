@@ -11,6 +11,9 @@ public class SnakeTrigger : Trigger_Requiem
         if (collision.gameObject.tag == "NPC")
         {
             snake.SnakeActive();
+            snake.audioSource.PlayOneShot(snake.snakeMove);
+            snake.audioSource2.PlayOneShot(snake.snakeHowling);
+            Destroy(gameObject);
         }
     }
 }

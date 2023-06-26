@@ -43,6 +43,7 @@ public class RuneControllerGPT : MonoBehaviour
             RuneControl(); // ·é Á¦¾î
             RuneMove(); // ·é ÀÌµ¿
             RuneCharging(); // ·é ÃæÀü È¿°ú
+
         }
     }
 
@@ -375,10 +376,10 @@ public class RuneControllerGPT : MonoBehaviour
                 hit.collider.gameObject.layer == (int)LayerName.RiskFactor);
     }
 
-    private bool hasRestarted = false;
+    public bool hasRestarted = false;
     public void RuneCharging()
     {
-        if (isCharge)
+        if (isCharge && RuneData.RuneBattery + 100f < RuneData.RuneBatteryInitValue)
         {
             if (!hasRestarted)
             {

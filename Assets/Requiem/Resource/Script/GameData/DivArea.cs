@@ -4,11 +4,13 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using Cinemachine;
+using DG.Tweening;
 
 public class DivArea : AreaData
 {
     Tilemap tilemap;
     [SerializeField] Collider2D cameraArea;
+    [SerializeField] float lensSize;
     CinemachineVirtualCamera mainCM;
 
     void Start()
@@ -24,17 +26,19 @@ public class DivArea : AreaData
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && !PlayerData.PlayerIsDead)
         {
             ChangeCameraArea();
+            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, lensSize, 4f);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.tag == "Player" && !PlayerData.PlayerIsDead)
         {
             ChangeCameraArea();
+            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, lensSize, 4f);
         }
     }
 

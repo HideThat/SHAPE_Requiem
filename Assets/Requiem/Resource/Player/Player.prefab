@@ -5674,9 +5674,9 @@ GameObject:
   - component: {fileID: 2529985359348219177}
   - component: {fileID: 2529985359348219183}
   - component: {fileID: 2529985359348219172}
-  - component: {fileID: 1862329909}
   - component: {fileID: 8692093828207425946}
   - component: {fileID: 7663049829569398529}
+  - component: {fileID: 7768115882346444692}
   m_Layer: 6
   m_Name: Rune
   m_TagString: Untagged
@@ -5871,84 +5871,6 @@ MonoBehaviour:
   m_moveTime: 3
   m_rotationSpeed: 10
   m_isStatueInteraction: 0
---- !u!60 &1862329909
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2529985359348219181}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 0.4125, y: 1.2475001}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.13093758, y: -0.40187493}
-      - {x: 0.14031258, y: -0.36437494}
-      - {x: 0.15593758, y: -0.29562494}
-      - {x: 0.16218758, y: -0.26124993}
-      - {x: 0.19031258, y: -0.12062492}
-      - {x: 0.19968759, y: -0.086249925}
-      - {x: 0.20593758, y: -0.058124926}
-      - {x: 0.20906258, y: -0.004999924}
-      - {x: 0.20281258, y: 0.020000076}
-      - {x: 0.19656257, y: 0.03875008}
-      - {x: 0.18093757, y: 0.07937508}
-      - {x: 0.14656258, y: 0.18562508}
-      - {x: 0.11531258, y: 0.27312508}
-      - {x: 0.10593758, y: 0.3075001}
-      - {x: 0.09031258, y: 0.3606251}
-      - {x: 0.06843758, y: 0.4231251}
-      - {x: 0.052812576, y: 0.47312507}
-      - {x: 0.043437578, y: 0.51062506}
-      - {x: 0.030937577, y: 0.5512501}
-      - {x: 0.015312577, y: 0.60437506}
-      - {x: 0.0028125762, y: 0.6262501}
-      - {x: -0.019062424, y: 0.6262501}
-      - {x: -0.028437424, y: 0.6137501}
-      - {x: -0.044062424, y: 0.5387501}
-      - {x: -0.056562424, y: 0.48875007}
-      - {x: -0.06906243, y: 0.4481251}
-      - {x: -0.094062425, y: 0.3606251}
-      - {x: -0.11593743, y: 0.2825001}
-      - {x: -0.14406243, y: 0.19500008}
-      - {x: -0.15656243, y: 0.15437508}
-      - {x: -0.18156242, y: 0.070000075}
-      - {x: -0.19406243, y: 0.032500077}
-      - {x: -0.20343743, y: 0.0012500763}
-      - {x: -0.20343743, y: -0.023749923}
-      - {x: -0.19406243, y: -0.042499926}
-      - {x: -0.17843743, y: -0.086249925}
-      - {x: -0.15968743, y: -0.13624993}
-      - {x: -0.13781242, y: -0.18937492}
-      - {x: -0.11281242, y: -0.23937492}
-      - {x: -0.10656243, y: -0.26437494}
-      - {x: -0.08468743, y: -0.32062492}
-      - {x: -0.06593742, y: -0.36749992}
-      - {x: -0.044062424, y: -0.42062494}
-      - {x: -0.022187425, y: -0.45812494}
-      - {x: -0.015937423, y: -0.48312494}
-      - {x: 0.0028125762, y: -0.52374995}
-      - {x: 0.015312577, y: -0.57062495}
-      - {x: 0.030937577, y: -0.60499996}
-      - {x: 0.04656258, y: -0.6237499}
-      - {x: 0.059062578, y: -0.6237499}
-      - {x: 0.07468758, y: -0.6112499}
-      - {x: 0.08718758, y: -0.58624995}
-      - {x: 0.09656258, y: -0.54249996}
 --- !u!82 &8692093828207425946
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6059,6 +5981,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_clip1: {fileID: 8300000, guid: 8ca432eb4a18bf548962b09616fd59d9, type: 3}
   m_clip2: {fileID: 8300000, guid: 072179646c84c99469c444731806d9ab, type: 3}
+--- !u!58 &7768115882346444692
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529985359348219181}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.13
 --- !u!1 &2529985360050657747
 GameObject:
   m_ObjectHideFlags: 0

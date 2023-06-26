@@ -128,6 +128,8 @@ namespace Cainos.PixelArtPlatformer_Dungeon
             Length = secondOrderDynamics.Update(targetLength, Time.fixedDeltaTime);
         }
 
+        
+
         // 엘리베이터의 상태를 나타내는 열거형(enum)
         public enum State
         {

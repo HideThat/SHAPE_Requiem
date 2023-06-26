@@ -7,13 +7,20 @@ using DG.Tweening;
 
 public class DisapearTrigger : Trigger_Requiem
 {
-    
+
     [SerializeField] Tilemap m_tileMap;
     [SerializeField] float m_changeTime;
 
     float m_colorAlpha = 1f;
-    Color m_color = new Color(1f,1f,1f,1f);
-    bool m_playerIn = false;
+    Color m_color = new Color(1f, 1f, 1f, 1f);
+
+    public bool playerIn = false;
+    public bool runeIn = false;
+
+    bool m_isActive
+    {
+        get { return playerIn || runeIn; }
+    }
 
     void Start()
     {
@@ -25,27 +32,39 @@ public class DisapearTrigger : Trigger_Requiem
         ColorChange();
         m_color = new Color(1f, 1f, 1f, m_colorAlpha);
         m_tileMap.color = m_color;
+
+
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == (int)LayerName.Player || collision.gameObject.layer == (int)LayerName.Rune)
+        if (collision.CompareTag("Player"))
         {
-            m_playerIn = true;
+            playerIn = true;
+        }
+
+        if (collision.CompareTag("Rune"))
+        {
+            runeIn = true;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == (int)LayerName.Player || collision.gameObject.layer == (int)LayerName.Rune)
+        if (collision.CompareTag("Player"))
         {
-            m_playerIn = false;
+            playerIn = false;
+        }
+        
+        if (collision.CompareTag("Rune"))
+        {
+            runeIn = false;
         }
     }
 
     void ColorChange()
     {
-        if (m_playerIn)
+        if (m_isActive)
         {
             DOTween.To(() => m_colorAlpha, x => m_colorAlpha = x, 0f, m_changeTime);
         }

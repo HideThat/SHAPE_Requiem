@@ -52,6 +52,11 @@ public class KeyDoor : MonoBehaviour
         if (IsPlayer(collision))
         {
             playerIn = true;
+
+            if (isOpened)
+            {
+                PlayerData.PlayerSavePoint = transform.position;
+            }
         }
 
         if (IsPlayer(collision) && Input.GetKeyDown(KeyCode.F))

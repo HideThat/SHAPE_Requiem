@@ -8,6 +8,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using Cinemachine;
+using DG.Tweening;
 using System;
 
 public class HP_SystemGPT : MonoBehaviour
@@ -20,6 +23,10 @@ public class HP_SystemGPT : MonoBehaviour
     [SerializeField] float horizontalDistance; // 가로 충돌 체크 거리
     [SerializeField] LayerMask platform; // 충돌을 체크할 레이어 마스크
 
+    public Image fadeOutImage; // Fade out에 사용할 이미지. 이를 위해 Canvas에 흰색 또는 검은색 Image를 추가하고 이 필드에 연결하십시오.
+    public float fadeOutTime;  // Fade out에 걸리는 시간 (초)
+    public float fadeInTime;  // Fade in에 걸리는 시간 (초)
+
     // 플레이어와 카메라, 애니메이터, 리지드바디 등의 컴포넌트
     PlayerControllerGPT playerController;
     Rigidbody2D rb;
@@ -27,6 +34,7 @@ public class HP_SystemGPT : MonoBehaviour
     GameObject hitEffect;
     Animator animator;
     GameObject playerMoveSound;
+    CinemachineVirtualCamera mainCM;
 
     // 충돌을 체크할 Raycast 정보를 저장할 배열 및 에너미 정보
     RaycastHit2D[] hitInfo = new RaycastHit2D[2];
@@ -54,6 +62,8 @@ public class HP_SystemGPT : MonoBehaviour
         hitEffect = PlayerData.PlayerObj.transform.Find("HitEffect").gameObject;
         animator = GetComponent<Animator>();
         playerMoveSound = PlayerData.PlayerMoveSoundSource.gameObject;
+        mainCM = DataController.MainCM;
+        fadeOutImage = GameObject.Find("FadeBox").GetComponent<Image>();
 
         if (playerController == null) Debug.Log("playerController == null");
         if (rb == null) Debug.Log("rb == null");
@@ -247,9 +257,58 @@ public class HP_SystemGPT : MonoBehaviour
         PlayerData.PlayerIsDead = true; // 플레이어가 죽었음을 나타낸다
         hitEffect.SetActive(true); // 히트 이펙트를 활성화
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
-        transform.position = PlayerData.PlayerSavePoint; // 플레이어의 위치를 세이브 지점으로 이동
         playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
         PlayerData.PlayerDeathCount++; // 플레이어 사망 횟수를 증가
+        mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
+        DOTween.To(() => mainCM.m_Lens.OrthographicSize,
+            x => mainCM.m_Lens.OrthographicSize = x, 3f, 2f);
+        Invoke("PlayerMoveSavePoint", 1f);
+        StartCoroutine(FadeOutAndIn());
+    }
+
+    IEnumerator FadeOutAndIn()
+    {
+        yield return StartCoroutine(FadeOut());
+        yield return StartCoroutine(FadeIn());
+    }
+
+    IEnumerator FadeIn()
+    {
+        // Fade in
+        Color color = fadeOutImage.color;
+        float startAlpha = color.a;
+
+        for (float t = 0.0f; t < fadeInTime; t += Time.deltaTime)
+        {
+            // Update the fade in image alpha
+            float normalizedTime = t / fadeInTime;
+            color.a = Mathf.Lerp(startAlpha, 0, normalizedTime);
+            fadeOutImage.color = color;
+
+            yield return null;
+        }
+    }
+
+    IEnumerator FadeOut()
+    {
+        // Fade out
+        Color color = fadeOutImage.color;
+        float startAlpha = color.a;
+
+        for (float t = 0.0f; t < fadeOutTime; t += Time.deltaTime)
+        {
+            // Update the fade out image alpha
+            float normalizedTime = t / fadeOutTime;
+            color.a = Mathf.Lerp(startAlpha, 1, normalizedTime);
+            fadeOutImage.color = color;
+
+            yield return null;
+        }
+    }
+
+    public void PlayerMoveSavePoint()
+    {
+        transform.position = PlayerData.PlayerSavePoint; // 플레이어의 위치를 세이브 지점으로 이동
     }
 
     void VerticalCaughtCheck() // 수직으로 끼어있는지 확인하는 메소드

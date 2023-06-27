@@ -503,7 +503,7 @@ AudioSource:
   Priority: 128
   DopplerLevel: 1
   MinDistance: 1
-  MaxDistance: 100
+  MaxDistance: 20
   Pan2D: 0
   rolloffMode: 1
   BypassEffects: 0
@@ -683,6 +683,7 @@ MonoBehaviour:
   moveAlongYAxis: 1
   audioSource: {fileID: 0}
   audioClip: {fileID: 8300000, guid: b5bd3d4967c3c20499ba76f09fe6ca0b, type: 3}
+  platformSwitch: {fileID: 0}
 --- !u!1001 &5631861488591757761
 PrefabInstance:
   m_ObjectHideFlags: 0

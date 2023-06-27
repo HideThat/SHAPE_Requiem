@@ -11,6 +11,7 @@ public class Pause : MonoBehaviour
     [SerializeField] private GameObject optionPanel;
     private bool isPaused;
 
+
     private void Start()
     {
         InitializeVariables();

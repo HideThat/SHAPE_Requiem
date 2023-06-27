@@ -43,6 +43,7 @@ public class ArrowScript : Enemy_Dynamic
         if (collision.tag == "Player")
         {
             transform.parent = collision.transform;
+            rigid.velocity = Vector2.zero;
             rigid.bodyType = RigidbodyType2D.Kinematic;
 
             ArrowDestroy();

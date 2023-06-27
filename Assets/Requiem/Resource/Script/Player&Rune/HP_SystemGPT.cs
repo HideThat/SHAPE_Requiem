@@ -23,10 +23,6 @@ public class HP_SystemGPT : MonoBehaviour
     [SerializeField] float horizontalDistance; // 가로 충돌 체크 거리
     [SerializeField] LayerMask platform; // 충돌을 체크할 레이어 마스크
 
-    public Image fadeOutImage; // Fade out에 사용할 이미지. 이를 위해 Canvas에 흰색 또는 검은색 Image를 추가하고 이 필드에 연결하십시오.
-    public float fadeOutTime;  // Fade out에 걸리는 시간 (초)
-    public float fadeInTime;  // Fade in에 걸리는 시간 (초)
-
     // 플레이어와 카메라, 애니메이터, 리지드바디 등의 컴포넌트
     PlayerControllerGPT playerController;
     Rigidbody2D rb;
@@ -63,7 +59,6 @@ public class HP_SystemGPT : MonoBehaviour
         animator = GetComponent<Animator>();
         playerMoveSound = PlayerData.PlayerMoveSoundSource.gameObject;
         mainCM = DataController.MainCM;
-        fadeOutImage = GameObject.Find("FadeBox").GetComponent<Image>();
 
         if (playerController == null) Debug.Log("playerController == null");
         if (rb == null) Debug.Log("rb == null");
@@ -263,47 +258,7 @@ public class HP_SystemGPT : MonoBehaviour
         DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, 2f);
         Invoke("PlayerMoveSavePoint", 1f);
-        StartCoroutine(FadeOutAndIn());
-    }
-
-    IEnumerator FadeOutAndIn()
-    {
-        yield return StartCoroutine(FadeOut());
-        yield return StartCoroutine(FadeIn());
-    }
-
-    IEnumerator FadeIn()
-    {
-        // Fade in
-        Color color = fadeOutImage.color;
-        float startAlpha = color.a;
-
-        for (float t = 0.0f; t < fadeInTime; t += Time.deltaTime)
-        {
-            // Update the fade in image alpha
-            float normalizedTime = t / fadeInTime;
-            color.a = Mathf.Lerp(startAlpha, 0, normalizedTime);
-            fadeOutImage.color = color;
-
-            yield return null;
-        }
-    }
-
-    IEnumerator FadeOut()
-    {
-        // Fade out
-        Color color = fadeOutImage.color;
-        float startAlpha = color.a;
-
-        for (float t = 0.0f; t < fadeOutTime; t += Time.deltaTime)
-        {
-            // Update the fade out image alpha
-            float normalizedTime = t / fadeOutTime;
-            color.a = Mathf.Lerp(startAlpha, 1, normalizedTime);
-            fadeOutImage.color = color;
-
-            yield return null;
-        }
+        FadeManager.Instance.FadeOutAndIn(1f, 3f);
     }
 
     public void PlayerMoveSavePoint()

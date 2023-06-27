@@ -35,4 +35,14 @@ public class Object_Trigger : Trigger_Requiem
             m_object.TriggerOn(); // 연결된 오브젝트 작동.
         }
     }
+
+    public void ActiveTrigger()
+    {
+        m_object.TriggerOn();
+    }
+
+    public void ResetTrigger()
+    {
+        m_isActive = false;
+    }
 }

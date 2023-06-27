@@ -54,13 +54,13 @@ public class Switch : MonoBehaviour
     // 룬과 충돌한 경우 확인
     private bool IsRuneCollision(Collider2D collision)
     {
-        return collision.gameObject.layer == (int)LayerName.Rune && RuneData.RuneActive;
+        return collision.CompareTag("Rune");
     }
 
     // 스위치 상태 전환
     private void ToggleSwitchState()
     {
-        isActive = !isActive;
+        isActive = true;
     }
 
     // 스위치 오디오 재생

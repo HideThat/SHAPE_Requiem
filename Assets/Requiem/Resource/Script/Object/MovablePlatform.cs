@@ -17,7 +17,7 @@ public class MovablePlatform : MonoBehaviour
     [SerializeField] private AudioSource audioSource; // 오디오 소스
     [SerializeField] private AudioClip audioClip; // 오디오 클립
 
-    private Switch platformSwitch; // 플랫폼 스위치
+    public Switch platformSwitch; // 플랫폼 스위치
     private Transform platform; // 플랫폼
     private float initialPosition; // 초기 위치
     private float movedDistance; // 움직인 거리

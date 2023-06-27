@@ -34,6 +34,9 @@ class CameraData
     public GameObject mainCamera; // 메인 카메라 오브젝트
     public CinemachineVirtualCamera mainCM; // 메인 시네머신
     public float followTime; // 메인 카메라가 플레이어를 추적하는 시간
+    public AudioSource audioSource1;
+    public AudioSource audioSource2;
+    public AudioSource audioSource3;
 }
 
 [Serializable]
@@ -58,7 +61,6 @@ public class ItemData
     public Sprite[] sprite = new Sprite[100]; // 아이템 이미지 배열
     public bool isInvenOpen = false; // 인벤토리 열림 체크
 }
-
 
 
 public class DataController : MonoBehaviour
@@ -100,6 +102,21 @@ public class DataController : MonoBehaviour
     {
         get { return instance.cameraData.mainCM; }
         set { instance.cameraData.mainCM = value; }
+    }
+    public static AudioSource CameraAudioSource1
+    {
+        get { return instance.cameraData.audioSource1; }
+        set { instance.cameraData.audioSource1 = value; }
+    }
+    public static AudioSource CameraAudioSource2
+    {
+        get { return instance.cameraData.audioSource2; }
+        set { instance.cameraData.audioSource2 = value; }
+    }
+    public static AudioSource CameraAudioSource3
+    {
+        get { return instance.cameraData.audioSource3; }
+        set { instance.cameraData.audioSource3 = value; }
     }
 
     // 사운드매니저
@@ -160,6 +177,17 @@ public class DataController : MonoBehaviour
 
         if (itemData.canvasObj == null)
             itemData.canvasObj = GameObject.Find("Canvas");
+
+        if (cameraData.audioSource1 == null)
+            cameraData.audioSource1 = DataController.MainCamera.transform.GetChild(0).GetComponent<AudioSource>();
+
+        if (cameraData.audioSource2 == null)
+            cameraData.audioSource2 = DataController.MainCamera.transform.GetChild(1).GetComponent<AudioSource>();
+
+        if (cameraData.audioSource3 == null)
+            cameraData.audioSource3 = DataController.MainCamera.transform.GetChild(2).GetComponent<AudioSource>();
+
+
 
         cameraData.mainCM = GameObject.Find("MainCM").GetComponent<CinemachineVirtualCamera>();
 

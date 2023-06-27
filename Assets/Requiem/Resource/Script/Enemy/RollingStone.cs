@@ -43,7 +43,6 @@ public class RollingStone : Enemy_Static
     // 오브젝트를 초기 상태로 되돌리는 리셋 함수
     public void resetPosition()
     {
-        
         rb.bodyType = RigidbodyType2D.Kinematic; // 움직이지 않게 키네마틱으로 바디 타입 변경
         rb.velocity = Vector2.zero; // 정지
         rb.freezeRotation = true; // 회전 불가

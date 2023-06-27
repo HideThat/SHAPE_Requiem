@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using Cinemachine;
 
 public class SnakeEatStatue : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class SnakeEatStatue : MonoBehaviour
     [SerializeField] public AudioClip clip3;
     [SerializeField] public AudioClip clip4;
     [SerializeField] public AudioClip clip5;
+    [SerializeField] public AudioClip clip6;
+    [SerializeField] public AudioClip clip7;
 
     public Image fadeOutImage; // Fade out에 사용할 이미지. 이를 위해 Canvas에 흰색 또는 검은색 Image를 추가하고 이 필드에 연결하십시오.
     public float fadeOutTime;  // Fade out에 걸리는 시간 (초)
@@ -67,12 +70,6 @@ public class SnakeEatStatue : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject == runeStatue.gameObject)
-        {
-            audioSource3.PlayOneShot(clip3);
-            Invoke("StatueBond", 0.5f);
-        }
-
         if (collision.gameObject.tag == "Player")
         {
             StartCoroutine(FadeOutAndLoadScene());
@@ -81,6 +78,17 @@ public class SnakeEatStatue : MonoBehaviour
         if (collision.gameObject.layer == (int)LayerName.LightArea)
         {
             audioSource4.PlayOneShot(clip5);
+        }
+
+        if (collision.CompareTag("RollingStone"))
+        {
+            HitRollingStone(collision);
+        }
+
+        if (collision.CompareTag("RuneStatue"))
+        {
+            audioSource3.PlayOneShot(clip3);
+            Invoke("StatueBond", 0.5f);
         }
     }
 
@@ -128,5 +136,30 @@ public class SnakeEatStatue : MonoBehaviour
 
         // Fully opaque, load the scene
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void HitRollingStone(Collider2D collision)
+    {
+        StartCoroutine(FadeOutAndInRoutine(0.3f, 2f, () =>
+        {
+            DataController.CameraAudioSource1.PlayOneShot(clip6);
+            DataController.CameraAudioSource2.PlayOneShot(clip7);
+            DataController.CameraAudioSource3.PlayOneShot(clip);
+            DataController.MainCM.Follow = PlayerData.PlayerObj.transform;
+            DataController.MainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
+            DivAreaManager.Instance.DivAreaActive(true);
+
+            Destroy(collision.gameObject);
+        }));
+    }
+
+    private IEnumerator FadeOutAndInRoutine(float fadeOutDuration, float fadeInDuration, System.Action callback)
+    {
+        FadeManager.Instance.FadeOut(fadeOutDuration);
+        yield return new WaitForSeconds(fadeOutDuration);
+
+        callback.Invoke();
+
+        FadeManager.Instance.FadeIn(fadeInDuration);
     }
 }

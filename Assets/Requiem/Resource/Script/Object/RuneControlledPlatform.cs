@@ -1,5 +1,3 @@
-// 1차 리펙토링
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,9 +6,9 @@ public class RuneControlledPlatform : MonoBehaviour
 {
     [SerializeField] private RuneControllerGPT runeController;
     [SerializeField] private Transform player;
-    [SerializeField] private float speed;
+    [SerializeField] private float moveSpeed;
     [SerializeField] private Vector2 destination;
-    [SerializeField] private AudioClip audioClip;
+    [SerializeField] private AudioClip soundClip;
 
     private AudioSource audioSource;
 
@@ -18,9 +16,8 @@ public class RuneControlledPlatform : MonoBehaviour
     private Vector2 origin;
     private bool isRuneAttached = false;
 
-    private float runeMoveTime;
+    private float originalMoveTime;
 
-    // 초기 설정 및 변수 값 설정
     private void Start()
     {
         if (runeController == null)
@@ -31,32 +28,28 @@ public class RuneControlledPlatform : MonoBehaviour
         audioSource = transform.Find("Sound").GetComponent<AudioSource>();
         player = PlayerData.PlayerObj.transform;
 
-        
-
-        audioSource.clip = audioClip;
+        audioSource.clip = soundClip;
         origin = transform.position;
         target = destination;
-        runeMoveTime = runeController.moveTime;
+        originalMoveTime = runeController.moveTime;
         audioSource.gameObject.SetActive(false);
 
-        if (player == null) Debug.Log("player == null");
-        if (runeController == null) Debug.Log("runeController == null");
-        if (audioSource == null) Debug.Log("audioSource == null");
-        if (audioClip == null) Debug.Log("audioClip == null");
+        if (player == null) Debug.LogError("Player object not found.");
+        if (runeController == null) Debug.LogError("RuneControllerGPT component not found.");
+        if (audioSource == null) Debug.LogError("AudioSource component not found.");
+        if (soundClip == null) Debug.LogError("AudioClip not assigned.");
     }
 
-    // 룬이 부착되어 있을 경우 플랫폼 이동
     private void Update()
     {
         if (isRuneAttached)
         {
-            AttachRune();
-            MoveToDestination();
+            MovePlatform();
             PlaySound(isRuneAttached);
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(1))
             {
-                DetachRuneMidway();
+                DetachRune();
             }
         }
         else
@@ -67,49 +60,18 @@ public class RuneControlledPlatform : MonoBehaviour
         UpdateTarget();
     }
 
-    // 플레이어가 플랫폼에 있을 때 플레이어를 부모로 설정
-    private void OnCollisionStay2D(Collision2D collision)
+    private void MovePlatform()
     {
-        if (collision.gameObject.layer == (int)LayerName.Player)
-        {
-            player.parent = transform;
-        }
+        transform.position = Vector2.MoveTowards(transform.position, target, moveSpeed * Time.deltaTime);
     }
 
-    // 플레이어가 플랫폼에서 벗어날 때 부모 설정 해제
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == (int)LayerName.Player)
-        {
-            player.parent = null;
-        }
-    }
-
-    // 룬이 플랫폼에 부착되면 움직이기 시작
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.layer == (int)LayerName.Rune && RuneData.RuneActive)
-        {
-            RuneData.RuneUseControl = false;
-            runeController.moveTime = 0.1f;
-            isRuneAttached = true;
-        }
-    }
-
-    // 플랫폼을 목적지로 이동
-    private void MoveToDestination()
-    {
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-    }
-
-    // 목적지가 변경되면 플랫폼의 목표 지점 변경
     private void UpdateTarget()
     {
         if ((Vector2)transform.position == origin)
         {
             if (isRuneAttached)
             {
-                DetachRuneAtEnd();
+                DetachRune();
             }
             target = destination;
         }
@@ -118,40 +80,49 @@ public class RuneControlledPlatform : MonoBehaviour
         {
             if (isRuneAttached)
             {
-                DetachRuneAtEnd();
+                DetachRune();
             }
             target = origin;
         }
     }
 
-    // 목적지 도달 시 룬 제거 및 조작 가능
-    private void DetachRuneAtEnd()
+    private void DetachRune()
     {
-        runeController.moveTime = runeMoveTime;
+        runeController.moveTime = originalMoveTime;
         RuneData.RuneUseControl = true;
         runeController.target = player.position;
         isRuneAttached = false;
         runeController.isShoot = false;
     }
 
-    // 도중에 룬이 빠질 경우 설정
-    private void DetachRuneMidway()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        runeController.moveTime = runeMoveTime;
-        RuneData.RuneUseControl = true;
-        runeController.target = player.position;
-        isRuneAttached = false;
-        runeController.isShoot = false;
+        if (collision.gameObject.CompareTag("Rune") && RuneData.RuneActive)
+        {
+            RuneData.RuneUseControl = false;
+            runeController.moveTime = 0.1f;
+            isRuneAttached = true;
+        }
     }
 
-    // 룬을 플랫폼에 부착
-    private void AttachRune()
+    private void PlaySound(bool isAttached)
     {
-        runeController.target = transform.position;
+        audioSource.gameObject.SetActive(isAttached);
     }
 
-    void PlaySound(bool _bool)
+    private void OnCollisionStay2D(Collision2D collision)
     {
-        audioSource.gameObject.SetActive(_bool);
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            player.parent = transform;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            player.parent = null;
+        }
     }
 }

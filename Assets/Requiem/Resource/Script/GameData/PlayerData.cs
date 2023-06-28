@@ -12,6 +12,7 @@ public class PlayerData : MonoBehaviour // 플레이어 데이터
     [Header("Player Movement")]
     public float m_playerSpeed; // 플레이어 이동속도
     public int m_jumpLeft; // 플레이어 점프 횟수
+    public bool m_isWarp = false;
     [Header("Player HP_System")]
     public int m_maxHP; // 최대 체력
     public int m_HP; // 현재 체력

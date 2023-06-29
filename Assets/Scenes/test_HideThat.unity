@@ -130,6 +130,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 527262527760620934, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1354376138480774106, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
       propertyPath: m_Size.y
       value: 4.1079373
@@ -147,6 +151,10 @@ PrefabInstance:
       value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: isOpened
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
       propertyPath: otherDoor
       value: 
       objectReference: {fileID: 789039801}
@@ -154,6 +162,18 @@ PrefabInstance:
       propertyPath: showObjects
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: fadeOutAndInTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: fadeOutAndInWaitTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4142715627474073102, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: -1623320021, guid: 0afeb8577b003fb4589464f46d5b4b88, type: 3}
     - target: {fileID: 5096626455900008963, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
       propertyPath: m_Icon
       value: 
@@ -1177,6 +1197,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1323404939949712778, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1354376138480774106, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
       propertyPath: m_Size.y
       value: 4.240701
@@ -1205,6 +1229,22 @@ PrefabInstance:
       propertyPath: otherDoor
       value: 
       objectReference: {fileID: 1167142319}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: showObjects
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: fadeOutAndInTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3039910930325801960, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: fadeOutAndInWaitTime
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5604862953660597531, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6930122694965717508, guid: 82fee8c3ce914324d802512e53221a9a, type: 3}
       propertyPath: m_Name
       value: WarpDoor (1)
@@ -1276,7 +1316,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4530024341899340902, guid: ee464a973527e784f9f1e9734bafda4a, type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4530024341899340902, guid: ee464a973527e784f9f1e9734bafda4a, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1499,7 +1539,7 @@ Transform:
   m_Children:
   - {fileID: 1756956620}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1756956619
 GameObject:
@@ -11896,7 +11936,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2470742971958346914, guid: 9650b6c8090c9414cbcf222e9ba3b5b9, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9650b6c8090c9414cbcf222e9ba3b5b9, type: 3}

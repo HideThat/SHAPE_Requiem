@@ -12,7 +12,6 @@ public class KeyDoor : MonoBehaviour
 {
     [SerializeField] private int keyID; // 키 ID
     [SerializeField] private AudioClip doorSound;
-    [SerializeField] private float invokeTime;
     [SerializeField] public bool isOpened;
     [SerializeField] private SpriteRenderer openedSprite;
     [SerializeField] private LightsManager lightsManager;
@@ -20,9 +19,11 @@ public class KeyDoor : MonoBehaviour
     [SerializeField] private bool playerIn = false;
     [SerializeField] private SpriteRenderer needKeyUI;
     [SerializeField] private bool needKeyUIOpen = false;
+    [Header("프로그래머")]
+    [SerializeField] private float delayTime;
 
     private AudioSource audioSource;
-
+    private bool isInventoryOpen = false;
 
     private void Start()
     {
@@ -37,11 +38,15 @@ public class KeyDoor : MonoBehaviour
         OffNeedKeyUI();
     }
 
+    private void FixedUpdate()
+    {
+        OnOffNeedKeyUI();
+    }
+
     private void Update()
     {
         DoorStateChange();
         OnOffUI();
-        OnOffNeedKeyUI();
     }
 
     // 트리거에 다른 오브젝트가 있을 때 처리하는 함수
@@ -59,11 +64,43 @@ public class KeyDoor : MonoBehaviour
             }
         }
 
-        if (IsPlayer(collision) && Input.GetKeyDown(KeyCode.F))
+        if (IsPlayer(collision) && Input.GetKeyDown(KeyCode.F) && !isOpened)
         {
             PlayerInventorySystem inven = GetPlayerInventorySystem(collision);
-            OpenAndSearchInventory(inven);
+            StartCoroutine(OpenAndSearchInventoryCoroutine(inven));
         }
+    }
+
+    private IEnumerator OpenAndSearchInventoryCoroutine(PlayerInventorySystem inven)
+    {
+        isInventoryOpen = true;
+        yield return new WaitForSeconds(delayTime);
+
+        if (!isOpened) // 문이 이미 열려있지 않은 경우에만 키 검사 수행
+        {
+            inven.OpenInventory();
+            bool hasKey = false;
+
+            for (int i = 0; i < inven.currentIndex; i++)
+            {
+                if (HasKey(inven, i))
+                {
+                    hasKey = true;
+                    UseKeyAndActiveDoor(inven, i);
+                    break;
+                }
+            }
+
+            if (!hasKey)
+            {
+                needKeyUIOpen = true;
+            }
+
+            inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
+            inven.CloseInventory();
+        }
+
+        isInventoryOpen = false;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -84,30 +121,6 @@ public class KeyDoor : MonoBehaviour
     private PlayerInventorySystem GetPlayerInventorySystem(Collider2D collision)
     {
         return collision.GetComponent<PlayerInventorySystem>();
-    }
-
-    // 인벤토리를 열고 키를 찾는 함수
-    private void OpenAndSearchInventory(PlayerInventorySystem inven)
-    {
-        inven.OpenInventory();
-        bool hasKey = false;
-
-        for (int i = 0; i < inven.currentIndex; i++)
-        {
-            if (HasKey(inven, i))
-            {
-                hasKey = true;
-                UseKeyAndActiveDoor(inven, i);
-                break;
-            }
-        }
-
-        if (!hasKey)
-        {
-            needKeyUIOpen = true;
-        }
-
-        UpdateAndCloseInventory(inven);
     }
 
     // 인벤토리에 키가 있는지 확인하는 함수
@@ -148,10 +161,11 @@ public class KeyDoor : MonoBehaviour
     
     void OnOffNeedKeyUI()
     {
-        if (needKeyUIOpen)
+        if (needKeyUIOpen && !isOpened)
         {
             OnNeedKeyUI();
-            Invoke("ChangeNeedKeyUIOpen", 1f);
+            //Invoke("ChangeNeedKeyUIOpen", 1f);
+            ChangeNeedKeyUIOpen();
         }
         else
         {

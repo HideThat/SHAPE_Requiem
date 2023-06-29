@@ -11,9 +11,12 @@ using UnityEditor;
 public class WarpDoorEditor : Editor
 {
     private SerializedProperty otherDoorProp;
+    private SerializedProperty fadeOutAndInTimeProp;
+    private SerializedProperty fadeOutAndInWaitTimeProp;
     private SerializedProperty isOpenedProp;
     private SerializedProperty playerInProp;
     private SerializedProperty showObjectsProp;
+    private SerializedProperty keyBlockProp;
     private SerializedProperty doorProp;
     private SerializedProperty lampLightProp;
     private SerializedProperty lampGlowProp;
@@ -23,9 +26,12 @@ public class WarpDoorEditor : Editor
     private void OnEnable()
     {
         otherDoorProp = serializedObject.FindProperty("otherDoor");
+        fadeOutAndInTimeProp = serializedObject.FindProperty("fadeOutAndInTime");
+        fadeOutAndInWaitTimeProp = serializedObject.FindProperty("fadeOutAndInWaitTime");
         isOpenedProp = serializedObject.FindProperty("isOpened");
         playerInProp = serializedObject.FindProperty("playerIn");
         showObjectsProp = serializedObject.FindProperty("showObjects");
+        keyBlockProp = serializedObject.FindProperty("keyBlock");
         doorProp = serializedObject.FindProperty("door");
         lampLightProp = serializedObject.FindProperty("lampLight");
         lampGlowProp = serializedObject.FindProperty("lampGlow");
@@ -38,6 +44,8 @@ public class WarpDoorEditor : Editor
         serializedObject.Update();
 
         EditorGUILayout.PropertyField(otherDoorProp);
+        EditorGUILayout.PropertyField(fadeOutAndInTimeProp);
+        EditorGUILayout.PropertyField(fadeOutAndInWaitTimeProp);
         EditorGUILayout.PropertyField(isOpenedProp);
         EditorGUILayout.PropertyField(playerInProp);
         EditorGUILayout.PropertyField(showObjectsProp);
@@ -46,6 +54,7 @@ public class WarpDoorEditor : Editor
 
         if (warpDoor.showObjects)
         {
+            EditorGUILayout.PropertyField(keyBlockProp);
             EditorGUILayout.PropertyField(doorProp);
             EditorGUILayout.PropertyField(lampLightProp);
             EditorGUILayout.PropertyField(lampGlowProp);
@@ -62,10 +71,13 @@ public class WarpDoorEditor : Editor
 public class WarpDoor : MonoBehaviour
 {
     [SerializeField] private WarpDoor otherDoor;
+    [SerializeField] float fadeOutAndInTime = 0.2f;
+    [SerializeField] float fadeOutAndInWaitTime = 0.2f;
     [SerializeField] public bool isOpened = false;
     [SerializeField] bool playerIn;
     [Header("프로그래머")]
     [SerializeField] public bool showObjects = false;
+    [SerializeField] GameObject keyBlock;
     [SerializeField] Door door;
     [SerializeField] Light2D lampLight;
     [SerializeField] GameObject lampGlow;
@@ -80,14 +92,17 @@ public class WarpDoor : MonoBehaviour
     {
         door = GetComponent<Door>();
         door.IsOpened = isOpened;
+        keyBlock.SetActive(false);
     }
 
     private void FixedUpdate()
     {
         if (playerIn && Input.GetKey(KeyCode.F) && !PlayerData.Instance.m_isWarp)
         {
-            MoveOtherDoor(player);
+            Invoke("MoveOtherDoor", fadeOutAndInTime);
+            
             StartCoroutine(PlayerWarpDelay());
+            FadeManager.Instance.FadeOutAndIn(fadeOutAndInTime, fadeOutAndInWaitTime);
         }
 
         if (playerIn)
@@ -107,6 +122,7 @@ public class WarpDoor : MonoBehaviour
         {
             playerIn = true;
             player = collision.transform;
+            keyBlock.SetActive(true);
 
             Debug.Log("Player In");
         }
@@ -117,11 +133,12 @@ public class WarpDoor : MonoBehaviour
         if (collision.CompareTag("Player") && isOpened)
         {
             playerIn = false;
+            keyBlock.SetActive(false);
             Debug.Log("Player Out");
         }
     }
 
-    void MoveOtherDoor(Transform player)
+    void MoveOtherDoor()
     {
         player.position = new Vector2(otherDoor.transform.position.x, otherDoor.transform.position.y + 1f);
     }

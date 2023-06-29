@@ -379,7 +379,7 @@ public class RuneControllerGPT : MonoBehaviour
     public bool hasRestarted = false;
     public void RuneCharging()
     {
-        if (isCharge && RuneData.RuneBattery + 100f < RuneData.RuneBatteryInitValue)
+        if (isCharge && RuneData.RuneBattery + 100f < RuneData.RuneBatteryMaxValue)
         {
             if (!hasRestarted)
             {

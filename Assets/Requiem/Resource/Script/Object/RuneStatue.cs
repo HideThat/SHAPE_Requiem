@@ -10,10 +10,6 @@ using DG.Tweening;
 public class RuneStatue : MonoBehaviour
 {
     [SerializeField] private Vector2 savePoint; // 세이브 포인트
-    [SerializeField] private float lightRadius;
-    [SerializeField] private float lightPower;
-    [SerializeField] private float lightPowerDownTime;
-    [SerializeField] private float lightLessPower;
     [SerializeField] private float effectDelay = 5f; // 효과 딜레이 시간
     [SerializeField] public bool isActive; // 동작 했는가 여부
     [SerializeField] private AudioClip audioClip; // 동작 시 재생 소리
@@ -73,12 +69,12 @@ public class RuneStatue : MonoBehaviour
             return;
         }
 
-        if (collision.gameObject.layer == (int)LayerName.Rune && RuneData.RuneActive)
+        if (collision.CompareTag("Rune") && RuneData.RuneActive)
         {
             EnterTheRune();
         }
 
-        if (collision.gameObject.layer == (int)LayerName.Player)
+        if (collision.CompareTag("Player"))
         {
             UpdatePlayerData();
         }
@@ -113,7 +109,7 @@ public class RuneStatue : MonoBehaviour
         PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
-        DOTween.To(() => RuneData.RuneBattery, x => RuneData.RuneBattery = x, RuneData.RuneBatteryInitValue, 5f);
+        DOTween.To(() => RuneData.RuneBattery, x => RuneData.RuneBattery = x, RuneData.RuneBatteryMaxValue, 5f);
         PlayAudioClip();
     }
 

@@ -22,7 +22,7 @@ public class RuneData : MonoBehaviour
     [SerializeField] private bool touchWater; // 룬이 물에 닿았을 때 온
     [SerializeField] private bool useControl; // 룬의 컨트롤이 가능할 때 온
     [SerializeField] private float battery = 1000f;
-    [SerializeField] private float batteryInitValue = 1000f;
+    [SerializeField] private float batteryMaxValue = 1000f;
 
     private static RuneData instance = null;
 
@@ -95,10 +95,10 @@ public class RuneData : MonoBehaviour
         get => Instance.battery;
         set => Instance.battery = value;
     }
-    public static float RuneBatteryInitValue
+    public static float RuneBatteryMaxValue
     {
-        get => Instance.batteryInitValue;
-        set => Instance.batteryInitValue = value;
+        get => Instance.batteryMaxValue;
+        set => Instance.batteryMaxValue = value;
     }
 
 
@@ -124,7 +124,7 @@ public class RuneData : MonoBehaviour
             runeLightArea = RuneObj.transform.Find("LightArea").GetComponent<CircleCollider2D>();
         }
 
-        RuneData.RuneBattery = RuneData.RuneBatteryInitValue;
+        RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
 
         RuneOuterRadius = RuneObj.GetComponent<Light2D>().pointLightOuterRadius;
         RuneOnWater = false;

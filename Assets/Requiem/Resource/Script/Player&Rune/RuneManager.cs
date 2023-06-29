@@ -57,7 +57,7 @@ public class RuneManager : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<RuneStatue>() != null)
+        if (collision.gameObject.CompareTag("RuneStatue"))
         {
             if (RuneData.RuneActive || RuneData.RuneBattery <= 0)
             {
@@ -70,26 +70,59 @@ public class RuneManager : MonoBehaviour
             }
         }
 
-        if (collision.gameObject.GetComponent<RuneStatue>() != null)
+        switch (collision.gameObject.tag)
         {
-            PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
+            case "RuneStatue":
+                RuneStatueCharge(collision, collision.gameObject.tag);
+                break;
 
-            if (RuneData.RuneBattery < RuneData.RuneBatteryInitValue)
-            {
-                RuneData.RuneBattery += collision.gameObject.GetComponent<RuneStatue>().runeChargePower * Time.deltaTime;
-            }
-            else
-            {
-                RuneData.RuneBattery = RuneData.RuneBatteryInitValue;
-            }
+            case "SubRuneStatue":
+                RuneStatueCharge(collision, collision.gameObject.tag);
+                break;
+
+            default:
+                break;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<RuneStatue>() != null)
+        switch (collision.gameObject.tag)
         {
-            PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = false;
+            case "RuneStatue":
+            case "SubRuneStatue":
+                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = false;
+                break;
+
+            default:
+                break;
+        }
+    }
+
+    void RuneStatueCharge(Collider2D collision, string tag)
+    {
+        switch (tag)
+        {
+            case "RuneStatue":
+                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
+                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+                if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
+                    RuneData.RuneBattery += collision.gameObject.GetComponent<RuneStatue>().runeChargePower * Time.deltaTime;
+                else
+                    RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                break;
+
+            case "SubRuneStatue":
+                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
+                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+                if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
+                    RuneData.RuneBattery += collision.gameObject.GetComponent<SubRuneStatue>().runeChargePower * Time.deltaTime;
+                else
+                    RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                break;
+
+            default:
+                break;
         }
     }
 
@@ -112,26 +145,17 @@ public class RuneManager : MonoBehaviour
         RuneData.RuneOnWater = false;
     }
 
-    /// <summary>
-    /// 룬 시야 범위를 변경한다.
-    /// </summary>
-    void ChangeLightArea()
-    {
-        RuneData.RuneLightArea.radius = m_luneLight.pointLightOuterRadius;
-    }
-
     public void StatueInteraction(Transform _target)
     {
         m_runeControl.target = _target.position;
         RuneData.RuneUseControl = false;
         transform.Rotate(Vector3.back * m_rotationSpeed);
         transform.DOMove(m_runeControl.target, m_moveTime);
-        StartCoroutine("StatueInteractionDelay");
+        StartCoroutine(StatueInteractionDelay());
     }
 
     IEnumerator StatueInteractionDelay()
     {
-
         yield return new WaitForSeconds(m_moveTime);
 
         RuneData.RuneUseControl = true;

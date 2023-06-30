@@ -10,7 +10,7 @@ public class SnakeBiteTrigger : Trigger_Requiem
     {
         if (collision.tag == "Snake")
         {
-            animator.SetBool("BiteActive", true);
+            animator.SetBool("EatActive", true);
         }
     }
 }

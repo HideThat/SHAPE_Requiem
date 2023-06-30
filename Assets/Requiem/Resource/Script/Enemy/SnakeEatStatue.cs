@@ -14,6 +14,9 @@ public class SnakeEatStatue : MonoBehaviour
     [SerializeField] AudioSource audioSource2;
     [SerializeField] public AudioSource audioSource3;
     [SerializeField] public AudioSource audioSource4;
+    [SerializeField] public ParticleSystem[] dustArr;
+    [SerializeField] public float dustDelay = 0.2f;
+
 
     [SerializeField] AudioClip clip;
     [SerializeField] AudioClip clip2;
@@ -64,6 +67,7 @@ public class SnakeEatStatue : MonoBehaviour
             audioSource.PlayOneShot(clip);
             audioSource2.PlayOneShot(clip2);
             Invoke("MoveAlongPoints", startDelay);
+            StartCoroutine(DustPlay());
             isActive = true;
         }
     }
@@ -161,5 +165,27 @@ public class SnakeEatStatue : MonoBehaviour
         callback.Invoke();
 
         FadeManager.Instance.FadeIn(fadeInDuration);
+    }
+
+    IEnumerator DustPlay()
+    {
+        float startTime = Time.time;
+
+        while (true)
+        {
+            for (int i = 0; i < dustArr.Length; i++)
+            {
+                dustArr[i].Play();
+            }
+
+            yield return new WaitForSeconds(dustDelay);
+
+            if ((Time.time - startTime) >= speed * 2 + startDelay)
+            {
+                break;
+            }
+        }
+
+        yield return new WaitForSeconds(dustDelay);
     }
 }

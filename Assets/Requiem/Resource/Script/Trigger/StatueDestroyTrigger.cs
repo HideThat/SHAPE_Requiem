@@ -35,6 +35,6 @@ public class StatueDestroyTrigger : Trigger_Requiem
 
     void SnakePlayEat()
     {
-        snakeAni.Play("Eat");
+        snakeAni.Play("Snake_Bite");
     }
 }

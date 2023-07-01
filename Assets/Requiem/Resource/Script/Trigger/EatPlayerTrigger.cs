@@ -21,7 +21,7 @@ public class EatPlayerTrigger : Trigger_Requiem
     {
         if (playerIn)
         {
-            snake.DOMove(player.position + (Vector3.up * 2), chaseTime);
+            snake.DOMove(player.position + (-Vector3.up * 3), chaseTime);
         }
     }
 

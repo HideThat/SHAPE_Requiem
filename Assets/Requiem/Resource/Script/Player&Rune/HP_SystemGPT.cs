@@ -250,15 +250,14 @@ public class HP_SystemGPT : MonoBehaviour
         loseControl = true;  // 제어 상실 상태로 전환
         isDead = true; // 죽은 상태로 전환
         PlayerData.PlayerIsDead = true; // 플레이어가 죽었음을 나타낸다
-        hitEffect.SetActive(true); // 히트 이펙트를 활성화
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
         playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
         PlayerData.PlayerDeathCount++; // 플레이어 사망 횟수를 증가
         mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
         DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, 2f);
-        Invoke("PlayerMoveSavePoint", 1f);
-        FadeManager.Instance.FadeOutAndIn(1f, 3f);
+        Invoke("PlayerMoveSavePoint", recorverDelay);
+        FadeManager.Instance.FadeOutAndIn(recorverDelay, 1f);
     }
 
     public void PlayerMoveSavePoint()

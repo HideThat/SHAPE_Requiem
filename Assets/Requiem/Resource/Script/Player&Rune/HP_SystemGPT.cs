@@ -255,9 +255,9 @@ public class HP_SystemGPT : MonoBehaviour
         PlayerData.PlayerDeathCount++; // 플레이어 사망 횟수를 증가
         mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
         DOTween.To(() => mainCM.m_Lens.OrthographicSize,
-            x => mainCM.m_Lens.OrthographicSize = x, 3f, 2f);
+            x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
         Invoke("PlayerMoveSavePoint", recorverDelay);
-        FadeManager.Instance.FadeOutAndIn(recorverDelay, 1f);
+        FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
     }
 
     public void PlayerMoveSavePoint()

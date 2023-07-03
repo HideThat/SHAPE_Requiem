@@ -94,26 +94,13 @@ public class RisingFloor2 : MonoBehaviour
 
     IEnumerator FloorMove()
     {
-        transform.DOMoveY(targetPos.y, moveTime);
+        Vector2 moveDirection = transform.up;  // 오브젝트의 현재 Y축 방향을 이동 방향으로 사용
+        Vector2 targetPosition = (Vector2)transform.position + moveDirection * moveDistance;
+
+        transform.DOMove(targetPosition, moveTime);
 
         yield return new WaitForSeconds(moveTime);
 
-        transform.DOMoveY(originPos.y, moveTime);
-    }
-
-    private void OnCollisionStay2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.parent = transform;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            collision.transform.parent = null;
-        }
+        transform.DOMove(originPos, moveTime);
     }
 }

@@ -318,6 +318,10 @@ MonoBehaviour:
   mass: 1
   shootForce: 20
   disappearTime: 2
+  arrowTrigger: {fileID: 602878641}
+  trail: {fileID: 7125664880091788918}
+  resetTrigger:
+    ShouldReset: 0
 --- !u!212 &3293571908470956988
 SpriteRenderer:
   m_ObjectHideFlags: 0

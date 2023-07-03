@@ -11,6 +11,7 @@ public class FallingBlock : Enemy_Static
 
     private void Start()
     {
+        damage = 1;
         rigid = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
     }
@@ -27,7 +28,9 @@ public class FallingBlock : Enemy_Static
         }
         else if (isRanding)
         {
-            Destroy(this);
+            rigid.velocity = Vector2.zero;
+            rigid.bodyType = RigidbodyType2D.Static;
+            col.isTrigger = false;
         }
         else
         {

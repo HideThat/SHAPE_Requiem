@@ -23,7 +23,7 @@ public class BloodManMoveTrigger : Trigger_Requiem
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "Player")
+        if (collision.gameObject.CompareTag("Player"))
         {
             bloodingMan.isMove = true;
             bloodingMan.breathSound.gameObject.SetActive(true);

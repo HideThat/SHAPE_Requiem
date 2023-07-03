@@ -49,20 +49,22 @@ public class ArrowScript : Enemy_Dynamic
 
         if (isActive == true)
         {
+            arrowTrigger.gameObject.SetActive(false);
             isActive = false;
             rigid.bodyType = RigidbodyType2D.Dynamic;
             rigid.gravityScale = 0f;
             rigid.angularDrag = 0f;
             rigid.mass = mass;
-            arrowTrigger.gameObject.SetActive(false);
 
             ApplyForceBasedOnRotation();
+
+            Invoke("ArrowDestroy", 2f);
         }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player"))
         {
             transform.parent = collision.transform;
             ArrowDestroy();
@@ -82,8 +84,6 @@ public class ArrowScript : Enemy_Dynamic
     // 화살 파괴 메소드
     public void ArrowDestroy()
     {
-        isDestroyed = true;
-
         Color endColor = new Color(GetComponent<SpriteRenderer>().color.r, GetComponent<SpriteRenderer>().color.g, GetComponent<SpriteRenderer>().color.b, 0f);
         GetComponent<SpriteRenderer>().DOColor(endColor, disappearTime);
         trail.gameObject.SetActive(false);
@@ -91,7 +91,7 @@ public class ArrowScript : Enemy_Dynamic
         rigid.velocity = Vector2.zero;
         rigid.angularVelocity = 0f;
         rigid.bodyType = RigidbodyType2D.Kinematic;
-        Invoke("ColliderFalse", disappearTime);
+        Invoke("ColliderFalse", disappearTime/2);
     }
 
     void ColliderFalse()
@@ -101,6 +101,14 @@ public class ArrowScript : Enemy_Dynamic
 
     public override void ResetEnemy()
     {
+        CancelInvoke("ArrowDestroy");
+
+        // Detach from any parent
+        transform.parent = null;
+
+        // Make sure the arrow is not active
+        isActive = false;
+
         // Cancel any existing DOColor tween
         GetComponent<SpriteRenderer>().DOKill();
 
@@ -114,11 +122,5 @@ public class ArrowScript : Enemy_Dynamic
         arrowTrigger.gameObject.SetActive(true);
         trail.gameObject.SetActive(true);
         m_collider2D.enabled = true;
-
-        // Make sure the arrow is not active
-        isActive = false;
-
-        // Detach from any parent
-        transform.parent = null;
     }
 }

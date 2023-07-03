@@ -6,9 +6,14 @@ public class ArrowTrigger : Trigger_Requiem
 {
     [SerializeField] ArrowScript arrow;
 
+    private void Start()
+    {
+        transform.parent = null;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player")
+        if (collision.CompareTag("Player") || collision.CompareTag("Rune"))
         {
             arrow.isActive = true;
         }

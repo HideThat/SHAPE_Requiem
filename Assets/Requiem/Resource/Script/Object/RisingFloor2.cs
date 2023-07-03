@@ -103,4 +103,18 @@ public class RisingFloor2 : MonoBehaviour
 
         transform.DOMove(originPos, moveTime);
     }
+
+    public void ResetFloor()
+    {
+        // 모든 동작 중단
+        StopAllCoroutines();
+        transform.DOKill();
+
+        // 위치를 원래 위치로 재설정
+        transform.position = originPos;
+
+        // 상태 변수들을 초기 상태로 재설정
+        isActive = false;
+        currentTime = moveTime * 2f - 0.1f;
+    }
 }

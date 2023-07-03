@@ -8,6 +8,8 @@ public class FallingBlockRaningTrigger : MonoBehaviour
 
     private void Start()
     {
+        transform.parent = null;
+
         if (fallingBlock == null)
         {
             Debug.Log("fallingblock == null");
@@ -22,7 +24,12 @@ public class FallingBlockRaningTrigger : MonoBehaviour
         {
             Debug.Log("randing");
             fallingBlock.SetRanding(true);
-            Destroy(gameObject);
+            ObjActiveSet(false);
         }
+    }
+
+    public void ObjActiveSet(bool _TF)
+    {
+        gameObject.SetActive(_TF);
     }
 }

@@ -10,6 +10,9 @@ public class BloodManMoveTrigger : Trigger_Requiem
     [SerializeField] GameObject player;
     [SerializeField] CinemachineVirtualCamera mainCM;
     [SerializeField] Camera mainCamera;
+    [SerializeField] AudioSource BG;
+    [SerializeField] float MinBGVolume;
+    [SerializeField] float BGVolumeChangeTime;
 
     private void Start()
     {
@@ -36,6 +39,7 @@ public class BloodManMoveTrigger : Trigger_Requiem
             mainCM.Follow = bloodingMan.transform;
             DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 6f, 5f);
             DOTween.To(() => mainCamera.orthographicSize, x => mainCamera.orthographicSize = x, 6f, 5f);
+            DOTween.To(() => BG.volume, x => BG.volume = x, MinBGVolume, BGVolumeChangeTime);
         }
     }
 }

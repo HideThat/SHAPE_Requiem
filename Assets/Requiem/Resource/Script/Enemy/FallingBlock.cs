@@ -5,15 +5,21 @@ using UnityEngine;
 public class FallingBlock : Enemy_Static
 {
     Rigidbody2D rigid;
-    Collider2D col;
     public bool isActive = false;
     public bool isRanding = false;
+    [SerializeField] FallingBlockTrigger fallingBlockTrigger;
+    [SerializeField] FallingBlockRaningTrigger fallingBlockRaningTrigger;
+
+    Vector2 originPos;
+    Quaternion originRotate;
 
     private void Start()
     {
         damage = 1;
         rigid = GetComponent<Rigidbody2D>();
-        col = GetComponent<Collider2D>();
+        m_collider2D = GetComponent<Collider2D>();
+        originPos = transform.position;
+        originRotate = transform.rotation;
     }
 
     void Update()
@@ -30,7 +36,7 @@ public class FallingBlock : Enemy_Static
         {
             rigid.velocity = Vector2.zero;
             rigid.bodyType = RigidbodyType2D.Static;
-            col.isTrigger = false;
+            m_collider2D.isTrigger = false;
         }
         else
         {
@@ -52,6 +58,27 @@ public class FallingBlock : Enemy_Static
     {
         rigid.velocity = Vector2.zero;
         rigid.bodyType = RigidbodyType2D.Static;
-        col.isTrigger = false;
+        m_collider2D.isTrigger = false;
+    }
+
+    public override void ResetEnemy()
+    {
+        fallingBlockTrigger.ObjActiveSet(true);
+        fallingBlockRaningTrigger.ObjActiveSet(true);
+
+        // 위치를 원래 위치로 재설정
+        transform.position = originPos;
+        // 회전을 원래 회전으로 재설정
+        transform.rotation = originRotate;
+
+        // Rigidbody2D의 속성을 원래 상태로 재설정
+        rigid.bodyType = RigidbodyType2D.Kinematic;
+
+        // 각 상태 변수들을 초기 상태로 재설정
+        isActive = false;
+        isRanding = false;
+
+        // Collider2D의 속성을 초기 상태로 재설정
+        m_collider2D.isTrigger = true;
     }
 }

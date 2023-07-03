@@ -258,6 +258,7 @@ public class HP_SystemGPT : MonoBehaviour
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
         Invoke("PlayerMoveSavePoint", recorverDelay);
         FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
+        EnemyManager.Instance.ResetAllEnemies();
     }
 
     public void PlayerMoveSavePoint()

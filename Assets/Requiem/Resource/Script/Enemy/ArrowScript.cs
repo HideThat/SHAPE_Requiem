@@ -91,6 +91,12 @@ public class ArrowScript : Enemy_Dynamic
         rigid.velocity = Vector2.zero;
         rigid.angularVelocity = 0f;
         rigid.bodyType = RigidbodyType2D.Kinematic;
+        Invoke("ColliderFalse", disappearTime);
+    }
+
+    void ColliderFalse()
+    {
+        m_collider2D.enabled = false;
     }
 
     public override void ResetEnemy()
@@ -107,6 +113,7 @@ public class ArrowScript : Enemy_Dynamic
 
         arrowTrigger.gameObject.SetActive(true);
         trail.gameObject.SetActive(true);
+        m_collider2D.enabled = true;
 
         // Make sure the arrow is not active
         isActive = false;

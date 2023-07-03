@@ -16,6 +16,10 @@ public class SnakeEatStatue : MonoBehaviour
     [SerializeField] public AudioSource audioSource4;
     [SerializeField] public ParticleSystem[] dustArr;
     [SerializeField] public float dustDelay = 0.2f;
+    [SerializeField] public float audioSourceVolume = 1f;
+    [SerializeField] public float audioSource2Volume = 1f;
+    [SerializeField] public float audioSource3Volume = 1f;
+    [SerializeField] public float audioSource4Volume = 1f;
 
 
     [SerializeField] AudioClip clip;
@@ -64,7 +68,10 @@ public class SnakeEatStatue : MonoBehaviour
     {
         if (runeStatue.isActive && !isActive)
         {
+            audioSource.volume = audioSourceVolume;
             audioSource.PlayOneShot(clip);
+
+            audioSource2.volume = audioSource2Volume;
             audioSource2.PlayOneShot(clip2);
             Invoke("MoveAlongPoints", startDelay);
             StartCoroutine(DustPlay());

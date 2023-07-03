@@ -878,10 +878,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   savePoint: {x: 0, y: 0}
-  lightRadius: 0
-  lightPower: 0
-  lightPowerDownTime: 0
-  lightLessPower: 0
   effectDelay: 5
   isActive: 0
   audioClip: {fileID: 8300000, guid: a643f073b10c5634f84e8c9c650a76fd, type: 3}
@@ -997,10 +993,10 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 45aedff14e7c14d48822f6760548cef5, type: 3}
-  m_PlayOnAwake: 1
-  m_Volume: 0.2
+  m_PlayOnAwake: 0
+  m_Volume: 0.87
   m_Pitch: 1
-  Loop: 1
+  Loop: 0
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -1232,9 +1228,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 0.7
+  m_audioClip: {fileID: 8300000, guid: a643f073b10c5634f84e8c9c650a76fd, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

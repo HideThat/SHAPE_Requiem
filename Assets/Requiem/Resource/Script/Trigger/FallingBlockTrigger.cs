@@ -8,6 +8,8 @@ public class FallingBlockTrigger : Trigger_Requiem
 
     private void Start()
     {
+        transform.parent = null;
+
         if (fallingBlock == null)
         {
             Debug.Log("fallingBLock == null");
@@ -19,7 +21,12 @@ public class FallingBlockTrigger : Trigger_Requiem
         if (collision.tag == "Player")
         {
             fallingBlock.SetActive(true);
-            Destroy(gameObject);
+            ObjActiveSet(false);
         }
+    }
+
+    public void ObjActiveSet(bool _TF)
+    {
+        gameObject.SetActive(_TF);
     }
 }

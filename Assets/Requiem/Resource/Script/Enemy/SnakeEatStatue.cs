@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
@@ -20,6 +21,9 @@ public class SnakeEatStatue : MonoBehaviour
     [SerializeField] public float audioSource2Volume = 1f;
     [SerializeField] public float audioSource3Volume = 1f;
     [SerializeField] public float audioSource4Volume = 1f;
+    [SerializeField] public int stoneCount = 0;
+    [SerializeField] CinemachineVirtualCamera mainCM;
+    [SerializeField] Light2D[] lights;
 
 
     [SerializeField] AudioClip clip;
@@ -55,6 +59,8 @@ public class SnakeEatStatue : MonoBehaviour
 
     private void Start()
     {
+        mainCM = DataController.MainCM;
+
         points = new Vector3[pointTransforms.Length];
 
         for (int i = 0; i < points.Length; i++)
@@ -62,10 +68,21 @@ public class SnakeEatStatue : MonoBehaviour
             points[i] = pointTransforms[i].position;
             pointTransforms[i].parent = null;
         }
+
+        foreach (Light2D light in lights)
+        {
+            // 해당 라이트를 활성화합니다.
+            light.pointLightOuterRadius = 0f;
+        }
     }
 
     private void Update()
     {
+        if (stoneCount == 2)
+        {
+            Invoke("SnakeBack", 0.3f);
+        }
+
         if (runeStatue.isActive && !isActive)
         {
             audioSource.volume = audioSourceVolume;
@@ -123,6 +140,50 @@ public class SnakeEatStatue : MonoBehaviour
             s.Play();
         }
     }
+
+    void SnakeBack()
+    {
+        // 카메라가 포커즈가 된다. -> 뱀으로
+        // 벽에 있는횟불이 하나씩 밝아짐
+        // 종료
+
+        DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 5f, 4f);
+        DivAreaManager.Instance.DivAreaActive(false);
+        mainCM.GetComponent<CinemachineConfiner2D>().enabled = false;
+        mainCM.Follow = transform;
+
+        // 뒤로 물러난다.
+        transform.DOMoveX(20f, 10f);
+        StartCoroutine(ActivateLightsSequentially());
+
+        Invoke("snakeDestroy", 6f);
+    }
+
+    [SerializeField] float lightActivationDelay = 1f;  // 각 라이트를 활성화하기 위한 지연 시간
+    IEnumerator ActivateLightsSequentially()
+    {
+        // 배열 내 모든 라이트에 대해 반복합니다.
+        foreach (Light2D light in lights)
+        {
+            DOTween.To(() => light.pointLightOuterRadius, x => light.pointLightOuterRadius = x, 7f, 0.7f);
+
+            // 다음 라이트를 활성화하기 전에 대기합니다.
+            yield return new WaitForSeconds(lightActivationDelay);
+        }
+    }
+
+    void snakeDestroy()
+    {
+        Destroy(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        DivAreaManager.Instance.DivAreaActive(true);
+        mainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
+        mainCM.Follow = PlayerData.PlayerObj.transform;
+    }
+
 
     void StatueBond()
     {

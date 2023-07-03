@@ -259,6 +259,7 @@ public class HP_SystemGPT : MonoBehaviour
         Invoke("PlayerMoveSavePoint", recorverDelay);
         FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
         EnemyManager.Instance.ResetAllEnemies();
+        RisingFloorManager.Instance.ResetAllRisingFloors();
     }
 
     public void PlayerMoveSavePoint()

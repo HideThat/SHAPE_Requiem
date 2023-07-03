@@ -30,7 +30,7 @@ public class BloodManMoveTrigger : Trigger_Requiem
             bloodingMan.MoveAlongPoints();
             PlayerData.PlayerIsMove = false;
             player.GetComponent<RuneControllerGPT>().enabled = false;
-            player.GetComponent<PlayerControllerGPT>().m_PlayerMoveSound.SetActive(false);
+            player.GetComponent<PlayerControllerGPT>().walkAudioSource.Stop();
             player.GetComponent<PlayerControllerGPT>().enabled = false;
             PlayerData.PlayerObj.GetComponent<Animator>().Play("PlayerIdle");
             Destroy(PlayerData.PlayerObj.GetComponent<Animator>());

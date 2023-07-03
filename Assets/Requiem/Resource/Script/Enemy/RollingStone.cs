@@ -10,6 +10,7 @@ public class RollingStone : Enemy_Static
     Rigidbody2D rb; // 자신의 리지드바디를 저장하는 변수
     AudioSource audioSource; // 자신의 오디오 소스
     AudioClip audioClip; // 돌이 활성화 시 재생되는 소리
+    [SerializeField] SnakeEatStatue snakeEatStatue;
 
 
     void Start()
@@ -49,4 +50,8 @@ public class RollingStone : Enemy_Static
         transform.position = origin; // 초기 위치로 되돌림
     }
 
+    private void OnDestroy()
+    {
+        snakeEatStatue.stoneCount++;
+    }
 }

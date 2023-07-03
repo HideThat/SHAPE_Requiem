@@ -22,7 +22,8 @@ public class PlayerControllerGPT : MonoBehaviour
     bool m_isGrounded; // 땅 접촉 상태 체크
 
     // 플레이어의 컴포넌트
-    [SerializeField] public GameObject m_PlayerMoveSound;
+    [SerializeField] public AudioSource walkAudioSource;
+    [SerializeField] public AudioClip m_PlayerMoveSoundClip;
     [SerializeField] Rigidbody2D m_rigid;
     [SerializeField] Animator m_animator;
     [SerializeField] Collider2D m_collider;
@@ -32,13 +33,13 @@ public class PlayerControllerGPT : MonoBehaviour
     private void Start()
     {
         // 컴포넌트를 가져와 변수에 할당
-        m_PlayerMoveSound = PlayerData.PlayerMoveSoundSource.gameObject;
+        walkAudioSource = PlayerData.PlayerMoveSoundSource;
         m_rigid = GetComponent<Rigidbody2D>();
         m_animator = GetComponent<Animator>();
         m_collider = GetComponent<Collider2D>();
         m_randingEffect = transform.Find("RandingEffect").GetComponent<ParticleSystem>();
 
-        if (m_PlayerMoveSound == null) Debug.Log("m_PlayerMoveSound == null");
+        if (walkAudioSource == null) Debug.Log("m_PlayerMoveSound == null");
         if (m_rigid == null) Debug.Log("m_rigid == null");
         if (m_animator == null) Debug.Log("m_animator == null");
         if (m_collider == null) Debug.Log("m_collider == null");
@@ -46,7 +47,6 @@ public class PlayerControllerGPT : MonoBehaviour
 
         // 변수 초기값 설정
         m_jumpLeft = PlayerData.PlayerJumpLeft;
-        m_PlayerMoveSound.SetActive(false);
         m_isJump = true;
     }
 
@@ -96,15 +96,15 @@ public class PlayerControllerGPT : MonoBehaviour
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
 
-                // 수직 속도가 거의 0일 때 이동 소리 활성화
-                if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
-                {
-                    m_PlayerMoveSound.SetActive(true);
-                }
-                else
-                {
-                    m_PlayerMoveSound.SetActive(false);
-                }
+                //// 수직 속도가 거의 0일 때 이동 소리 활성화
+                //if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
+                //{
+                //    m_PlayerMoveSound.SetActive(true);
+                //}
+                //else
+                //{
+                //    m_PlayerMoveSound.SetActive(false);
+                //}
             }
             else if (dir < 0)
             {
@@ -114,23 +114,38 @@ public class PlayerControllerGPT : MonoBehaviour
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
 
-                // 수직 속도가 거의 0일 때 이동 소리 활성화
-                if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
-                {
-                    m_PlayerMoveSound.SetActive(true);
-                }
-                else
-                {
-                    m_PlayerMoveSound.SetActive(false);
-                }
+                //// 수직 속도가 거의 0일 때 이동 소리 활성화
+                //if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
+                //{
+                //    m_PlayerMoveSound.SetActive(true);
+                //}
+                //else
+                //{
+                //    m_PlayerMoveSound.SetActive(false);
+                //}
             }
             else
             {
                 // 멈춤
                 m_rigid.velocity = new Vector2(0, m_rigid.velocity.y);
                 m_animator.SetBool("IsMove", false);
-                m_PlayerMoveSound.gameObject.SetActive(false);
+                walkAudioSource.Stop();
             }
+        }
+    }
+
+    public void FootStepSound()
+    {
+        // 아직 걷는 소리가 재생되고 있지 않은 경우
+        if (!walkAudioSource.isPlaying)
+        {
+            // 걷는 소리 재생
+            walkAudioSource.PlayOneShot(m_PlayerMoveSoundClip);
+        }
+        else
+        {
+            // 그 외의 경우는 걷는 소리를 정지
+            walkAudioSource.Stop();
         }
     }
 

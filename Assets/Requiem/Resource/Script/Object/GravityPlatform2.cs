@@ -5,11 +5,13 @@ using DG.Tweening;
 
 public class GravityPlatform2 : MonoBehaviour
 {
-    [SerializeField] bool isPlayer = false;
-
     [SerializeField] float descentLength;
     [SerializeField] float airResistance;
+    [SerializeField] AudioSource audioSource;
     Vector2 originPos;
+
+    private bool isPlayer = false;
+    private float distanceThreshold = 0.05f; // 이 값은 원하는대로 조정하세요
 
     private void Start()
     {
@@ -20,12 +22,49 @@ public class GravityPlatform2 : MonoBehaviour
     {
         if (isPlayer)
         {
-            transform.DOMoveY(originPos.y - descentLength, airResistance);
+            MoveDown();
         }
         else
         {
-            transform.DOMove(originPos, airResistance);
+            MoveUp();
         }
+
+        // 현재 위치와 목표 위치의 거리를 계산
+        float targetY = isPlayer ? originPos.y - descentLength : originPos.y;
+        float distance = Mathf.Abs(transform.position.y - targetY);
+
+        // 거리에 따라 오디오를 제어
+        if (distance > distanceThreshold)
+        {
+            StartMoving();
+        }
+        else
+        {
+            StopMoving();
+        }
+    }
+
+    private void MoveDown()
+    {
+        transform.DOMoveY(originPos.y - descentLength, airResistance);
+    }
+
+    private void MoveUp()
+    {
+        transform.DOMove(originPos, airResistance);
+    }
+
+    private void StartMoving()
+    {
+        if (!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
+    }
+
+    private void StopMoving()
+    {
+        audioSource.Stop();
     }
 
     private void OnCollisionStay2D(Collision2D collision)

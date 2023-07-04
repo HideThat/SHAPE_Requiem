@@ -16,77 +16,117 @@ public class StoneRollingTrigger : MonoBehaviour
     [SerializeField] Object_Trigger rollingStoneTrigger;
     [SerializeField] RollingStone rollingStone;
     [SerializeField] CinemachineVirtualCamera mainCM;
+    [SerializeField] WarpDoor[] warpDoors;
 
     [SerializeField] bool isActive = false;
+    [SerializeField] bool isChange = false;
     private bool prevIsActive = false;
 
-    //[CustomEditor(typeof(StoneRollingTrigger))]
-    //public class StoneRollingTriggerEditor : Editor
-    //{
-    //    public override void OnInspectorGUI()
-    //    {
-    //        base.OnInspectorGUI();
+    private Coroutine platformActiveRoutine;
+    private Coroutine stoneActiveRoutine;
 
-    //        StoneRollingTrigger trigger = (StoneRollingTrigger)target;
+    public Tween myTween;
 
-    //        EditorGUILayout.Space();
-
-    //        if (GUILayout.Button("Reset Trigger"))
-    //        {
-    //            trigger.ResetTrigger();
-    //        }
-    //    }
-    //}
+    private CinemachineConfiner2D mainCMConfiner;
 
     void Start()
     {
         mainCM = DataController.MainCM;
+        mainCMConfiner = mainCM.GetComponent<CinemachineConfiner2D>();
     }
 
     void Update()
     {
-        if (isActive && !prevIsActive)
-        {
-            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 10f, 4f);
-            DivAreaManager.Instance.DivAreaActive(false);
-            Invoke("PlatformActive", 2f);
-            Invoke("StoneActive", 4f);
-            mainCM.GetComponent<CinemachineConfiner2D>().enabled = false;
-            mainCM.Follow = rollingStone.transform;
-        }
+        CheckSwitch();
+        SetWarpDoors();
+        HandleCameraTransition();
+    }
 
+    private void CheckSwitch()
+    {
+        if (isActive != m_switch.isActive && !isChange)
+        {
+            isActive = m_switch.isActive;
+            isChange = true;
+        }
+    }
+
+    private void SetWarpDoors()
+    {
+        if (!isActive || warpDoors == null)
+            return;
+
+        foreach (var item in warpDoors)
+        {
+            if (!item.isOpened)
+            {
+                item.isOpened = true;
+            }
+        }
+    }
+
+    private void HandleCameraTransition()
+    {
         if (isActive)
         {
-            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 10f, 4f);
+            if (!prevIsActive)
+            {
+                BeginCameraTransition();
+            }
+
+            DivAreaManager.Instance.DivAreaActive(false);
+            StartCoroutine(TweenControl());
         }
 
         prevIsActive = isActive;
-        if (isActive != m_switch.isActive)
+    }
+
+    IEnumerator TweenControl()
+    {
+        myTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 10f, 4f);
+
+        yield return new WaitForSeconds(4f);
+
+        isActive = false;
+        myTween.Kill();
+    }
+
+    private void BeginCameraTransition()
+    {
+        StopActiveRoutines();
+
+        platformActiveRoutine = StartCoroutine(PlatformActiveAfterDelay(2f));
+        stoneActiveRoutine = StartCoroutine(StoneActiveAfterDelay(4f));
+
+        mainCMConfiner.enabled = false;
+        mainCM.Follow = rollingStone.transform;
+    }
+
+    private void StopActiveRoutines()
+    {
+        if (platformActiveRoutine != null)
         {
-            isActive = m_switch.isActive;
+            StopCoroutine(platformActiveRoutine);
+        }
+
+        if (stoneActiveRoutine != null)
+        {
+            StopCoroutine(stoneActiveRoutine);
         }
     }
 
-    void ResetTrigger()
+    private IEnumerator PlatformActiveAfterDelay(float delay)
     {
-        platformSwich1.isActive = false;
-        platformSwich2.isActive = false;
-        isActive = false;
-        rollingStoneTrigger.ResetTrigger();
-        rollingStone.resetPosition();
-        mainCM.Follow = PlayerData.PlayerObj.transform;
-        mainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
-        prevIsActive = false;
-    }
+        yield return new WaitForSeconds(delay);
 
-    void PlatformActive()
-    {
         platformSwich1.isActive = true;
         platformSwich2.isActive = true;
     }
 
-    void StoneActive()
+    private IEnumerator StoneActiveAfterDelay(float delay)
     {
+        yield return new WaitForSeconds(delay);
+
         rollingStoneTrigger.ActiveTrigger();
     }
 }

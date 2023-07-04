@@ -21,6 +21,7 @@ public class RuneData : MonoBehaviour
     [SerializeField] private bool onWater; // 룬이 물 위에 닿았을 때 온
     [SerializeField] private bool touchWater; // 룬이 물에 닿았을 때 온
     [SerializeField] private bool useControl; // 룬의 컨트롤이 가능할 때 온
+    [SerializeField] private bool isPowerLose;
     [SerializeField] private float battery = 1000f;
     [SerializeField] private float batteryMaxValue = 1000f;
 
@@ -100,8 +101,11 @@ public class RuneData : MonoBehaviour
         get => Instance.batteryMaxValue;
         set => Instance.batteryMaxValue = value;
     }
-
-
+    public static bool RuneIsPowerLose
+    {
+        get => Instance.isPowerLose;
+        set => Instance.isPowerLose = value;
+    }
 
 
     private void Awake()

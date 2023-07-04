@@ -12,6 +12,9 @@ public class DivArea : AreaData
     [SerializeField] Collider2D cameraArea;
     [SerializeField] float lensSize;
     CinemachineVirtualCamera mainCM;
+    Tween myTween;
+
+    [SerializeField] public bool PlayerIn;
 
     void Start()
     {
@@ -24,21 +27,53 @@ public class DivArea : AreaData
         tilemap.color = new Color(0f, 0f, 0f, 0f);
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void Update()
     {
-        if (collision.tag == "Player" && !PlayerData.PlayerIsDead)
+        if (PlayerIn)
         {
             ChangeCameraArea();
-            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, lensSize, 4f);
+            if (myTween == null || !myTween.IsActive() || myTween.IsComplete())
+            {
+                myTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, lensSize, 4f);
+            }
         }
+        else if (myTween != null)
+        {
+            myTween.Kill();
+            myTween = null;
+        }
+    }
+
+    
+
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && !PlayerData.PlayerIsDead)
+        {
+            PlayerIn = true;
+        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.tag == "Player" && !PlayerData.PlayerIsDead)
+        if (collision.CompareTag("Player") && !PlayerData.PlayerIsDead)
         {
-            ChangeCameraArea();
-            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, lensSize, 4f);
+            PlayerIn = true;
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") && !PlayerData.PlayerIsDead)
+        {
+            PlayerIn = false;
+            if (myTween != null)
+            {
+                myTween.Kill();
+                myTween = null;
+            }
         }
     }
 

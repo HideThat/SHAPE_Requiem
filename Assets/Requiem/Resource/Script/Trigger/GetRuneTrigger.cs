@@ -72,7 +72,7 @@ public class GetRuneTrigger : Trigger_Requiem
 
     private bool CanActivateRune(Collider2D collision)
     {
-        return !m_isActive && collision.gameObject.layer == (int)LayerName.Player && !PlayerData.PlayerIsGetRune;
+        return !m_isActive && collision.gameObject.CompareTag("Player") && !PlayerData.PlayerIsGetRune;
     }
 
     private void ActivateRune()

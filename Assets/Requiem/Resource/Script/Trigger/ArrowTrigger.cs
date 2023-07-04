@@ -5,6 +5,7 @@ using UnityEngine;
 public class ArrowTrigger : Trigger_Requiem
 {
     [SerializeField] ArrowScript arrow;
+    [SerializeField] AudioSource audioSource;
 
     private void Start()
     {
@@ -15,6 +16,7 @@ public class ArrowTrigger : Trigger_Requiem
     {
         if (collision.CompareTag("Player") || collision.CompareTag("Rune"))
         {
+            audioSource.Play();
             arrow.isActive = true;
         }
     }

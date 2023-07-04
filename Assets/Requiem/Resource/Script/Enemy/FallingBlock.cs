@@ -9,6 +9,7 @@ public class FallingBlock : Enemy_Static
     public bool isRanding = false;
     [SerializeField] FallingBlockTrigger fallingBlockTrigger;
     [SerializeField] FallingBlockRaningTrigger fallingBlockRaningTrigger;
+    [SerializeField] AudioSource audioSource;
 
     Vector2 originPos;
     Quaternion originRotate;
@@ -52,6 +53,7 @@ public class FallingBlock : Enemy_Static
     public void SetRanding(bool isRanding)
     {
         this.isRanding = isRanding;
+        audioSource.Play();
     }
 
     private void OnDestroy()

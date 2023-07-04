@@ -22,6 +22,7 @@ public class HP_SystemGPT : MonoBehaviour
     [SerializeField] float verticalDistance; // 세로 충돌 체크 거리
     [SerializeField] float horizontalDistance; // 가로 충돌 체크 거리
     [SerializeField] LayerMask platform; // 충돌을 체크할 레이어 마스크
+    [SerializeField] AudioSource audioSource;
 
     // 플레이어와 카메라, 애니메이터, 리지드바디 등의 컴포넌트
     PlayerControllerGPT playerController;
@@ -245,6 +246,7 @@ public class HP_SystemGPT : MonoBehaviour
     void Dead() // 죽음 처리하는 메소드
     {
         cameraChange = true;
+        audioSource.Play();
         PlayerData.PlayerHP = PlayerData.PlayerMaxHP; // 플레이어 체력을 최대치로 복구
         animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
         loseControl = true;  // 제어 상실 상태로 전환
@@ -260,6 +262,7 @@ public class HP_SystemGPT : MonoBehaviour
         FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
         EnemyManager.Instance.ResetAllEnemies();
         RisingFloorManager.Instance.ResetAllRisingFloors();
+        DivAreaManager.Instance.AllDivPlayerOut();
     }
 
     public void PlayerMoveSavePoint()

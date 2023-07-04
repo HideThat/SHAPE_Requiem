@@ -14,7 +14,6 @@ public class RisingFloorManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -30,6 +29,13 @@ public class RisingFloorManager : MonoBehaviour
 
     public void ResetAllRisingFloors()
     {
+        StartCoroutine(ResetAllRisingFloorsCorutine());
+    }
+
+    IEnumerator ResetAllRisingFloorsCorutine()
+    {
+        yield return new WaitForSeconds(2f);
+
         foreach (RisingFloor2 risingFloor2s in risingFloor2s)
         {
             risingFloor2s.ResetFloor();

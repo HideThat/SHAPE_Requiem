@@ -51,4 +51,12 @@ public class DivAreaManager : MonoBehaviour
             divAreaArr[i].enabled = isActive;
         }
     }
+
+    public void AllDivPlayerOut()
+    {
+        foreach (var item in divAreaArr)
+        {
+            item.PlayerIn = false;
+        }
+    }
 }

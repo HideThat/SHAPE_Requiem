@@ -15,6 +15,7 @@ public class ArrowScript : Enemy_Dynamic
     [SerializeField] float disappearTime = 2f;
     [SerializeField] ArrowTrigger arrowTrigger;
     [SerializeField] TrailRenderer trail;
+    [SerializeField] AudioSource audioSource;
     Rigidbody2D rigid;
 
     private bool isDestroyed = false;
@@ -55,6 +56,11 @@ public class ArrowScript : Enemy_Dynamic
             rigid.gravityScale = 0f;
             rigid.angularDrag = 0f;
             rigid.mass = mass;
+
+            if (!audioSource.isPlaying)
+            {
+                audioSource.Play();
+            }
 
             ApplyForceBasedOnRotation();
 

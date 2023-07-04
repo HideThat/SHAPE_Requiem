@@ -23,10 +23,10 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] public ParticleSystem runeCharge;
     [SerializeField] SpriteRenderer[] batteryUI;
     [SerializeField] SpriteRenderer batteryBorder;
+    [SerializeField] RuneManager runeManager;
 
 
     private GameObject runeObj; // 룬 게임 오브젝트
-    private RuneSoundManager runeSoundManager; // 룬 사운드 관리자
     private Light2D runeSight; // 룬의 조명 컴포넌트
     private LayerMask layerMask; // 충돌 감지 레이어 마스크
 
@@ -43,14 +43,12 @@ public class RuneControllerGPT : MonoBehaviour
             RuneControl(); // 룬 제어
             RuneMove(); // 룬 이동
             RuneCharging(); // 룬 충전 효과
-
         }
     }
 
     private void InitializeRuneController()
     {
         runeObj = RuneData.RuneObj;
-        runeSoundManager = RuneData.RuneObj.GetComponent<RuneSoundManager>();
         runeSight = RuneData.RuneObj.GetComponent<Light2D>();
         runeObj.transform.parent = null;
         RuneData.RuneActive = false;
@@ -68,7 +66,6 @@ public class RuneControllerGPT : MonoBehaviour
     private void ValidateComponents()
     {
         if (runeObj == null) Debug.Log("m_runeObj == null");
-        if (runeSoundManager == null) Debug.Log("m_runeSoundManager == null");
         if (runeSight == null) Debug.Log("m_runeSight == null");
     }
 
@@ -93,7 +90,7 @@ public class RuneControllerGPT : MonoBehaviour
         {
             RuneData.RuneBattery -= batteryDrainSpeed * Time.deltaTime;
         }
-        else
+        else if (RuneData.RuneBattery <= 0 && !RuneData.RuneIsPowerLose)
         {
             RunePowerLose();
             RuneData.RuneBattery = 0f;
@@ -127,8 +124,6 @@ public class RuneControllerGPT : MonoBehaviour
             ui.DOColor(color, 5f);
         }
     }
-
-
 
     private IEnumerator ActivateBatteryUISequentially(bool isVisible, float batteryPercentage)
     {
@@ -203,6 +198,8 @@ public class RuneControllerGPT : MonoBehaviour
             ChangeTargetToMouse();
             PlayRuneOnSoundAndDelayMouse();
             HandleShootingWithBattery();
+            runeManager.RuneShootSoundPlay();
+            RuneData.RuneIsReturn = false;
         }
         else if (!isShoot)
         {
@@ -212,16 +209,14 @@ public class RuneControllerGPT : MonoBehaviour
 
     private void PlayRuneOffSoundAndDelayMouse()
     {
-        runeSoundManager.PlayRuneOff();
         isMouseDelay = true;
-        StartCoroutine("MouseClickDelay");
+        StartCoroutine(MouseClickDelay());
     }
 
     private void PlayRuneOnSoundAndDelayMouse()
     {
-        runeSoundManager.PlayRuneOn();
         isMouseDelay = true;
-        StartCoroutine("MouseClickDelay");
+        StartCoroutine(MouseClickDelay());
     }
 
     private void HandleShootingWithBattery()
@@ -257,6 +252,13 @@ public class RuneControllerGPT : MonoBehaviour
         {
             target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
         }
+
+        if (!RuneData.RuneIsReturn)
+        {
+            runeManager.RuneReturnSoundPlay();
+        }
+
+        RuneData.RuneIsReturn = true;
         RuneData.RuneActive = false;
         RuneData.RuneLightArea.enabled = false;
     }
@@ -292,19 +294,21 @@ public class RuneControllerGPT : MonoBehaviour
     {
         isShoot = false;
         isMouseDelay = true;
-        runeSoundManager.PlayRuneOff();
         StartCoroutine(MouseClickDelay());
     }
 
     // 룬 파워 감소
     public void RunePowerLose()
     {
+        RuneData.RuneIsPowerLose = true;
+        runeManager.RuneBatteryDepletionSoundPlay();
         DecreaseRunePowerOverTime(0f, RuneData.RunePowerBackTime);
     }
 
     // 룬 파워 회복
     public void RunePowerBack()
     {
+        RuneData.RuneIsPowerLose = false;
         RuneData.RuneLightArea.enabled = true;
         DecreaseRunePowerOverTime(RuneData.RuneOuterRadius, RuneData.RunePowerBackTime);
     }
@@ -379,7 +383,7 @@ public class RuneControllerGPT : MonoBehaviour
     public bool hasRestarted = false;
     public void RuneCharging()
     {
-        if (isCharge && RuneData.RuneBattery + 100f < RuneData.RuneBatteryMaxValue)
+        if (isCharge)
         {
             if (!hasRestarted)
             {

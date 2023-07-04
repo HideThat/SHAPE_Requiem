@@ -106,7 +106,6 @@ public class RuneStatue : MonoBehaviour
             animator.SetTrigger("IsActive");
             hasTriggered = true;
         }
-        PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
         DOTween.To(() => RuneData.RuneBattery, x => RuneData.RuneBattery = x, RuneData.RuneBatteryMaxValue, 5f);

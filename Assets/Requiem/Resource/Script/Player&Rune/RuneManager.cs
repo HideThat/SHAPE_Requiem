@@ -7,16 +7,25 @@ using UnityEngine.Rendering.Universal;
 
 public class RuneManager : MonoBehaviour
 {
+    private static readonly int DEPLETION_SOUND_INDEX = 0;
+    private static readonly int FULL_CHARGE_SOUND_INDEX = 1;
+    private static readonly int CHARGE_SOUND_INDEX = 2;
+    private static readonly float FULL_CHARGE_SOUND_DELAY = 5f;
 
-    [SerializeField] Transform m_statue;
-    [SerializeField] float m_moveTime = 3f;
-    [SerializeField] float m_rotationSpeed = 10f;
-    [SerializeField] bool m_isStatueInteraction = false;
+    [SerializeField] private Transform m_statue;
+    [SerializeField] private float m_moveTime = 3f;
+    [SerializeField] private float m_rotationSpeed = 10f;
+    [SerializeField] private bool m_isStatueInteraction = false;
+    [SerializeField] private AudioSource audioSource;
+    [SerializeField] private AudioClip[] audioClips;
+    public int fullChargeCount = 0;
 
-    RuneControllerGPT m_runeControl;
-    Light2D m_luneLight;
-    Vector2 m_origin;
+    private RuneControllerGPT m_runeControl;
+    private Light2D m_luneLight;
+    private Vector2 m_origin;
 
+    // Flag to prevent multiple depletion sound plays
+    private bool depletionSoundPlayed = false;
 
     private void Start()
     {
@@ -36,11 +45,6 @@ public class RuneManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 룬이 특정 콜라이더 위에  머물 시 발동(트리거),
-    /// 룬이 정지하게 된다.
-    /// </summary>
-    /// <param name="collision"></param>
     private void OnTriggerEnter2D(Collider2D collision)
     {
         switch (collision.gameObject.layer)
@@ -64,6 +68,7 @@ public class RuneManager : MonoBehaviour
                 if (RuneData.RuneBattery <= 0)
                 {
                     collision.gameObject.GetComponent<RuneStatue>().Initialized();
+                    fullChargeCount++;
                 }
                 m_statue = collision.transform;
                 m_isStatueInteraction = true;
@@ -105,20 +110,36 @@ public class RuneManager : MonoBehaviour
         {
             case "RuneStatue":
                 PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
-                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+
+                if (RuneData.RuneIsPowerLose)
+                    PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+
+                if (!audioSource.isPlaying)
+                    RuneBatteryChargeSoundPlay();
+
                 if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
                     RuneData.RuneBattery += collision.gameObject.GetComponent<RuneStatue>().runeChargePower * Time.deltaTime;
                 else
+                {
                     RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                }
                 break;
 
             case "SubRuneStatue":
                 PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
-                PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+
+                if (RuneData.RuneIsPowerLose)
+                    PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
+
+                if (!audioSource.isPlaying)
+                    RuneBatteryChargeSoundPlay();
+
                 if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
                     RuneData.RuneBattery += collision.gameObject.GetComponent<SubRuneStatue>().runeChargePower * Time.deltaTime;
                 else
+                {
                     RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                }
                 break;
 
             default:
@@ -126,9 +147,35 @@ public class RuneManager : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// 물에 머물 경우 발동
-    /// </summary>
+    public void RuneSoundStop()
+    {
+        audioSource.Stop();
+    }
+
+    public void RuneBatteryDepletionSoundPlay()
+    {
+        if (!depletionSoundPlayed)
+        {
+            audioSource.PlayOneShot(audioClips[DEPLETION_SOUND_INDEX]);
+            depletionSoundPlayed = true;
+        }
+    }
+
+    public void RuneBatteryChargeSoundPlay()
+    {
+        audioSource.PlayOneShot(audioClips[CHARGE_SOUND_INDEX]);
+    }
+
+    public void RuneShootSoundPlay()
+    {
+        audioSource.PlayOneShot(audioClips[3]);
+    }
+
+    public void RuneReturnSoundPlay()
+    {
+        audioSource.PlayOneShot(audioClips[4]);
+    }
+
     public void EnterWater()
     {
         RuneData.RuneTouchWater = true;
@@ -137,9 +184,6 @@ public class RuneManager : MonoBehaviour
         RuneData.RuneLightArea.enabled = false;
     }
 
-    /// <summary>
-    /// 물에서 나갈 경우 발동
-    /// </summary>
     public void ExitWater()
     {
         RuneData.RuneOnWater = false;
@@ -152,9 +196,14 @@ public class RuneManager : MonoBehaviour
         transform.Rotate(Vector3.back * m_rotationSpeed);
         transform.DOMove(m_runeControl.target, m_moveTime);
         StartCoroutine(StatueInteractionDelay());
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.PlayOneShot(audioClips[1]);
+        }
     }
 
-    IEnumerator StatueInteractionDelay()
+    private IEnumerator StatueInteractionDelay()
     {
         yield return new WaitForSeconds(m_moveTime);
 

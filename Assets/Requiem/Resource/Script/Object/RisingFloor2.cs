@@ -17,6 +17,7 @@ public class RisingFloor2Editor : Editor
     private SerializedProperty targetPosProp;
     private SerializedProperty originPosProp;
     private SerializedProperty currentTimeProp;
+    private SerializedProperty audioSourceProp;
 
     private void OnEnable()
     {
@@ -28,6 +29,7 @@ public class RisingFloor2Editor : Editor
         targetPosProp = serializedObject.FindProperty("targetPos");
         originPosProp = serializedObject.FindProperty("originPos");
         currentTimeProp = serializedObject.FindProperty("currentTime");
+        audioSourceProp = serializedObject.FindProperty("audioSource");
     }
 
     public override void OnInspectorGUI()
@@ -47,6 +49,7 @@ public class RisingFloor2Editor : Editor
             EditorGUILayout.PropertyField(targetPosProp);
             EditorGUILayout.PropertyField(originPosProp);
             EditorGUILayout.PropertyField(currentTimeProp);
+            EditorGUILayout.PropertyField(audioSourceProp);
         }
 
         serializedObject.ApplyModifiedProperties();
@@ -66,6 +69,7 @@ public class RisingFloor2 : MonoBehaviour
     [SerializeField] Vector2 targetPos;
     [SerializeField] Vector2 originPos;
     [SerializeField] float currentTime = 5.9f;
+    [SerializeField] AudioSource audioSource;
 
 
     void Start()
@@ -98,6 +102,11 @@ public class RisingFloor2 : MonoBehaviour
         Vector2 targetPosition = (Vector2)transform.position + moveDirection * moveDistance;
 
         transform.DOMove(targetPosition, moveTime);
+
+        if (!audioSource.isPlaying)
+        {
+            audioSource.Play();
+        }
 
         yield return new WaitForSeconds(moveTime);
 

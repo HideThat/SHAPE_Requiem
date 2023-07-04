@@ -938,8 +938,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   keyID: 0
-  doorSound: {fileID: 8300000, guid: f09a033e70f1f2549ab06981c6f97391, type: 3}
-  delayTime: 0.3
+  doorSound: {fileID: 8300000, guid: fd0b0df2031d357428b6247a01b7f9fb, type: 3}
   isOpened: 0
   openedSprite: {fileID: 3415922894158842168}
   lightsManager: {fileID: 2117307532}
@@ -949,6 +948,7 @@ MonoBehaviour:
   playerIn: 0
   needKeyUI: {fileID: 4538860257621887385}
   needKeyUIOpen: 0
+  delayTime: 0.3
 --- !u!61 &2022600363
 BoxCollider2D:
   m_ObjectHideFlags: 0

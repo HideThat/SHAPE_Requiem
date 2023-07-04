@@ -90,8 +90,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeImage: {fileID: 150136668664670280}
-  defaultFadeDuration: 2
-  defaultWaitDuration: 2
+  defaultFadeDuration: 1
+  defaultWaitDuration: 3
 --- !u!1 &1397236083874550684
 GameObject:
   m_ObjectHideFlags: 0
@@ -309,6 +309,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pauseMenuPrefab: {fileID: 7608118856376023039, guid: 0028552ba3ae34f489b654865dc8cd31, type: 3}
   soundOptionMenuPrefab: {fileID: 6769064096329131952, guid: e5e66f49e6a1c6d4381fd2bac43906d1, type: 3}
+  resumeButton: {fileID: 0}
+  quitButton: {fileID: 0}
+  restartButton: {fileID: 0}
 --- !u!1 &4018435099090924961
 GameObject:
   m_ObjectHideFlags: 0

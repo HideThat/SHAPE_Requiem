@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 
-public class GetRuneTrigger : Trigger_Requiem
+public class GetRuneTrigger : MonoBehaviour
 {
     [SerializeField] private RuneStatue runeStatue;
     [SerializeField] private RuneManager runeManager;

@@ -1,0 +1,196 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7543882171348522629
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7543882171348522683}
+  - component: {fileID: 7543882171348522628}
+  - component: {fileID: 467194304149612295}
+  - component: {fileID: 5624486233814625238}
+  - component: {fileID: 4181358879477027983}
+  - component: {fileID: 7543882171348522682}
+  - component: {fileID: 1201676059}
+  - component: {fileID: 1201676066}
+  m_Layer: 0
+  m_Name: DataControllor
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7543882171348522683
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7543882171348522628
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 665947c8999652f48877ec9b0f1dea74, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cameraData:
+    mainCamera: {fileID: 0}
+    mainCM: {fileID: 0}
+    followTime: 4
+    audioSource1: {fileID: 0}
+    audioSource2: {fileID: 0}
+    audioSource3: {fileID: 0}
+  soundManager:
+    bgmVolume: 0.05
+    runeSoundVolume: 0.4
+    walkSoundVolume: 0.5
+    jumpSoundVolume: 1
+  triggerData:
+    playerIn: 0
+  itemData:
+    canvasObj: {fileID: 0}
+    sprite:
+    - {fileID: 21300000, guid: 46174f1b1024c9f418644c1c749d7ed0, type: 3}
+    - {fileID: 21300000, guid: 46174f1b1024c9f418644c1c749d7ed0, type: 3}
+    - {fileID: 21300000, guid: 46174f1b1024c9f418644c1c749d7ed0, type: 3}
+    isInvenOpen: 0
+--- !u!114 &467194304149612295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fcf8f243fa56ad4bb9f60ad3aad9500, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_playerObj: {fileID: 0}
+  m_playerSpeed: 6
+  m_jumpLeft: 2
+  m_isWarp: 0
+  m_maxHP: 1
+  m_HP: 1
+  m_isDead: 0
+  m_isHit: 0
+  m_isMove: 0
+  m_isGetLune: 0
+  m_savePoint: {x: -59.88, y: -1.36}
+  m_deathCount: 0
+  m_playerMoveAudioSource: {fileID: 0}
+  m_playerJumpAudioSource: {fileID: 0}
+  m_playerMoveAudioClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
+  m_playerJumpAudioClip:
+  - {fileID: 8300000, guid: 450e113220877a147aa94c7b28851622, type: 3}
+  - {fileID: 8300000, guid: 5afd529ab5050e14d91949a10a3718a7, type: 3}
+--- !u!114 &5624486233814625238
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0627728cc00d1a946a88ba6d20908bc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runeObj: {fileID: 0}
+  runeLightArea: {fileID: 0}
+  runeIntensity: 1
+  runeOuterRadius: 0
+  runePowerBackDistance: 3
+  runePowerBackTime: 0.5
+  isStop: 0
+  isReturn: 0
+  isActive: 0
+  onWater: 0
+  touchWater: 0
+  useControl: 0
+  isPowerLose: 0
+  battery: 1000
+  batteryMaxValue: 1000
+--- !u!114 &4181358879477027983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9e29a7e7a1e4954c9dae318b3d590d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dynamicEnemyNameArr:
+  - Bat
+  - Arrow
+  - MossBugRed
+  dynamicEnemyAudioClipArr:
+  - {fileID: 8300000, guid: ce3803dcb0ff14644baa69007352349f, type: 3}
+  - {fileID: 8300000, guid: 03ff7797af2a34f4bbcf28a2315ec678, type: 3}
+  staticEnemyNameArr:
+  - Spike
+  - RollingStone
+  - ArrowTrap
+  staticEnemyAudioClipArr:
+  - {fileID: 8300000, guid: e322da7ac0aab26489ceeb6eceea9ebb, type: 3}
+  projectileArr:
+  - {fileID: 3232199372043675755, guid: 370af7b2d98e1994ba089e2012b5cb3b, type: 3}
+--- !u!114 &7543882171348522682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa255c2b1e03a5f4aa52add4f9237d84, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1201676059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cde525f02addb4743973ed0891ac4c2f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemies: []
+--- !u!114 &1201676066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a4d3d8a21f03193458162cc5e5427323, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  risingFloor2s: []
+  wallTriggers: []

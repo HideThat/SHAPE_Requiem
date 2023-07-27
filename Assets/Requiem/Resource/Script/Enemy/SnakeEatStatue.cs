@@ -25,6 +25,10 @@ public class SnakeEatStatue : MonoBehaviour
     [SerializeField] CinemachineVirtualCamera mainCM;
     [SerializeField] Light2D[] lights;
 
+    [SerializeField] Animator snakeAni;
+    [SerializeField] Transform player;
+    [SerializeField] float chaseTime;
+
 
     [SerializeField] AudioClip clip;
     [SerializeField] AudioClip clip2;
@@ -43,7 +47,6 @@ public class SnakeEatStatue : MonoBehaviour
     public Transform[] pointTransforms;
     Vector3[] points;
 
-
     // 이동 속도
     public float speed = 1.0f;
 
@@ -53,14 +56,16 @@ public class SnakeEatStatue : MonoBehaviour
     public float delayLoadScene;
 
     [SerializeField] float startDelay;
+    Vector2 snakeOrigin;
     bool isActive = false;
-
+    bool playerIn = false;
 
 
     private void Start()
     {
+        snakeOrigin = transform.position;
         mainCM = DataController.MainCM;
-
+        player = PlayerData.PlayerObj.transform;
         points = new Vector3[pointTransforms.Length];
 
         for (int i = 0; i < points.Length; i++)
@@ -78,6 +83,11 @@ public class SnakeEatStatue : MonoBehaviour
 
     private void Update()
     {
+        if (playerIn)
+        {
+            transform.DOMove(player.position + (-Vector3.up * 2), chaseTime);
+        }
+
         if (stoneCount == 2)
         {
             Invoke("SnakeBack", 0.3f);
@@ -233,6 +243,45 @@ public class SnakeEatStatue : MonoBehaviour
         callback.Invoke();
 
         FadeManager.Instance.FadeIn(fadeInDuration);
+    }
+
+    public void SnakeEatPlayer()
+    {
+        audioSource3.PlayOneShot(clip3);
+
+        snakeAni.Play("Snake_Bite");
+        playerIn = true;
+    }
+
+    public void HowlingStart()
+    {
+        audioSource4.PlayOneShot(clip5);
+    }
+
+    public void SnakeBreakStatue()
+    {
+        audioSource3.PlayOneShot(clip4);
+
+        if (runeStatue != null) Destroy(runeStatue.gameObject);
+
+        Invoke("SnakePlayEat", 2f);
+        Invoke("SnakeToOrigin", 2f);
+    }
+
+    void SnakeToOrigin()
+    {
+        transform.position = snakeOrigin;
+        Debug.Log("snakeOrigin.x = " + snakeOrigin.x);
+    }
+
+    void SnakePlayEat()
+    {
+        snakeAni.Play("Snake_Bite");
+    }
+
+    public void snakeBiteAniPlay()
+    {
+        snakeAni.SetBool("EatActive", true);
     }
 
     IEnumerator DustPlay()

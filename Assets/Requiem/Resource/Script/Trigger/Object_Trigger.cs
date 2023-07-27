@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Object_Trigger : Trigger_Requiem
+public class Object_Trigger : MonoBehaviour
 {
     
     [SerializeField] Enemy_Static m_object; // 트리거를 발동 시킬 해당 오브젝트

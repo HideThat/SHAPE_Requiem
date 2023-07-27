@@ -3,9 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
+using Cinemachine;
 
 public class BloodingMan : MonoBehaviour
 {
+    [SerializeField] GameObject player;
+    [SerializeField] CinemachineVirtualCamera mainCM;
+    [SerializeField] Camera mainCamera;
+    [SerializeField] AudioSource BG;
+    [SerializeField] float MinBGVolume;
+    [SerializeField] float BGVolumeChangeTime;
+
     // 순차적으로 이동할 포인트들
     public Transform[] pointTransforms;
     Vector3[] points;
@@ -58,6 +66,10 @@ public class BloodingMan : MonoBehaviour
             points[i] = pointTransforms[i].position;
             pointTransforms[i].parent = null;
         }
+
+        player = PlayerData.PlayerObj;
+        mainCM = DataController.MainCM;
+        mainCamera = DataController.MainCamera.GetComponent<Camera>();
     }
 
     // 특정 포인트를 순차적으로 이동
@@ -111,4 +123,22 @@ public class BloodingMan : MonoBehaviour
         }
     }
 
+    public void BloodManMoveTriggerOn()
+    {
+        isMove = true;
+        breathSound.gameObject.SetActive(true);
+        MoveAlongPoints();
+        PlayerData.PlayerIsMove = false;
+        player.GetComponent<RuneControllerGPT>().enabled = false;
+        player.GetComponent<PlayerControllerGPT>().walkAudioSource.Stop();
+        player.GetComponent<PlayerControllerGPT>().enabled = false;
+        PlayerData.PlayerObj.GetComponent<Animator>().Play("PlayerIdle");
+        Destroy(PlayerData.PlayerObj.GetComponent<Animator>());
+        PlayerData.PlayerObj.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
+        PlayerData.PlayerObj.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionX;
+        mainCM.Follow = transform;
+        DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 6f, 5f);
+        DOTween.To(() => mainCamera.orthographicSize, x => mainCamera.orthographicSize = x, 6f, 5f);
+        DOTween.To(() => BG.volume, x => BG.volume = x, MinBGVolume, BGVolumeChangeTime);
+    }
 }

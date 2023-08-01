@@ -10,11 +10,15 @@ using DG.Tweening;
 public class RuneStatue : MonoBehaviour
 {
     [SerializeField] private Vector2 savePoint; // 세이브 포인트
+    [SerializeField] private FieldOfView2D view2D; // 세이브 포인트
     [SerializeField] private float effectDelay = 5f; // 효과 딜레이 시간
     [SerializeField] public bool isActive; // 동작 했는가 여부
     [SerializeField] private AudioClip audioClip; // 동작 시 재생 소리
     [SerializeField] LightsManager[] lightsManagers;
     [SerializeField] public float runeChargePower = 50f;
+    [SerializeField] public float view2DRadius = 50f;
+    [SerializeField] public float view2DChangeTime = 50f;
+    [SerializeField] public float view2DDelayTime = 3f;
 
     private Animator animator; // 자신의 애니매이터
     private AudioSource audioSource; // 자신의 오디오 소스
@@ -108,8 +112,15 @@ public class RuneStatue : MonoBehaviour
         }
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
+        Invoke("ActiveView2D", view2DDelayTime);
         DOTween.To(() => RuneData.RuneBattery, x => RuneData.RuneBattery = x, RuneData.RuneBatteryMaxValue, 5f);
         PlayAudioClip();
+    }
+
+    void ActiveView2D()
+    {
+        view2D.TurnOnView(view2DRadius, view2DChangeTime);
+        StartCoroutine(view2D.DestroyView(view2DDelayTime + view2DChangeTime + 0.1f));
     }
 
     private void ActivateEffect()

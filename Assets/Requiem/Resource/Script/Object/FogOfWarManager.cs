@@ -32,37 +32,4 @@ public class FogOfWarManager : MonoBehaviour
         // 생성한 안개 텍스처를 렌더러의 메인 텍스처로 설정
         GetComponent<Renderer>().material.mainTexture = fogTexture;
     }
-
-    private void Update()
-    {
-        // 모든 Light2D 컴포넌트를 찾는다.
-        Light2D[] lights = FindObjectsOfType<Light2D>();
-
-        // 각각의 Light에 대해
-        foreach (var light in lights)
-        {
-            // 라이트의 위치를 안개 텍스처의 좌표계로 변환
-            Vector3 lightPos = Camera.main.WorldToScreenPoint(light.transform.position);
-
-            // 라이트 주변의 안개를 제거
-            for (int x = (int)(lightPos.x - light.pointLightOuterRadius); x < lightPos.x + light.pointLightOuterRadius; x++)
-            {
-                for (int y = (int)(lightPos.y - light.pointLightOuterRadius); y < lightPos.y + light.pointLightOuterRadius; y++)
-                {
-                    // 픽셀이 라이트의 범위 내에 있는지 확인
-                    if (Vector2.Distance(new Vector2(x, y), lightPos) < light.pointLightOuterRadius)
-                    {
-                        fogColors[y * fogTexture.width + x] = Color.clear; // 안개를 제거(픽셀을 투명하게 만듦)
-                    }
-                }
-            }
-        }
-
-        // 변경사항을 텍스처에 적용
-        fogTexture.SetPixels(fogColors);
-        fogTexture.Apply();
-    }
 }
-
-
-

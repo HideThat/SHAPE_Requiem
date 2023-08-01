@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 
-public class WallTrigger : Trigger_Requiem
+public class WallTrigger : MonoBehaviour
 {
     [SerializeField] private float changeTime = 3f;
 

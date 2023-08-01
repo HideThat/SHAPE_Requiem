@@ -64,7 +64,7 @@ public class RisingFloor2 : MonoBehaviour
     [SerializeField] private float moveTime = 3f;
     [SerializeField] private float moveDistance = 3f;
     [SerializeField] public bool isActive = false;
-    [Header("ÇÁ·Î±×·¡¸Ó")]
+    [Header("í”„ë¡œê·¸ë˜ë¨¸")]
     [SerializeField] public bool showOther = false;
     [SerializeField] Vector2 targetPos;
     [SerializeField] Vector2 originPos;
@@ -98,7 +98,7 @@ public class RisingFloor2 : MonoBehaviour
 
     IEnumerator FloorMove()
     {
-        Vector2 moveDirection = transform.up;  // ¿ÀºêÁ§Æ®ÀÇ ÇöÀç YÃà ¹æÇâÀ» ÀÌµ¿ ¹æÇâÀ¸·Î »ç¿ë
+        Vector2 moveDirection = transform.up;  // ì˜¤ë¸Œì íŠ¸ì˜ í˜„ì¬ Yì¶• ë°©í–¥ì„ ì´ë™ ë°©í–¥ìœ¼ë¡œ ì‚¬ìš©
         Vector2 targetPosition = (Vector2)transform.position + moveDirection * moveDistance;
 
         transform.DOMove(targetPosition, moveTime);
@@ -115,14 +115,14 @@ public class RisingFloor2 : MonoBehaviour
 
     public void ResetFloor()
     {
-        // ¸ğµç µ¿ÀÛ Áß´Ü
+        // ëª¨ë“  ë™ì‘ ì¤‘ë‹¨
         StopAllCoroutines();
         transform.DOKill();
 
-        // À§Ä¡¸¦ ¿ø·¡ À§Ä¡·Î Àç¼³Á¤
+        // ìœ„ì¹˜ë¥¼ ì›ë˜ ìœ„ì¹˜ë¡œ ì¬ì„¤ì •
         transform.position = originPos;
 
-        // »óÅÂ º¯¼öµéÀ» ÃÊ±â »óÅÂ·Î Àç¼³Á¤
+        // ìƒíƒœ ë³€ìˆ˜ë“¤ì„ ì´ˆê¸° ìƒíƒœë¡œ ì¬ì„¤ì •
         isActive = false;
         currentTime = moveTime * 2f - 0.1f;
     }

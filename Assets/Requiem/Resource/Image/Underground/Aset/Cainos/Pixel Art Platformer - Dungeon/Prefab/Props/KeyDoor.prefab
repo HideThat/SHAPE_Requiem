@@ -269,7 +269,9 @@ MonoBehaviour:
   BlincOffTime: {x: 0, y: 0}
   BlincMiddleTime: {x: 0, y: 0}
   BlincOnTime: {x: 0, y: 0}
+  view2D: {fileID: 778902986696787796}
   light2D: {fileID: 0}
+  originOuterRadius: 0
 --- !u!1 &6828834926812266292
 GameObject:
   m_ObjectHideFlags: 0
@@ -639,6 +641,7 @@ MonoBehaviour:
   needKeyUI: {fileID: 4538860257621887385}
   needKeyUIOpen: 0
   delayTime: 0.3
+  sightRadius: 0
   view2D: {fileID: 778902986696787796}
 --- !u!61 &2022600363
 BoxCollider2D:
@@ -816,6 +819,18 @@ PrefabInstance:
     - target: {fileID: 6349320677851508291, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
       propertyPath: m_Name
       value: LightAreaForFog
+      objectReference: {fileID: 0}
+    - target: {fileID: 8767240307134400569, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+      propertyPath: isDestroy
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8767240307134400569, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+      propertyPath: viewRadius
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8767240307134400569, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+      propertyPath: updateInterval
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}

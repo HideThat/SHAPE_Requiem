@@ -21,6 +21,7 @@ public class KeyDoor : MonoBehaviour
     [SerializeField] private bool needKeyUIOpen = false;
     [Header("프로그래머")]
     [SerializeField] private float delayTime;
+    [SerializeField] private float sightRadius;
     [SerializeField] private FieldOfView2D view2D;
 
     private AudioSource audioSource;
@@ -138,7 +139,6 @@ public class KeyDoor : MonoBehaviour
         inven.UseItem(index);
         inven.CloseInventory();
         isOpened = true;
-        DOTween.To(() => view2D.viewRadius, x => view2D.viewRadius = x, lightsManager.light2D.pointLightOuterRadius, lightsManager.turnOnTime);
         audioSource.PlayOneShot(doorSound);
     }
 
@@ -155,7 +155,7 @@ public class KeyDoor : MonoBehaviour
         {
             openedSprite.DOColor(new Color(255f, 255f, 255f, 255f), lightsManager.turnOnTime);
             lightsManager.turnOffValue = false;
-            view2D.TurnOnView(lightsManager.originOuterRadius, lightsManager.turnOnTime);
+            view2D.TurnOnView(sightRadius, lightsManager.turnOnTime);
         }
         else
         {

@@ -46,6 +46,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewRadius: 7
   viewAngle: 360
+  updateInterval: 0.2
   targetMask:
     serializedVersion: 2
     m_Bits: 32768
@@ -56,4 +57,5 @@ MonoBehaviour:
   meshResolution: 0
   edgeResolveIterations: 0
   edgeDstThreshold: 0
-  viewMeshFilter: {fileID: 0}
+  isDestroy: 1
+  destroyTime: 2

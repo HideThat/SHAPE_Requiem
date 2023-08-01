@@ -83,10 +83,16 @@ public class FieldOfView2D : MonoBehaviour
     public float meshResolution; // 매시의 해상도
     public int edgeResolveIterations; // 간섭을 처리하는 데 필요한 반복 횟수
     public float edgeDstThreshold; // 간섭 처리를 위한 거리 임곗값
+    public bool isDestroy = false;
+    public float destroyTime = 5f;
 
     void Start()
     {
         StartCoroutine(FindTargetsWithDelay(updateInterval));
+        if (isDestroy)
+        {
+            StartCoroutine(DestroyView(destroyTime));
+        }
     }
 
     IEnumerator FindTargetsWithDelay(float delay)
@@ -98,19 +104,16 @@ public class FieldOfView2D : MonoBehaviour
         }
     }
 
-
-    
-
-    void LateUpdate()
+    public IEnumerator DestroyView(float _delay)
     {
-        // 매 프레임마다 타겟을 찾고, 시야를 그립니다.
-        //FindVisibleTargets();
-        //DrawFieldOfView();
-    }
+        yield return new WaitForSeconds(_delay);
+
+        Destroy(this);
+    }    
+
 
     void FindVisibleTargets()
     {
-        visibleTargets.Clear();
         Collider2D[] targetsInViewRadius = Physics2D.OverlapCircleAll(transform.position, viewRadius, targetMask);
 
         for (int i = 0; i < targetsInViewRadius.Length; i++)
@@ -124,19 +127,25 @@ public class FieldOfView2D : MonoBehaviour
 
                 if (ray2D)
                 {
-                    if (Physics2D.Raycast(ray2D.point, dirToTarget, 1f, (int)LayerName.Fog))
+                    RaycastHit2D[] ray1 = Physics2D.RaycastAll(ray2D.point, dirToTarget, 0.2f, targetMask);
+
+                    for (int k = 0; k < ray1.Length; k++)
                     {
-                        target.gameObject.SetActive(false);
+                        if (ray1[k].collider.tag == "Fog")
+                        {
+                            ray1[k].collider.gameObject.SetActive(false);
+                        }
+
                     }
                 }
                 else
                 {
                     target.gameObject.SetActive(false);
-                    //visibleTargets.Add(target);
                 }
             }
         }
     }
+
 
 
     public Vector2 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
@@ -148,60 +157,6 @@ public class FieldOfView2D : MonoBehaviour
         }
         return new Vector2(Mathf.Sin(angleInDegrees * Mathf.Deg2Rad), Mathf.Cos(angleInDegrees * Mathf.Deg2Rad));
     }
-
-    void DrawFieldOfView()
-    {
-        // 시야를 그리는 데 필요한 변수와 로직입니다.
-        int stepCount = Mathf.RoundToInt(viewAngle * meshResolution);
-        float stepAngleSize = viewAngle / stepCount;
-        List<Vector3> viewPoints = new List<Vector3>();
-        ViewCastInfo prevViewCast = new ViewCastInfo();
-
-        for (int i = 0; i <= stepCount; i++)
-        {
-            float angle = transform.eulerAngles.y - viewAngle / 2 + stepAngleSize * i;
-            ViewCastInfo newViewCast = ViewCast(angle);
-
-            // 새로운 ViewCast와 이전 ViewCast 간에 경계가 있는지 확인하고, 있다면 경계점을 추가합니다.
-            if (i > 0)
-            {
-                bool edgeDstThresholdExceeded = Mathf.Abs(prevViewCast.dst - newViewCast.dst) > edgeDstThreshold;
-                if (prevViewCast.hit != newViewCast.hit || (prevViewCast.hit && newViewCast.hit && edgeDstThresholdExceeded))
-                {
-                    Edge edge = FindEdge(prevViewCast, newViewCast);
-                    if (edge.PointA != Vector3.zero)
-                    {
-                        viewPoints.Add(edge.PointA);
-                    }
-                    if (edge.PointB != Vector3.zero)
-                    {
-                        viewPoints.Add(edge.PointB);
-                    }
-                }
-            }
-
-            viewPoints.Add(newViewCast.point);
-            prevViewCast = newViewCast;
-        }
-
-        int vertexCount = viewPoints.Count + 1;
-        Vector3[] vertices = new Vector3[vertexCount];
-        int[] triangles = new int[(vertexCount - 2) * 3];
-
-        vertices[0] = Vector3.zero;
-        for (int i = 0; i < vertexCount - 1; i++)
-        {
-            vertices[i + 1] = transform.InverseTransformPoint(viewPoints[i]);
-
-            if (i < vertexCount - 2)
-            {
-                triangles[i * 3] = 0;
-                triangles[i * 3 + 1] = i + 1;
-                triangles[i * 3 + 2] = i + 2;
-            }
-        }
-    }
-
 
     ViewCastInfo ViewCast(float globalAngle)
     {

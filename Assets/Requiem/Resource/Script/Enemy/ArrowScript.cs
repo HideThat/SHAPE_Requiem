@@ -19,7 +19,6 @@ public class ArrowScript : Enemy_Dynamic
     [SerializeField] AudioSource arrowTriggerAudioSource;
     Rigidbody2D rigid;
 
-    private bool isDestroyed = false;
     Vector2 originPos;
     quaternion originRoate;
 

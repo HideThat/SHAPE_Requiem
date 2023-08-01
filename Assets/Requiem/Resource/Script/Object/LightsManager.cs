@@ -22,10 +22,10 @@ public class LightsManager : MonoBehaviour
     [SerializeField] private Vector2 BlincMiddleTime;
     [SerializeField] private Vector2 BlincOnTime;
 
-    private Light2D light2D;
+    public Light2D light2D;
     private float originIntensity;
     private float originFallout;
-    private float originOuterRadius;
+    public float originOuterRadius;
     private float originTurnOnTime;
     private float originTurnOffTime;
     private float BlincDelayTime;

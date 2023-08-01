@@ -40,7 +40,10 @@ public class GuideManager : MonoBehaviour
 
     public void OpenMoveGuide()
     {
-        m_moveGuide.SetActive(true);
+        if (m_moveGuide != null)
+        {
+            m_moveGuide.SetActive(true);
+        }
     }
     #endregion MoveGuide
     #region JumpGuide
@@ -51,7 +54,10 @@ public class GuideManager : MonoBehaviour
 
     public void OpenJumpGuide()
     {
-        m_jumpGuide.SetActive(true);
+        if (m_jumpGuide != null)
+        {
+            m_jumpGuide.SetActive(true);
+        }
     }
     #endregion JumpGuide
     #region DoubleJumpGuide
@@ -62,7 +68,10 @@ public class GuideManager : MonoBehaviour
 
     public void OpenDoubleJumpGuide()
     {
-        m_doubleJumpGuide.SetActive(true);
+        if (m_doubleJumpGuide != null)
+        {
+            m_doubleJumpGuide.SetActive(true);
+        }
     }
     #endregion DoubleJumpGuide
     #region RuneThrowGuide
@@ -73,7 +82,10 @@ public class GuideManager : MonoBehaviour
 
     public void OpenRuneThrowGuide()
     {
-        m_runeThrowGuide.SetActive(true);
+        if (m_runeThrowGuide != null)
+        {
+            m_runeThrowGuide.SetActive(true);
+        }
     }
     #endregion RuneThrowGuide
     #region RuneReturnGuide

@@ -25,7 +25,8 @@ public enum LayerName
     LightArea,
     MossLight,
     Teleport,
-    Item
+    Item,
+    Fog
 }
 
 [Serializable]

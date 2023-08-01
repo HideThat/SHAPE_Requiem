@@ -13,9 +13,10 @@ public class ArrowScript : Enemy_Dynamic
     [SerializeField] float mass = 1f;
     [SerializeField] float shootForce = 10f;
     [SerializeField] float disappearTime = 2f;
-    [SerializeField] ArrowTrigger arrowTrigger;
+    [SerializeField] Trigger_Requiem arrowTrigger;
     [SerializeField] TrailRenderer trail;
     [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource arrowTriggerAudioSource;
     Rigidbody2D rigid;
 
     private bool isDestroyed = false;
@@ -33,6 +34,7 @@ public class ArrowScript : Enemy_Dynamic
 
     private void Start()
     {
+        arrowTrigger.transform.parent = null;
         originPos = transform.position;
         originRoate = transform.rotation;
         damage = 0;
@@ -50,7 +52,6 @@ public class ArrowScript : Enemy_Dynamic
 
         if (isActive == true)
         {
-            arrowTrigger.gameObject.SetActive(false);
             isActive = false;
             rigid.bodyType = RigidbodyType2D.Dynamic;
             rigid.gravityScale = 0f;
@@ -105,6 +106,13 @@ public class ArrowScript : Enemy_Dynamic
         m_collider2D.enabled = false;
     }
 
+    public void ArrowTriggerActive()
+    {
+        arrowTriggerAudioSource.Play();
+        isActive = true;
+        arrowTrigger.gameObject.SetActive(false);
+    }
+
     public override void ResetEnemy()
     {
         CancelInvoke("ArrowDestroy");
@@ -126,6 +134,7 @@ public class ArrowScript : Enemy_Dynamic
 
 
         arrowTrigger.gameObject.SetActive(true);
+        arrowTrigger.isActive = false;
         trail.gameObject.SetActive(true);
         m_collider2D.enabled = true;
     }

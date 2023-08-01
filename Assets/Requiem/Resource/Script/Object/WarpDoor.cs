@@ -11,6 +11,7 @@ using UnityEditor;
 public class WarpDoorEditor : Editor
 {
     private SerializedProperty otherDoorProp;
+    private SerializedProperty triggerDoorsProp;
     private SerializedProperty fadeOutAndInTimeProp;
     private SerializedProperty fadeOutAndInWaitTimeProp;
     private SerializedProperty isOpenedProp;
@@ -26,6 +27,7 @@ public class WarpDoorEditor : Editor
     private void OnEnable()
     {
         otherDoorProp = serializedObject.FindProperty("otherDoor");
+        triggerDoorsProp = serializedObject.FindProperty("triggerDoors");
         fadeOutAndInTimeProp = serializedObject.FindProperty("fadeOutAndInTime");
         fadeOutAndInWaitTimeProp = serializedObject.FindProperty("fadeOutAndInWaitTime");
         isOpenedProp = serializedObject.FindProperty("isOpened");
@@ -49,6 +51,7 @@ public class WarpDoorEditor : Editor
         EditorGUILayout.PropertyField(isOpenedProp);
         EditorGUILayout.PropertyField(playerInProp);
         EditorGUILayout.PropertyField(showObjectsProp);
+        EditorGUILayout.PropertyField(triggerDoorsProp);
 
         WarpDoor warpDoor = (WarpDoor)target;
 
@@ -71,6 +74,7 @@ public class WarpDoorEditor : Editor
 public class WarpDoor : MonoBehaviour
 {
     [SerializeField] private WarpDoor otherDoor;
+    [SerializeField] private WarpDoor[] triggerDoors;
     [SerializeField] float fadeOutAndInTime = 0.2f;
     [SerializeField] float fadeOutAndInWaitTime = 0.2f;
     [SerializeField] public bool isOpened = false;
@@ -156,6 +160,14 @@ public class WarpDoor : MonoBehaviour
         lampDust.SetActive(playerIn);
         lampGlow.SetActive(playerIn);
         lampLit.SetActive(playerIn);
+    }
+
+    public void DoorOpen()
+    {
+        foreach (var item in triggerDoors)
+        {
+            item.isOpened = true;
+        }
     }
 
     IEnumerator PlayerWarpDelay()

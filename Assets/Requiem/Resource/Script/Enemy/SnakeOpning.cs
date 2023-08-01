@@ -50,4 +50,11 @@ public class SnakeOpning : MonoBehaviour
         rigid.bodyType = RigidbodyType2D.Dynamic;
         rigid.gravityScale = -snakeMoveSpeed;
     }
+
+    public void SnakeMoveActive()
+    {
+        SnakeActive();
+        audioSource.PlayOneShot(snakeMove);
+        audioSource2.PlayOneShot(snakeHowling);
+    }
 }

@@ -262,7 +262,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2602833944397607689}
   - component: {fileID: 1354376138480774106}
-  - component: {fileID: 6967053676262838901}
+  - component: {fileID: 3985326298974368111}
   m_Layer: 0
   m_Name: WarpDoorTrigger
   m_TagString: Trigger
@@ -311,7 +311,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &6967053676262838901
+--- !u!114 &3985326298974368111
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -320,11 +320,60 @@ MonoBehaviour:
   m_GameObject: {fileID: 5096626455900008963}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4909cf9b2ef4c0429f0b113dc2033cb, type: 3}
+  m_Script: {fileID: 11500000, guid: b361066b602cbad4f88a844e7c35908e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  warpDoors:
-  - {fileID: 3039910930325801960}
+  objectTagList:
+  - Player
+  valueCheckList: []
+  isActive: 0
+  interactionCheck: 1
+  valueCheck: 0
+  repeatCheck: 0
+  delayTime: 0
+  repeatDeleyTime: 0
+  repeatCount: -1
+  onTriggerEvent:
+    TriggerEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 3039910930325801960}
+          m_TargetAssemblyTypeName: WarpDoor, Assembly-CSharp
+          m_MethodName: DoorOpen
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    TriggerStay:
+      m_PersistentCalls:
+        m_Calls: []
+    TriggerExit:
+      m_PersistentCalls:
+        m_Calls: []
+  onCollisionEvent:
+    CollisionEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    CollisionStay:
+      m_PersistentCalls:
+        m_Calls: []
+    CollisionExit:
+      m_PersistentCalls:
+        m_Calls: []
+  timeTriggerEvent:
+    TimeEvent:
+      m_PersistentCalls:
+        m_Calls: []
+  onButtonEventNodes: []
+  onBuildValueCheck:
+    currentTime0: 0
+    currentTime1: 0
+    firstActive: 0
 --- !u!1 &5500798282684620061
 GameObject:
   m_ObjectHideFlags: 0
@@ -5397,6 +5446,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   otherDoor: {fileID: 0}
+  triggerDoors:
+  - {fileID: 3039910930325801960}
   fadeOutAndInTime: 0.2
   fadeOutAndInWaitTime: 0.2
   isOpened: 0

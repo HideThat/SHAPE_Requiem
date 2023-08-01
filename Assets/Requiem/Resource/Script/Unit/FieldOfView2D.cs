@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using DG.Tweening;
 
 // UnityEditor namespace를 사용하여 Unity Editor에 대한 커스텀 기능을 만듭니다.
 [CustomEditor(typeof(FieldOfView2D))]
@@ -63,12 +64,15 @@ public struct Edge
 
 public class FieldOfView2D : MonoBehaviour
 {
+    
+
     // 시야를 표현하는 데 필요한 변수들입니다.
     public float viewRadius; // 시야의 반지름
     [Range(0, 360)]
     public float viewAngle; // 시야의 각도
 
     // 시야에서 찾아야 할 타겟과 장애물에 대한 레이어 마스크입니다.
+    public float updateInterval = 0.2f; // Adjust as needed
     public LayerMask targetMask;
     public LayerMask obstacleMask;
 
@@ -80,25 +84,13 @@ public class FieldOfView2D : MonoBehaviour
     public int edgeResolveIterations; // 간섭을 처리하는 데 필요한 반복 횟수
     public float edgeDstThreshold; // 간섭 처리를 위한 거리 임곗값
 
-    // 시야를 그리기 위한 매시와 매시 필터입니다.
-    Mesh viewMesh;
-    public MeshFilter viewMeshFilter;
-
-
     void Start()
     {
-        // 시작시 필요한 초기화를 수행합니다.
-        viewMesh = new Mesh();
-        viewMesh.name = "View Mesh";
-        viewMeshFilter.mesh = viewMesh;
-
-        // 일정한 간격으로 타겟을 찾는 코루틴을 시작합니다.
-        StartCoroutine(FindTargetsWithDelay(0.2f));
+        StartCoroutine(FindTargetsWithDelay(updateInterval));
     }
 
     IEnumerator FindTargetsWithDelay(float delay)
     {
-        // delay만큼 기다린 후 타겟을 찾습니다.
         while (true)
         {
             yield return new WaitForSeconds(delay);
@@ -106,35 +98,46 @@ public class FieldOfView2D : MonoBehaviour
         }
     }
 
+
+    
+
     void LateUpdate()
     {
         // 매 프레임마다 타겟을 찾고, 시야를 그립니다.
-        FindVisibleTargets();
-        DrawFieldOfView();
+        //FindVisibleTargets();
+        //DrawFieldOfView();
     }
 
     void FindVisibleTargets()
     {
-        // 시야 안에 있는 타겟을 찾습니다.
         visibleTargets.Clear();
         Collider2D[] targetsInViewRadius = Physics2D.OverlapCircleAll(transform.position, viewRadius, targetMask);
+
         for (int i = 0; i < targetsInViewRadius.Length; i++)
         {
             Transform target = targetsInViewRadius[i].transform;
-            Vector2 dirToTarget = (target.position - transform.position).normalized;
-
-            // 타겟이 시야 안에 있는지 확인합니다.
+            Vector2 dirToTarget = new Vector2(target.position.x - transform.position.x, target.position.y - transform.position.y).normalized;
             if (Vector2.Angle(transform.up, dirToTarget) < viewAngle / 2)
             {
                 float dstToTarget = Vector2.Distance(transform.position, target.position);
-                // 장애물에 가려지지 않은 타겟만 추가합니다.
-                if (!Physics2D.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask))
+                RaycastHit2D ray2D = Physics2D.Raycast(transform.position, dirToTarget, dstToTarget, obstacleMask);
+
+                if (ray2D)
                 {
-                    visibleTargets.Add(target);
+                    if (Physics2D.Raycast(ray2D.point, dirToTarget, 1f, (int)LayerName.Fog))
+                    {
+                        target.gameObject.SetActive(false);
+                    }
+                }
+                else
+                {
+                    target.gameObject.SetActive(false);
+                    //visibleTargets.Add(target);
                 }
             }
         }
     }
+
 
     public Vector2 DirFromAngle(float angleInDegrees, bool angleIsGlobal)
     {
@@ -197,11 +200,6 @@ public class FieldOfView2D : MonoBehaviour
                 triangles[i * 3 + 2] = i + 2;
             }
         }
-
-        viewMesh.Clear();
-        viewMesh.vertices = vertices;
-        viewMesh.triangles = triangles;
-        viewMesh.RecalculateNormals();
     }
 
 
@@ -246,5 +244,15 @@ public class FieldOfView2D : MonoBehaviour
         }
 
         return new Edge(minPoint, maxPoint);
+    }
+
+    public void TurnOffView()
+    {
+        viewRadius = 0f;
+    }
+
+    public void TurnOnView(float _viewRadius, float _changeTime)
+    {
+        DOTween.To(() => viewRadius, x => viewRadius = x, _viewRadius, _changeTime);
     }
 }

@@ -162,7 +162,7 @@ public class Trigger_Requiem : MonoBehaviour
         {
             if (valueCheck && !CompareTargetValue()) return;
 
-            if (CompareObjectTag(collision) && !isActive)
+            if (CompareObjectTag(collision) && !isActive && gameObject.activeInHierarchy)
             {
                 isActive = true;
                 StartCoroutine(DelayedTriggerEnter());
@@ -182,13 +182,13 @@ public class Trigger_Requiem : MonoBehaviour
         {
             if (valueCheck && !CompareTargetValue()) return;
 
-            if (CompareObjectTag(collision) && !isActive && !onBuildValueCheck.firstActive)
+            if (CompareObjectTag(collision) && !isActive && !onBuildValueCheck.firstActive && gameObject.activeInHierarchy)
             {
                 isActive = true;
                 onBuildValueCheck.firstActive = true;
                 StartCoroutine(DelayedTriggerStay());
             }
-            else if (CompareObjectTag(collision) && !isActive)
+            else if (CompareObjectTag(collision) && !isActive && gameObject.activeInHierarchy)
             {
                 if (repeatCount == 0) return;
                 isActive = true;
@@ -217,7 +217,7 @@ public class Trigger_Requiem : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (valueCheck && !CompareTargetValue()) return;
-        if (CompareObjectTag(collision))
+        if (CompareObjectTag(collision) && gameObject.activeInHierarchy)
         {
             onBuildValueCheck.firstActive = false;
             StartCoroutine(DelayedTriggerExit());

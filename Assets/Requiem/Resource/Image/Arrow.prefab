@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 602878640}
   - component: {fileID: 602878639}
   - component: {fileID: 602878638}
-  - component: {fileID: 602878641}
   - component: {fileID: 7982460967706948117}
+  - component: {fileID: 3429498845792324722}
   m_Layer: 0
   m_Name: ArrowTrigger
   m_TagString: Trigger
@@ -113,20 +113,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &602878641
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 602878637}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 148ab28fb28713e43bc3117339b447de, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrow: {fileID: 2039480347697555264}
-  audioSource: {fileID: 7982460967706948117}
 --- !u!82 &7982460967706948117
 AudioSource:
   m_ObjectHideFlags: 0
@@ -223,6 +209,70 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &3429498845792324722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602878637}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b361066b602cbad4f88a844e7c35908e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectTagList:
+  - Player
+  - Rune
+  valueCheckList: []
+  isActive: 0
+  interactionCheck: 1
+  valueCheck: 0
+  repeatCheck: 0
+  delayTime: 0
+  repeatDeleyTime: 0
+  repeatCount: -1
+  onTriggerEvent:
+    TriggerEnter:
+      m_PersistentCalls:
+        m_Calls:
+        - m_Target: {fileID: 2039480347697555264}
+          m_TargetAssemblyTypeName: ArrowScript, Assembly-CSharp
+          m_MethodName: ArrowTriggerActive
+          m_Mode: 1
+          m_Arguments:
+            m_ObjectArgument: {fileID: 0}
+            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+            m_IntArgument: 0
+            m_FloatArgument: 0
+            m_StringArgument: 
+            m_BoolArgument: 0
+          m_CallState: 2
+    TriggerStay:
+      m_PersistentCalls:
+        m_Calls: []
+    TriggerExit:
+      m_PersistentCalls:
+        m_Calls: []
+  onCollisionEvent:
+    CollisionEnter:
+      m_PersistentCalls:
+        m_Calls: []
+    CollisionStay:
+      m_PersistentCalls:
+        m_Calls: []
+    CollisionExit:
+      m_PersistentCalls:
+        m_Calls: []
+  timeTriggerEvent:
+    TimeEvent:
+      m_PersistentCalls:
+        m_Calls: []
+  onButtonEventNodes: []
+  onBuildValueCheck:
+    currentTime0: 0
+    currentTime1: 0
+    firstActive: 0
 --- !u!1 &3220860992330404476
 GameObject:
   m_ObjectHideFlags: 0
@@ -417,9 +467,10 @@ MonoBehaviour:
   mass: 1
   shootForce: 20
   disappearTime: 2
-  arrowTrigger: {fileID: 602878641}
+  arrowTrigger: {fileID: 3429498845792324722}
   trail: {fileID: 7125664880091788918}
   audioSource: {fileID: 4151653674004638999}
+  arrowTriggerAudioSource: {fileID: 7982460967706948117}
   resetTrigger:
     ShouldReset: 0
 --- !u!212 &3293571908470956988

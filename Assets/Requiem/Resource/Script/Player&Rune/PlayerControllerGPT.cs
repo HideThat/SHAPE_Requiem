@@ -95,16 +95,6 @@ public class PlayerControllerGPT : MonoBehaviour
                 transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
-
-                //// 수직 속도가 거의 0일 때 이동 소리 활성화
-                //if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
-                //{
-                //    m_PlayerMoveSound.SetActive(true);
-                //}
-                //else
-                //{
-                //    m_PlayerMoveSound.SetActive(false);
-                //}
             }
             else if (dir < 0)
             {
@@ -113,16 +103,6 @@ public class PlayerControllerGPT : MonoBehaviour
                 transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
-
-                //// 수직 속도가 거의 0일 때 이동 소리 활성화
-                //if (Mathf.Abs(m_rigid.velocity.y) < 0.1)
-                //{
-                //    m_PlayerMoveSound.SetActive(true);
-                //}
-                //else
-                //{
-                //    m_PlayerMoveSound.SetActive(false);
-                //}
             }
             else
             {

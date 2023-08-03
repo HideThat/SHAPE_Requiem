@@ -1,5 +1,3 @@
-// 1차 리펙토링
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,7 +10,6 @@ public class RuneControllerGPT : MonoBehaviour
     public float moveTime; // 룬 이동 시간
     public bool isShoot; // 룬이 발사되었는지 여부
     public bool isCharge = false;
-
     [SerializeField] private Vector2 runePosition; // 룬의 초기 위치
     [SerializeField] private Vector2 origin; // 룬의 원점 위치
     [SerializeField] private float shootDelayTime; // 발사 지연 시간
@@ -24,7 +21,7 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] SpriteRenderer[] batteryUI;
     [SerializeField] SpriteRenderer batteryBorder;
     [SerializeField] RuneManager runeManager;
-
+    [SerializeField] LayerMask hitLayerMask;
 
     private GameObject runeObj; // 룬 게임 오브젝트
     private Light2D runeSight; // 룬의 조명 컴포넌트
@@ -34,18 +31,15 @@ public class RuneControllerGPT : MonoBehaviour
     {
         InitializeRuneController(); // 룬 컨트롤러 초기화
     }
-
     void Update()
     {
         if (PlayerData.PlayerIsGetRune)
         {
-            RuneColliding(); // 룬 충돌 처리
             RuneControl(); // 룬 제어
             RuneMove(); // 룬 이동
             RuneCharging(); // 룬 충전 효과
         }
     }
-
     private void InitializeRuneController()
     {
         runeObj = RuneData.RuneObj;
@@ -59,17 +53,9 @@ public class RuneControllerGPT : MonoBehaviour
 
         SetBatteryUIVisible(false, RuneData.RuneBattery / 1000f);
 
-        ValidateComponents(); // 컴포넌트 유효성 검사
-    }
-
-    // 컴포넌트 유효성 검사
-    private void ValidateComponents()
-    {
         if (runeObj == null) Debug.Log("m_runeObj == null");
         if (runeSight == null) Debug.Log("m_runeSight == null");
     }
-
-    // 룬 제어
     private void RuneControl()
     {
         if (!RuneData.RuneUseControl) return;
@@ -83,58 +69,37 @@ public class RuneControllerGPT : MonoBehaviour
             UpdateBatteryUI();
         }
     }
-
     private void DecreaseBatteryWhileShooting()
     {
-        if (RuneData.RuneBattery > 0)
-        {
-            RuneData.RuneBattery -= batteryDrainSpeed * Time.deltaTime;
-        }
+        if (RuneData.RuneBattery > 0) RuneData.RuneBattery -= batteryDrainSpeed * Time.deltaTime;
         else if (RuneData.RuneBattery <= 0 && !RuneData.RuneIsPowerLose)
         {
             RunePowerLose();
             RuneData.RuneBattery = 0f;
         }
     }
-
     private void UpdateBatteryUI()
     {
-        if (!isShoot)
-            return;
+        if (!isShoot) return;
 
         float batteryPercentage = RuneData.RuneBattery / 1000f;
         Color color;
 
-        if (batteryPercentage > 0.75f)
-            color = Color.green;
-        else if (batteryPercentage > 0.25f)
-            color = Color.yellow;
-        else
-            color = Color.red;
+        if (batteryPercentage > 0.75f) color = Color.green;
+        else if (batteryPercentage > 0.25f) color = Color.yellow;
+        else color = Color.red;
 
-        if (batteryPercentage > 0)
-        {
-            // Start the coroutine to sequentially activate battery UI elements
-            StartCoroutine(ActivateBatteryUISequentially(true, batteryPercentage));
-        }
+        if (batteryPercentage > 0) StartCoroutine(ActivateBatteryUISequentially(true, batteryPercentage));
 
-        // 모든 SpriteRenderer 컴포넌트의 색상 변경
-        foreach (var ui in batteryUI)
-        {
-            ui.DOColor(color, 5f);
-        }
+        foreach (var ui in batteryUI) ui.DOColor(color, 5f);
     }
-
     private IEnumerator ActivateBatteryUISequentially(bool isVisible, float batteryPercentage)
     {
         if (isVisible)
         {
             int visibleUIElements = 0;
 
-            if (batteryPercentage > 0.75f)
-            {
-                visibleUIElements = 4;
-            }
+            if (batteryPercentage > 0.75f) visibleUIElements = 4;
             else if (batteryPercentage > 0.50f)
             {
                 visibleUIElements = 3;
@@ -157,7 +122,7 @@ public class RuneControllerGPT : MonoBehaviour
             for (int i = 0; i < visibleUIElements; i++)
             {
                 batteryUI[i].gameObject.SetActive(isVisible);
-                yield return new WaitForSeconds(0.2f);  // Adjust delay as needed
+                yield return new WaitForSeconds(0.2f);
             }
         }
         else
@@ -165,26 +130,28 @@ public class RuneControllerGPT : MonoBehaviour
             foreach (var ui in batteryUI)
             {
                 ui.gameObject.SetActive(isVisible);
-                yield return new WaitForSeconds(0.2f);  // Adjust delay as needed
+                yield return new WaitForSeconds(0.2f);
             }
         }
     }
-
-    // 룬 이동
     private void RuneMove()
     {
-        // 룬의 목표 지점으로의 이동을 처리
         MoveRuneToTarget();
     }
-
     private void MoveRuneToTarget()
     {
-        runeObj.transform.DOMove(target, moveTime);
+        if (isShoot)
+        {
+            Vector2 dir = target - (Vector2)runeObj.transform.position;
+            float dis = Vector2.Distance(target, (Vector2)runeObj.transform.position);
+
+            RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
+
+            if (rayHit) runeObj.transform.DOMove(rayHit.point, moveTime);
+            else runeObj.transform.DOMove(target, moveTime);
+        }
+        else runeObj.transform.DOMove(target, moveTime);
     }
-
-    // 룬 발사 처리
-
-
     private void HandleMouseClicksForShooting()
     {
         if (Input.GetMouseButtonDown(1) && !isMouseDelay && isShoot)
@@ -201,12 +168,8 @@ public class RuneControllerGPT : MonoBehaviour
             runeManager.RuneShootSoundPlay();
             RuneData.RuneIsReturn = false;
         }
-        else if (!isShoot)
-        {
-            ReturnRune();
-        }
+        else if (!isShoot) ReturnRune();
     }
-
     private void PlayRuneOffSoundAndDelayMouse()
     {
         isMouseDelay = true;
@@ -224,10 +187,7 @@ public class RuneControllerGPT : MonoBehaviour
         RuneData.RuneActive = true;
         RuneData.RuneLightArea.enabled = true;
 
-        if (isShoot && RuneData.RuneBattery > 0)
-        {
-            RuneData.RuneBattery -= additionalMovementReduction;
-        }
+        if (isShoot && RuneData.RuneBattery > 0) RuneData.RuneBattery -= additionalMovementReduction;
 
         isShoot = true;
         SetBatteryUIVisible(true, RuneData.RuneBattery / 1000f);
@@ -244,20 +204,9 @@ public class RuneControllerGPT : MonoBehaviour
     // 룬 반환
     private void ReturnRune()
     {
-        if (transform.rotation.y == 0)
-        {
-            target = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
-        }
-        else if (transform.rotation.y != 0f)
-        {
-            target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
-        }
-
-        if (!RuneData.RuneIsReturn)
-        {
-            runeManager.RuneReturnSoundPlay();
-        }
-
+        if (transform.rotation.y == 0) target = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
+        else if (transform.rotation.y != 0f) target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
+        if (!RuneData.RuneIsReturn) runeManager.RuneReturnSoundPlay();
         RuneData.RuneIsReturn = true;
         RuneData.RuneActive = false;
         RuneData.RuneLightArea.enabled = false;
@@ -279,10 +228,7 @@ public class RuneControllerGPT : MonoBehaviour
     // 룬 반환 처리
     private void HandleRuneReturn()
     {
-        if (RuneIsFarEnough())
-        {
-            StopShooting();
-        }
+        if (RuneIsFarEnough()) StopShooting();
     }
 
     private bool RuneIsFarEnough()
@@ -341,17 +287,6 @@ public class RuneControllerGPT : MonoBehaviour
     private void ResetMouseDelay()
     {
         isMouseDelay = false;
-    }
-
-    // 룬 충돌 처리
-    private void RuneColliding()
-    {
-        RaycastHit2D hit = GetRaycastHit();
-
-        if (HitObjectIsCollidable(hit))
-        {
-            target = hit.point;
-        }
     }
 
     private RaycastHit2D GetRaycastHit()

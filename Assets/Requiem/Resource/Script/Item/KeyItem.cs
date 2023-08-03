@@ -25,11 +25,6 @@ public class KeyItem : Item
         StartCoroutine(MoveUpDown());
     }
 
-    void Update()
-    {
-        
-    }
-
     IEnumerator MoveUpDown()
     {
         while (true)
@@ -40,5 +35,10 @@ public class KeyItem : Item
             float newY = startPos.y + Mathf.PingPong(Time.time * speed, distance * 2) - distance;
             transform.position = new Vector3(startPos.x, newY, 0f);
         }
+    }
+
+    public void KeyActive(bool _TF)
+    {
+        gameObject.SetActive(_TF);
     }
 }

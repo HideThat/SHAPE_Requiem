@@ -130,6 +130,13 @@ public class RuneStatue : MonoBehaviour
         DOTween.To(() => activeLight.shapeLightFalloffSize, x => activeLight.shapeLightFalloffSize = x, 5, 10);
     }
 
+    public void SetActive(bool _TF)
+    {
+        isActive = _TF;
+        activeEffect.gameObject.SetActive(_TF);
+        activeLight.gameObject.SetActive(_TF);
+    }
+
     // 오디오 클립 재생을 위한 함수
     private void PlayAudioClip()
     {

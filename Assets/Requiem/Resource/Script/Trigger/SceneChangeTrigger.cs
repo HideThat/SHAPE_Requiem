@@ -9,12 +9,19 @@ public class SceneChangeTrigger : MonoBehaviour
     [SerializeField] string sceneName;
     [SerializeField] string contactObjectName;
     [SerializeField] float fadeOutTime;
+    [SerializeField] Vector2 nextPlayerPos;
+    [SerializeField] Quaternion nextPlayerRot;
+
+    [SerializeField] SceneData sceneData;
+    [SerializeField] SavePlayerData playerData;
 
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == contactObjectName)
         {
+            sceneData.SaveScene();
+            playerData.SetData(nextPlayerPos, nextPlayerRot);
             StartCoroutine(FadeOutAndLoadScene());
         }
     }
@@ -25,7 +32,6 @@ public class SceneChangeTrigger : MonoBehaviour
 
         yield return new WaitForSeconds(fadeOutTime);
 
-        // Fully opaque, load the scene
         SceneManager.LoadScene(sceneName);
     }
 }

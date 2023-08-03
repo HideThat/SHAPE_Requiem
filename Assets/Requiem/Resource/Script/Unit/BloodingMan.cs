@@ -13,6 +13,7 @@ public class BloodingMan : MonoBehaviour
     [SerializeField] AudioSource BG;
     [SerializeField] float MinBGVolume;
     [SerializeField] float BGVolumeChangeTime;
+    [SerializeField] string changeSceneName;
 
     // 순차적으로 이동할 포인트들
     public Transform[] pointTransforms;
@@ -108,7 +109,7 @@ public class BloodingMan : MonoBehaviour
 
     void ChangeScene()
     {
-        SceneManager.LoadScene("underground_2", LoadSceneMode.Single);
+        SceneManager.LoadScene(changeSceneName, LoadSceneMode.Single);
     }
 
     IEnumerator walkSoundPlay()

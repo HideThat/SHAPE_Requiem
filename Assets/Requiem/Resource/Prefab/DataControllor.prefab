@@ -16,6 +16,8 @@ GameObject:
   - component: {fileID: 7543882171348522682}
   - component: {fileID: 1201676059}
   - component: {fileID: 1201676066}
+  - component: {fileID: 2253789511835076965}
+  - component: {fileID: 7251319121801001864}
   m_Layer: 0
   m_Name: DataControllor
   m_TagString: Untagged
@@ -194,3 +196,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   risingFloor2s: []
   wallTriggers: []
+--- !u!114 &2253789511835076965
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f64b1fde452023f47962b73dd0e5e1d5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  keyItems: []
+  keyDoors: []
+  runeStatues: []
+  playerData: {fileID: 0}
+--- !u!114 &7251319121801001864
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7543882171348522629}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c2f10361aa72d1744b93d9c35ef5c3ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

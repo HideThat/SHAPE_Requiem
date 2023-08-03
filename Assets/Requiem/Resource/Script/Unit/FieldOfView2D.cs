@@ -127,7 +127,7 @@ public class FieldOfView2D : MonoBehaviour
 
                 if (ray2D)
                 {
-                    RaycastHit2D[] ray1 = Physics2D.RaycastAll(ray2D.point, dirToTarget, 0.2f, targetMask);
+                    RaycastHit2D[] ray1 = Physics2D.RaycastAll(ray2D.point, dirToTarget, 0.5f, targetMask);
 
                     for (int k = 0; k < ray1.Length; k++)
                     {

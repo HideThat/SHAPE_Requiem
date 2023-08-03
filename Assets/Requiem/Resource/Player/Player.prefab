@@ -6120,6 +6120,7 @@ GameObject:
   - component: {fileID: 8160237521022626517}
   - component: {fileID: 178034531}
   - component: {fileID: 1810196480}
+  - component: {fileID: 5959309548902715685}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -6473,6 +6474,9 @@ MonoBehaviour:
   - {fileID: 2169097335350878584}
   batteryBorder: {fileID: 658186468653632156}
   runeManager: {fileID: 2529985359348219172}
+  hitLayerMask:
+    serializedVersion: 2
+    m_Bits: 1920
   hasRestarted: 0
 --- !u!114 &1996320799
 MonoBehaviour:
@@ -6555,6 +6559,18 @@ MonoBehaviour:
   m_rigid: {fileID: 0}
   m_animator: {fileID: 0}
   m_collider: {fileID: 0}
+--- !u!114 &5959309548902715685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529985360050657747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1f0aa70365678e4e9a8411074d9ae68, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4749983326542899306
 GameObject:
   m_ObjectHideFlags: 0

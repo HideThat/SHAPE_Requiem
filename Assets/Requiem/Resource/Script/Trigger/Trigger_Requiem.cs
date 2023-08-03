@@ -226,7 +226,7 @@ public class Trigger_Requiem : MonoBehaviour
 
     private IEnumerator DelayedTriggerExit()
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.05f);
         onTriggerEvent.TriggerExit?.Invoke();
     }
     #endregion 트리거 함수

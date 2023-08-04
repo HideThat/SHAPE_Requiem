@@ -6571,6 +6571,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1f0aa70365678e4e9a8411074d9ae68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 0}
+  rune: {fileID: 0}
+  playerPosition: {x: 0, y: 0}
+  playerRotation: {x: 0, y: 0, z: 0, w: 0}
+  isGetRune: 0
 --- !u!1 &4749983326542899306
 GameObject:
   m_ObjectHideFlags: 0
@@ -17613,8 +17618,37 @@ PrefabInstance:
       propertyPath: isDestroy
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8767240307134400569, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+--- !u!1 &2251048607186186676 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6349320677851508291, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+  m_PrefabInstance: {fileID: 5125102200646393847}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &4351655140375088411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251048607186186676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268c8572686ec0645bf9fb4ffdafe1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewRadius: 7
+  updateDelay: 0.2
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!4 &4662638654334768412 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 546343390040083179, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
@@ -17683,8 +17717,37 @@ PrefabInstance:
       propertyPath: isDestroy
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8767240307134400569, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+--- !u!1 &4122838535419972903 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6349320677851508291, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}
+  m_PrefabInstance: {fileID: 7001428678959588196}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9129338679577398517
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4122838535419972903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 268c8572686ec0645bf9fb4ffdafe1b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewRadius: 1.5
+  updateDelay: 0
+  targetMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 384
 --- !u!4 &7403656253838633359 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 546343390040083179, guid: 457e873fb3a9fe94faa1a909f37de460, type: 3}

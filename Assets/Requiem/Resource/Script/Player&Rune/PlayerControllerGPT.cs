@@ -11,6 +11,7 @@ public class PlayerControllerGPT : MonoBehaviour
 {
     [Header("점프 시스템")]
     [SerializeField] int m_jumpLeft; // 남은 점프 횟수
+    [SerializeField] int m_maxJump = 2; // 남은 점프 횟수
     [SerializeField] float m_jumpForce; // 점프 파워
     [SerializeField] float m_fallForce; // 낙하 속도
     [SerializeField] float m_maxFallSpeed; // 최대 낙하 속도
@@ -18,17 +19,25 @@ public class PlayerControllerGPT : MonoBehaviour
     [SerializeField] LayerMask m_platform; // 플랫폼 레이어 마스크
     [SerializeField] ParticleSystem m_randingEffect;
 
+    public float m_playerSpeed = 6f; // 플레이어 이동속도
+    public bool m_isWarp = false;
+    public bool canMove; // 이동 판정
+
     bool m_isJump; // 점프 상태 체크
     bool m_isGrounded; // 땅 접촉 상태 체크
 
     // 플레이어의 컴포넌트
+    [SerializeField] HP_SystemGPT hP_System;
     [SerializeField] public AudioSource walkAudioSource;
     [SerializeField] public AudioClip m_PlayerMoveSoundClip;
     [SerializeField] Rigidbody2D m_rigid;
     [SerializeField] Animator m_animator;
     [SerializeField] Collider2D m_collider;
 
-
+    private void Awake()
+    {
+        canMove = true;
+    }
 
     private void Start()
     {
@@ -46,7 +55,6 @@ public class PlayerControllerGPT : MonoBehaviour
         if (m_randingEffect == null) Debug.Log("m_randingEffect == null");
 
         // 변수 초기값 설정
-        m_jumpLeft = PlayerData.PlayerJumpLeft;
         m_isJump = true;
     }
 
@@ -57,12 +65,32 @@ public class PlayerControllerGPT : MonoBehaviour
 
     private void Update()
     {
-        if (PlayerData.PlayerIsMove)
+        if (canMove)
         {
             PlayerDataUpdate(); // 플레이어 데이터 업데이트
             Move(); // 이동 처리
             JumpController(); // 점프 제어
         }
+    }
+
+    public void CorutineLoseControl(float _delay)
+    {
+        StartCoroutine(LoseControlDelay(_delay));
+    }
+
+    IEnumerator LoseControlDelay(float _delay)
+    {
+        canMove = false;
+
+        walkAudioSource.gameObject.SetActive(false);
+        m_animator.SetBool("IsMove", false);
+        m_rigid.velocity = new Vector2(0f, 0f);
+        m_rigid.constraints = RigidbodyConstraints2D.FreezePositionX;
+
+        yield return new WaitForSeconds(_delay * 6f);
+
+        canMove = true;
+        m_rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void PlayerDataUpdate()
@@ -71,7 +99,7 @@ public class PlayerControllerGPT : MonoBehaviour
 
         if (isGrounded && !m_isGrounded) // 지상에 있고, 이전에 지상이 아니었을 경우
         {
-            m_jumpLeft = PlayerData.PlayerJumpLeft;
+            m_jumpLeft = m_maxJump;
             m_isJump = false;
 
             m_randingEffect.Play();
@@ -86,12 +114,12 @@ public class PlayerControllerGPT : MonoBehaviour
     {
         float dir = Input.GetAxisRaw("Horizontal"); // 수평 방향 입력 받기
 
-        if (!PlayerData.PlayerIsHit && !PlayerData.PlayerIsDead) // 플레이어가 피격되지 않았고, 사망하지 않았다면
+        if (!hP_System.m_isHit && !SaveSystem.Instance.playerState.playerDead) // 플레이어가 피격되지 않았고, 사망하지 않았다면
         {
             if (dir > 0)
             {
                 // 오른쪽으로 이동
-                m_rigid.velocity = new Vector2(dir * PlayerData.PlayerSpeed, m_rigid.velocity.y);
+                m_rigid.velocity = new Vector2(dir * m_playerSpeed, m_rigid.velocity.y);
                 transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
@@ -99,7 +127,7 @@ public class PlayerControllerGPT : MonoBehaviour
             else if (dir < 0)
             {
                 // 왼쪽으로 이동
-                m_rigid.velocity = new Vector2(dir * PlayerData.PlayerSpeed, m_rigid.velocity.y);
+                m_rigid.velocity = new Vector2(dir * m_playerSpeed, m_rigid.velocity.y);
                 transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
                 m_animator.SetBool("IsMove", true);
                 m_animator.SetTrigger("Recorver");
@@ -120,6 +148,10 @@ public class PlayerControllerGPT : MonoBehaviour
         if (!walkAudioSource.isPlaying)
         {
             // 걷는 소리 재생
+            if (!walkAudioSource.gameObject.active)
+            {
+                walkAudioSource.gameObject.SetActive(true);
+            }
             walkAudioSource.PlayOneShot(m_PlayerMoveSoundClip);
         }
         else
@@ -132,7 +164,7 @@ public class PlayerControllerGPT : MonoBehaviour
     private void JumpController()
     {
         // 스페이스바를 누르고, 플레이어가 죽지 않았으며, 점프 중이 아닐 때
-        if (Input.GetKeyDown(KeyCode.Space) && !PlayerData.PlayerIsDead && !m_isJump)
+        if (Input.GetKeyDown(KeyCode.Space) && !SaveSystem.Instance.playerState.playerDead && !m_isJump)
         {
             m_animator.SetTrigger("IsJump");  // 점프 애니메이션 트리거
             Jump(); // 점프 실행

@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.Rendering.Universal;
@@ -64,48 +65,49 @@ public class KeyDoor : MonoBehaviour
 
             if (isOpened)
             {
-                PlayerData.PlayerSavePoint = transform.position;
+                SaveSystem.Instance.responPoint.responSceneName = SceneManager.GetActiveScene().name;
+                SaveSystem.Instance.responPoint.responScenePoint = transform.position;
             }
         }
 
         if (IsPlayer(collision) && Input.GetKeyDown(KeyCode.F) && !isOpened)
         {
-            PlayerInventorySystem inven = GetPlayerInventorySystem(collision);
-            StartCoroutine(OpenAndSearchInventoryCoroutine(inven));
+            //PlayerInventorySystem inven = GetPlayerInventorySystem(collision);
+            //StartCoroutine(OpenAndSearchInventoryCoroutine(inven));
         }
     }
 
-    private IEnumerator OpenAndSearchInventoryCoroutine(PlayerInventorySystem inven)
-    {
-        isInventoryOpen = true;
-        yield return new WaitForSeconds(delayTime);
+    //private IEnumerator OpenAndSearchInventoryCoroutine(PlayerInventorySystem inven)
+    //{
+    //    isInventoryOpen = true;
+    //    yield return new WaitForSeconds(delayTime);
 
-        if (!isOpened) // 문이 이미 열려있지 않은 경우에만 키 검사 수행
-        {
-            inven.OpenInventory();
-            bool hasKey = false;
+    //    if (!isOpened) // 문이 이미 열려있지 않은 경우에만 키 검사 수행
+    //    {
+    //        inven.OpenInventory();
+    //        bool hasKey = false;
 
-            for (int i = 0; i < inven.currentIndex; i++)
-            {
-                if (HasKey(inven, i))
-                {
-                    hasKey = true;
-                    UseKeyAndActiveDoor(inven, i);
-                    break;
-                }
-            }
+    //        for (int i = 0; i < inven.currentIndex; i++)
+    //        {
+    //            if (HasKey(inven, i))
+    //            {
+    //                hasKey = true;
+    //                UseKeyAndActiveDoor(inven, i);
+    //                break;
+    //            }
+    //        }
 
-            if (!hasKey)
-            {
-                needKeyUIOpen = true;
-            }
+    //        if (!hasKey)
+    //        {
+    //            needKeyUIOpen = true;
+    //        }
 
-            inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
-            inven.CloseInventory();
-        }
+    //        inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
+    //        inven.CloseInventory();
+    //    }
 
-        isInventoryOpen = false;
-    }
+    //    isInventoryOpen = false;
+    //}
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -122,32 +124,32 @@ public class KeyDoor : MonoBehaviour
     }
 
     // 플레이어 인벤토리 시스템을 가져오는 함수
-    private PlayerInventorySystem GetPlayerInventorySystem(Collider2D collision)
-    {
-        return collision.GetComponent<PlayerInventorySystem>();
-    }
+    //private PlayerInventorySystem GetPlayerInventorySystem(Collider2D collision)
+    //{
+    //    return collision.GetComponent<PlayerInventorySystem>();
+    //}
 
     // 인벤토리에 키가 있는지 확인하는 함수
-    private bool HasKey(PlayerInventorySystem inven, int index)
-    {
-        return inven.items[index].m_ID == keyID;
-    }
+    //private bool HasKey(PlayerInventorySystem inven, int index)
+    //{
+    //    return inven.items[index].m_ID == keyID;
+    //}
 
     // 키를 사용하고 문을 작동하는 함수
-    private void UseKeyAndActiveDoor(PlayerInventorySystem inven, int index)
-    {
-        inven.UseItem(index);
-        inven.CloseInventory();
-        isOpened = true;
-        audioSource.PlayOneShot(doorSound);
-    }
+    //private void UseKeyAndActiveDoor(PlayerInventorySystem inven, int index)
+    //{
+    //    inven.UseItem(index);
+    //    inven.CloseInventory();
+    //    isOpened = true;
+    //    audioSource.PlayOneShot(doorSound);
+    //}
 
     // 인벤토리를 업데이트하고 닫는 함수
-    private void UpdateAndCloseInventory(PlayerInventorySystem inven)
-    {
-        inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
-        inven.CloseInventory();
-    }
+    //private void UpdateAndCloseInventory(PlayerInventorySystem inven)
+    //{
+    //    inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
+    //    inven.CloseInventory();
+    //}
 
     void DoorStateChange()
     {

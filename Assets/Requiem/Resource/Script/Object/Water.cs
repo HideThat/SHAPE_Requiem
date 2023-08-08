@@ -17,7 +17,6 @@ public class Water : MonoBehaviour
         switch (collision.gameObject.layer)
         {
             case (int)LayerName.Rune:
-                rune.EnterWater();
                 break;
             default:
                 break;
@@ -29,7 +28,6 @@ public class Water : MonoBehaviour
         switch (collision.gameObject.layer)
         {
             case (int)LayerName.Rune:
-                rune.ExitWater();
                 break;
             default:
                 break;

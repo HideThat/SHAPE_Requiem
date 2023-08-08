@@ -3,6 +3,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 using System;
 using DG.Tweening;
@@ -73,7 +74,7 @@ public class RuneStatue : MonoBehaviour
             return;
         }
 
-        if (collision.CompareTag("Rune") && RuneData.RuneActive)
+        if (collision.CompareTag("Rune") && RuneData.Instance.isActive)
         {
             EnterTheRune();
         }
@@ -87,7 +88,7 @@ public class RuneStatue : MonoBehaviour
     // 룬 입장 처리를 위한 함수
     public void EnterTheRune()
     {
-        if (!isActive || RuneData.RuneBattery <= 0)
+        if (!isActive || RuneData.Instance.battery <= 0)
         {
             UpdatePlayerData();
             ActivateRuneStatue();
@@ -97,8 +98,8 @@ public class RuneStatue : MonoBehaviour
     // 플레이어 데이터 업데이트를 위한 함수
     private void UpdatePlayerData()
     {
-        PlayerData.PlayerSavePoint = savePoint;
-        PlayerData.PlayerHP = PlayerData.PlayerMaxHP;
+        SaveSystem.Instance.responPoint.responScenePoint = savePoint;
+        SaveSystem.Instance.responPoint.responSceneName = SceneManager.GetActiveScene().name;
     }
 
     private bool hasTriggered = false;
@@ -113,7 +114,7 @@ public class RuneStatue : MonoBehaviour
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
         Invoke("ActiveView2D", view2DDelayTime);
-        DOTween.To(() => RuneData.RuneBattery, x => RuneData.RuneBattery = x, RuneData.RuneBatteryMaxValue, 5f);
+        DOTween.To(() => RuneData.Instance.battery, x => RuneData.Instance.battery = x, RuneData.Instance.batteryMaxValue, 5f);
         PlayAudioClip();
     }
 

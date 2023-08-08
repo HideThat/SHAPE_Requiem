@@ -118,11 +118,6 @@ public class SnakeEatStatue : MonoBehaviour
             audioSource4.PlayOneShot(clip5);
         }
 
-        if (collision.CompareTag("RollingStone"))
-        {
-            HitRollingStone(collision);
-        }
-
         if (collision.CompareTag("RuneStatue"))
         {
             audioSource3.PlayOneShot(clip3);
@@ -158,7 +153,6 @@ public class SnakeEatStatue : MonoBehaviour
         // Á¾·á
 
         DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 5f, 4f);
-        DivAreaManager.Instance.DivAreaActive(false);
         mainCM.GetComponent<CinemachineConfiner2D>().enabled = false;
         mainCM.Follow = transform;
 
@@ -189,7 +183,6 @@ public class SnakeEatStatue : MonoBehaviour
 
     private void OnDestroy()
     {
-        DivAreaManager.Instance.DivAreaActive(true);
         mainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
         mainCM.Follow = PlayerData.PlayerObj.transform;
     }
@@ -218,21 +211,6 @@ public class SnakeEatStatue : MonoBehaviour
 
         // Fully opaque, load the scene
         SceneManager.LoadScene(sceneName);
-    }
-
-    public void HitRollingStone(Collider2D collision)
-    {
-        StartCoroutine(FadeOutAndInRoutine(0.3f, 2f, () =>
-        {
-            DataController.CameraAudioSource1.PlayOneShot(clip6);
-            DataController.CameraAudioSource2.PlayOneShot(clip7);
-            DataController.CameraAudioSource3.PlayOneShot(clip);
-            DataController.MainCM.Follow = PlayerData.PlayerObj.transform;
-            DataController.MainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
-            DivAreaManager.Instance.DivAreaActive(true);
-
-            Destroy(collision.gameObject);
-        }));
     }
 
     private IEnumerator FadeOutAndInRoutine(float fadeOutDuration, float fadeInDuration, System.Action callback)

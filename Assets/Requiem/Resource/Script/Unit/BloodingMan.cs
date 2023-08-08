@@ -13,7 +13,6 @@ public class BloodingMan : MonoBehaviour
     [SerializeField] AudioSource BG;
     [SerializeField] float MinBGVolume;
     [SerializeField] float BGVolumeChangeTime;
-    [SerializeField] string changeSceneName;
 
     // 순차적으로 이동할 포인트들
     public Transform[] pointTransforms;
@@ -103,15 +102,8 @@ public class BloodingMan : MonoBehaviour
             breathSound.gameObject.SetActive(false);
             screamSound.gameObject.SetActive(true);
 
-            Invoke("ChangeScene", delayLoadScene);
         }
     }
-
-    void ChangeScene()
-    {
-        SceneManager.LoadScene(changeSceneName, LoadSceneMode.Single);
-    }
-
     IEnumerator walkSoundPlay()
     {
         Debug.Log("Starting walkSoundPlay coroutine");
@@ -129,14 +121,7 @@ public class BloodingMan : MonoBehaviour
         isMove = true;
         breathSound.gameObject.SetActive(true);
         MoveAlongPoints();
-        PlayerData.PlayerIsMove = false;
-        player.GetComponent<RuneControllerGPT>().enabled = false;
-        player.GetComponent<PlayerControllerGPT>().walkAudioSource.Stop();
-        player.GetComponent<PlayerControllerGPT>().enabled = false;
-        PlayerData.PlayerObj.GetComponent<Animator>().Play("PlayerIdle");
-        Destroy(PlayerData.PlayerObj.GetComponent<Animator>());
-        PlayerData.PlayerObj.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
-        PlayerData.PlayerObj.GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionX;
+        player.GetComponent<PlayerControllerGPT>().CorutineLoseControl(walkSoundDelay);
         mainCM.Follow = transform;
         DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, 6f, 5f);
         DOTween.To(() => mainCamera.orthographicSize, x => mainCamera.orthographicSize = x, 6f, 5f);

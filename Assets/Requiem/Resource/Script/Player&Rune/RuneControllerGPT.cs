@@ -23,6 +23,8 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] RuneManager runeManager;
     [SerializeField] LayerMask hitLayerMask;
 
+    public bool m_isGetRune; // ·é È¹µæ ÆÇÁ¤
+
     private GameObject runeObj; // ·é °ÔÀÓ ¿ÀºêÁ§Æ®
     private Light2D runeSight; // ·éÀÇ Á¶¸í ÄÄÆ÷³ÍÆ®
     private LayerMask layerMask; // Ãæµ¹ °¨Áö ·¹ÀÌ¾î ¸¶½ºÅ©
@@ -33,7 +35,7 @@ public class RuneControllerGPT : MonoBehaviour
     }
     void Update()
     {
-        if (PlayerData.PlayerIsGetRune)
+        if (m_isGetRune)
         {
             RuneControl(); // ·é Á¦¾î
             RuneMove(); // ·é ÀÌµ¿
@@ -45,20 +47,20 @@ public class RuneControllerGPT : MonoBehaviour
         runeObj = RuneData.RuneObj;
         runeSight = RuneData.RuneObj.GetComponent<Light2D>();
         runeObj.transform.parent = null;
-        RuneData.RuneActive = false;
+        RuneData.Instance.isActive = false;
         runeObj.SetActive(true);
         target = transform.position;
         isShoot = false;
         layerMask = LayerMask.GetMask("Platform", "Wall", "RiskFactor");
 
-        SetBatteryUIVisible(false, RuneData.RuneBattery / 1000f);
+        SetBatteryUIVisible(false, RuneData.Instance.battery / 1000f);
 
         if (runeObj == null) Debug.Log("m_runeObj == null");
         if (runeSight == null) Debug.Log("m_runeSight == null");
     }
     private void RuneControl()
     {
-        if (!RuneData.RuneUseControl) return;
+        if (!RuneData.Instance.useControl) return;
 
         HandleRuneShoot(); // ·é ¹ß»ç Ã³¸®
         HandleRuneReturn(); // ·é ¹ÝÈ¯ Ã³¸®
@@ -71,18 +73,18 @@ public class RuneControllerGPT : MonoBehaviour
     }
     private void DecreaseBatteryWhileShooting()
     {
-        if (RuneData.RuneBattery > 0) RuneData.RuneBattery -= batteryDrainSpeed * Time.deltaTime;
-        else if (RuneData.RuneBattery <= 0 && !RuneData.RuneIsPowerLose)
+        if (RuneData.Instance.battery > 0) RuneData.Instance.battery -= batteryDrainSpeed * Time.deltaTime;
+        else if (RuneData.Instance.battery <= 0 && !RuneData.Instance.useControl)
         {
             RunePowerLose();
-            RuneData.RuneBattery = 0f;
+            RuneData.Instance.battery = 0f;
         }
     }
     private void UpdateBatteryUI()
     {
         if (!isShoot) return;
 
-        float batteryPercentage = RuneData.RuneBattery / 1000f;
+        float batteryPercentage = RuneData.Instance.battery / 1000f;
         Color color;
 
         if (batteryPercentage > 0.75f) color = Color.green;
@@ -158,7 +160,7 @@ public class RuneControllerGPT : MonoBehaviour
         {
             PlayRuneOffSoundAndDelayMouse();
             isShoot = false;
-            SetBatteryUIVisible(false, RuneData.RuneBattery / 1000f);
+            SetBatteryUIVisible(false, RuneData.Instance.battery / 1000f);
         }
         else if (Input.GetMouseButtonDown(0) && !isMouseDelay)
         {
@@ -166,7 +168,7 @@ public class RuneControllerGPT : MonoBehaviour
             PlayRuneOnSoundAndDelayMouse();
             HandleShootingWithBattery();
             runeManager.RuneShootSoundPlay();
-            RuneData.RuneIsReturn = false;
+            RuneData.Instance.isReturn = false;
         }
         else if (!isShoot) ReturnRune();
     }
@@ -184,13 +186,13 @@ public class RuneControllerGPT : MonoBehaviour
 
     private void HandleShootingWithBattery()
     {
-        RuneData.RuneActive = true;
+        RuneData.Instance.isActive = true;
         RuneData.RuneLightArea.enabled = true;
 
-        if (isShoot && RuneData.RuneBattery > 0) RuneData.RuneBattery -= additionalMovementReduction;
+        if (isShoot && RuneData.Instance.battery > 0) RuneData.Instance.battery -= additionalMovementReduction;
 
         isShoot = true;
-        SetBatteryUIVisible(true, RuneData.RuneBattery / 1000f);
+        SetBatteryUIVisible(true, RuneData.Instance.battery / 1000f);
     }
 
 
@@ -206,9 +208,9 @@ public class RuneControllerGPT : MonoBehaviour
     {
         if (transform.rotation.y == 0) target = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
         else if (transform.rotation.y != 0f) target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
-        if (!RuneData.RuneIsReturn) runeManager.RuneReturnSoundPlay();
-        RuneData.RuneIsReturn = true;
-        RuneData.RuneActive = false;
+        if (!RuneData.Instance.isReturn) runeManager.RuneReturnSoundPlay();
+        RuneData.Instance.isReturn = true;
+        RuneData.Instance.isActive = false;
         RuneData.RuneLightArea.enabled = false;
     }
 
@@ -246,17 +248,17 @@ public class RuneControllerGPT : MonoBehaviour
     // ·é ÆÄ¿ö °¨¼Ò
     public void RunePowerLose()
     {
-        RuneData.RuneIsPowerLose = true;
+        RuneData.Instance.isPowerLose = true;
         runeManager.RuneBatteryDepletionSoundPlay();
-        DecreaseRunePowerOverTime(0f, RuneData.RunePowerBackTime);
+        DecreaseRunePowerOverTime(0f, RuneData.Instance.runePowerBackTime);
     }
 
     // ·é ÆÄ¿ö È¸º¹
     public void RunePowerBack()
     {
-        RuneData.RuneIsPowerLose = false;
+        RuneData.Instance.isPowerLose = false;
         RuneData.RuneLightArea.enabled = true;
-        DecreaseRunePowerOverTime(RuneData.RuneOuterRadius, RuneData.RunePowerBackTime);
+        DecreaseRunePowerOverTime(RuneData.Instance.runeOuterRadius, RuneData.Instance.runePowerBackTime);
     }
 
     private void DecreaseRunePowerOverTime(float targetRadius, float duration)

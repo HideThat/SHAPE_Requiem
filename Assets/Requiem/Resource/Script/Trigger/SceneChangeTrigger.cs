@@ -12,16 +12,11 @@ public class SceneChangeTrigger : MonoBehaviour
     [SerializeField] Vector2 nextPlayerPos;
     [SerializeField] Quaternion nextPlayerRot;
 
-    [SerializeField] SceneData sceneData;
-    [SerializeField] SavePlayerData playerData;
-
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == contactObjectName)
         {
-            sceneData.SaveScene();
-            playerData.SetData(nextPlayerPos, nextPlayerRot);
+            SaveSystem.Instance.SetPlayerData(nextPlayerPos, nextPlayerRot);
             StartCoroutine(FadeOutAndLoadScene());
         }
     }

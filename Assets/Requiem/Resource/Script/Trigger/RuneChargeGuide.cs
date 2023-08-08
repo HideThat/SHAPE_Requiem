@@ -14,13 +14,13 @@ public class RuneChargeGuide : MonoBehaviour
 
     void Update()
     {
-        if (!isActive && RuneData.RuneBattery <= 0)
+        if (!isActive && RuneData.Instance.battery <= 0)
         {
             runeChargeGuide.SetActive(true);
             isActive = true;
         }
 
-        if (isActive && runeChargeGuide.active && RuneData.RuneBattery > 0)
+        if (isActive && runeChargeGuide.active && RuneData.Instance.battery > 0)
         {
             Destroy(runeChargeGuide);
             Destroy(gameObject);

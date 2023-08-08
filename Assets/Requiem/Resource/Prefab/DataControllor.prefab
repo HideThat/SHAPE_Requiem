@@ -10,13 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7543882171348522683}
   - component: {fileID: 7543882171348522628}
-  - component: {fileID: 467194304149612295}
-  - component: {fileID: 5624486233814625238}
   - component: {fileID: 4181358879477027983}
   - component: {fileID: 7543882171348522682}
   - component: {fileID: 1201676059}
   - component: {fileID: 1201676066}
-  - component: {fileID: 2253789511835076965}
   - component: {fileID: 7251319121801001864}
   m_Layer: 0
   m_Name: DataControllor
@@ -56,9 +53,6 @@ MonoBehaviour:
     mainCamera: {fileID: 0}
     mainCM: {fileID: 0}
     followTime: 4
-    audioSource1: {fileID: 0}
-    audioSource2: {fileID: 0}
-    audioSource3: {fileID: 0}
   soundManager:
     bgmVolume: 0.05
     runeSoundVolume: 0.4
@@ -73,63 +67,6 @@ MonoBehaviour:
     - {fileID: 21300000, guid: 46174f1b1024c9f418644c1c749d7ed0, type: 3}
     - {fileID: 21300000, guid: 46174f1b1024c9f418644c1c749d7ed0, type: 3}
     isInvenOpen: 0
---- !u!114 &467194304149612295
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7543882171348522629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fcf8f243fa56ad4bb9f60ad3aad9500, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_playerObj: {fileID: 0}
-  m_playerSpeed: 6
-  m_jumpLeft: 2
-  m_isWarp: 0
-  m_maxHP: 1
-  m_HP: 1
-  m_isDead: 0
-  m_isHit: 0
-  m_isMove: 0
-  m_isGetLune: 0
-  m_savePoint: {x: -59.88, y: -1.36}
-  m_deathCount: 0
-  m_playerMoveAudioSource: {fileID: 0}
-  m_playerJumpAudioSource: {fileID: 0}
-  m_playerMoveAudioClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
-  m_playerJumpAudioClip:
-  - {fileID: 8300000, guid: 450e113220877a147aa94c7b28851622, type: 3}
-  - {fileID: 8300000, guid: 5afd529ab5050e14d91949a10a3718a7, type: 3}
---- !u!114 &5624486233814625238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7543882171348522629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0627728cc00d1a946a88ba6d20908bc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runeObj: {fileID: 0}
-  runeLightArea: {fileID: 0}
-  runeIntensity: 1
-  runeOuterRadius: 0
-  runePowerBackDistance: 3
-  runePowerBackTime: 0.5
-  isStop: 0
-  isReturn: 0
-  isActive: 0
-  onWater: 0
-  touchWater: 0
-  useControl: 0
-  isPowerLose: 0
-  battery: 1000
-  batteryMaxValue: 1000
 --- !u!114 &4181358879477027983
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -196,22 +133,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   risingFloor2s: []
   wallTriggers: []
---- !u!114 &2253789511835076965
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7543882171348522629}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f64b1fde452023f47962b73dd0e5e1d5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  keyItems: []
-  keyDoors: []
-  runeStatues: []
-  playerData: {fileID: 0}
 --- !u!114 &7251319121801001864
 MonoBehaviour:
   m_ObjectHideFlags: 0

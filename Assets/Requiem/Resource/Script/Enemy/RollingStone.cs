@@ -52,7 +52,6 @@ public class RollingStone : Enemy_Static
 
     private void OnDestroy()
     {
-        DivAreaManager.Instance.DivAreaActive(true);
         snakeEatStatue.stoneCount++;
     }
 }

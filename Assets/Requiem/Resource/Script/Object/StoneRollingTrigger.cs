@@ -74,7 +74,6 @@ public class StoneRollingTrigger : MonoBehaviour
                 BeginCameraTransition();
             }
 
-            DivAreaManager.Instance.DivAreaActive(false);
             StartCoroutine(TweenControl());
         }
 

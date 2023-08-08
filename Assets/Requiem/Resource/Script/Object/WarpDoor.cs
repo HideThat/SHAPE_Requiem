@@ -101,7 +101,7 @@ public class WarpDoor : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (playerIn && Input.GetKey(KeyCode.F) && !PlayerData.Instance.m_isWarp)
+        if (playerIn && Input.GetKey(KeyCode.F) && !PlayerData.Instance.m_playerObj.GetComponent<PlayerControllerGPT>().m_isWarp)
         {
             Invoke("MoveOtherDoor", fadeOutAndInTime);
             
@@ -172,10 +172,10 @@ public class WarpDoor : MonoBehaviour
 
     IEnumerator PlayerWarpDelay()
     {
-        PlayerData.Instance.m_isWarp = true;
+        PlayerData.Instance.m_playerObj.GetComponent<PlayerControllerGPT>().m_isWarp = true;
 
         yield return new WaitForSeconds(0.5f);
 
-        PlayerData.Instance.m_isWarp = false;
+        PlayerData.Instance.m_playerObj.GetComponent<PlayerControllerGPT>().m_isWarp = false;
     }
 }

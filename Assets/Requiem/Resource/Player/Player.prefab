@@ -5677,6 +5677,7 @@ GameObject:
   - component: {fileID: 8692093828207425946}
   - component: {fileID: 7768115882346444692}
   - component: {fileID: 972797110}
+  - component: {fileID: 7633837965951057508}
   m_Layer: 6
   m_Name: Rune
   m_TagString: Rune
@@ -6100,6 +6101,31 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
+--- !u!114 &7633837965951057508
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529985359348219181}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0627728cc00d1a946a88ba6d20908bc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  runeObj: {fileID: 0}
+  runeLightArea: {fileID: 0}
+  runeIntensity: 1
+  runeOuterRadius: 0
+  runePowerBackDistance: 3
+  runePowerBackTime: 0.5
+  isStop: 0
+  isReturn: 0
+  isActive: 0
+  useControl: 0
+  isPowerLose: 0
+  battery: 1000
+  batteryMaxValue: 1000
 --- !u!1 &2529985360050657747
 GameObject:
   m_ObjectHideFlags: 0
@@ -6117,10 +6143,9 @@ GameObject:
   - component: {fileID: 1396653073}
   - component: {fileID: 1996320800}
   - component: {fileID: 1996320799}
-  - component: {fileID: 8160237521022626517}
   - component: {fileID: 178034531}
   - component: {fileID: 1810196480}
-  - component: {fileID: 5959309548902715685}
+  - component: {fileID: 7513601501572537083}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -6477,6 +6502,7 @@ MonoBehaviour:
   hitLayerMask:
     serializedVersion: 2
     m_Bits: 1920
+  m_isGetRune: 0
   hasRestarted: 0
 --- !u!114 &1996320799
 MonoBehaviour:
@@ -6499,26 +6525,10 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   audioSource: {fileID: 803490777064188797}
---- !u!114 &8160237521022626517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2529985360050657747}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f5c8b7d8a0bed743af77f9bfc191cc4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  inventorySize: 32
-  inventorySounds:
-  - {fileID: 8300000, guid: 2603386f60e6dd4458115b68d692c874, type: 3}
-  - {fileID: 8300000, guid: 2603386f60e6dd4458115b68d692c874, type: 3}
-  - {fileID: 8300000, guid: e8101721f05ee6d4f99bb9c32cea36ed, type: 3}
-  playerInventory: {fileID: 0}
-  items: []
-  currentIndex: 0
+  m_maxHP: 0
+  m_HP: 0
+  m_isHit: 0
+  m_deathCount: 0
 --- !u!114 &178034531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6531,8 +6541,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b43e5fca52c7dd94bb83eda27dd25ff4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  rune: {fileID: 0}
+  player: {fileID: 2529985360050657736}
+  rune: {fileID: 2529985359348219182}
+  playerAnimator: {fileID: 2529985360050657732}
 --- !u!114 &1810196480
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6546,6 +6557,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_jumpLeft: 2
+  m_maxJump: 2
   m_jumpForce: 15
   m_fallForce: 1.5
   m_maxFallSpeed: 10
@@ -6554,12 +6566,16 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_randingEffect: {fileID: 0}
+  m_playerSpeed: 6
+  m_isWarp: 0
+  m_isMove: 0
+  hP_System: {fileID: 1996320799}
   walkAudioSource: {fileID: 894907078}
   m_PlayerMoveSoundClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
-  m_rigid: {fileID: 0}
-  m_animator: {fileID: 0}
-  m_collider: {fileID: 0}
---- !u!114 &5959309548902715685
+  m_rigid: {fileID: 2529985360050657742}
+  m_animator: {fileID: 2529985360050657732}
+  m_collider: {fileID: 1396653073}
+--- !u!114 &7513601501572537083
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -6568,14 +6584,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 2529985360050657747}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b1f0aa70365678e4e9a8411074d9ae68, type: 3}
+  m_Script: {fileID: 11500000, guid: 2fcf8f243fa56ad4bb9f60ad3aad9500, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  rune: {fileID: 0}
-  playerPosition: {x: 0, y: 0}
-  playerRotation: {x: 0, y: 0, z: 0, w: 0}
-  isGetRune: 0
+  m_playerObj: {fileID: 2529985360050657747}
+  m_playerMoveAudioSource: {fileID: 894907078}
+  m_playerJumpAudioSource: {fileID: 990802244}
+  m_playerMoveAudioClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
+  m_playerJumpAudioClip:
+  - {fileID: 8300000, guid: 450e113220877a147aa94c7b28851622, type: 3}
+  - {fileID: 8300000, guid: 5afd529ab5050e14d91949a10a3718a7, type: 3}
 --- !u!1 &4749983326542899306
 GameObject:
   m_ObjectHideFlags: 0

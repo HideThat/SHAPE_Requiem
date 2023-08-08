@@ -50,16 +50,6 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0f; // 시간 흐름을 멈춤
         IsPaused = true;
 
-        // PauseMenu 프리팹을 인스턴스화하여 pauseMenuInstance 변수에 할당
-        if (pauseMenuInstance == null)
-        {
-            pauseMenuInstance = Instantiate(pauseMenuPrefab, DataController.CanvasObj.transform);
-        }
-        else
-        {
-            pauseMenuInstance.SetActive(true); // 이미 인스턴스가 있는 경우 활성화
-        }
-
         // 자식 객체들 찾기
         resumeButton = pauseMenuInstance.transform.Find("ResumeButton").GetComponent<Button>();
         quitButton = pauseMenuInstance.transform.Find("QuitButton").GetComponent<Button>();

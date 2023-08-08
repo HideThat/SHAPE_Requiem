@@ -63,9 +63,9 @@ public class RuneManager : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("RuneStatue"))
         {
-            if (RuneData.RuneActive || RuneData.RuneBattery <= 0)
+            if (RuneData.Instance.isActive || RuneData.Instance.battery <= 0)
             {
-                if (RuneData.RuneBattery <= 0)
+                if (RuneData.Instance.battery <= 0)
                 {
                     collision.gameObject.GetComponent<RuneStatue>().Initialized();
                     fullChargeCount++;
@@ -111,34 +111,34 @@ public class RuneManager : MonoBehaviour
             case "RuneStatue":
                 PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
 
-                if (RuneData.RuneIsPowerLose)
+                if (RuneData.Instance.isPowerLose)
                     PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
 
                 if (!audioSource.isPlaying)
                     RuneBatteryChargeSoundPlay();
 
-                if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
-                    RuneData.RuneBattery += collision.gameObject.GetComponent<RuneStatue>().runeChargePower * Time.deltaTime;
+                if (RuneData.Instance.battery < RuneData.Instance.batteryMaxValue)
+                    RuneData.Instance.battery += collision.gameObject.GetComponent<RuneStatue>().runeChargePower * Time.deltaTime;
                 else
                 {
-                    RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                    RuneData.Instance.battery = RuneData.Instance.batteryMaxValue;
                 }
                 break;
 
             case "SubRuneStatue":
                 PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().isCharge = true;
 
-                if (RuneData.RuneIsPowerLose)
+                if (RuneData.Instance.isPowerLose)
                     PlayerData.PlayerObj.GetComponent<RuneControllerGPT>().RunePowerBack();
 
                 if (!audioSource.isPlaying)
                     RuneBatteryChargeSoundPlay();
 
-                if (RuneData.RuneBattery < RuneData.RuneBatteryMaxValue)
-                    RuneData.RuneBattery += collision.gameObject.GetComponent<SubRuneStatue>().runeChargePower * Time.deltaTime;
+                if (RuneData.Instance.battery < RuneData.Instance.batteryMaxValue)
+                    RuneData.Instance.battery += collision.gameObject.GetComponent<SubRuneStatue>().runeChargePower * Time.deltaTime;
                 else
                 {
-                    RuneData.RuneBattery = RuneData.RuneBatteryMaxValue;
+                    RuneData.Instance.battery = RuneData.Instance.batteryMaxValue;
                 }
                 break;
 
@@ -176,23 +176,10 @@ public class RuneManager : MonoBehaviour
         audioSource.PlayOneShot(audioClips[4]);
     }
 
-    public void EnterWater()
-    {
-        RuneData.RuneTouchWater = true;
-        RuneData.RuneActive = false;
-        RuneData.RuneOnWater = true;
-        RuneData.RuneLightArea.enabled = false;
-    }
-
-    public void ExitWater()
-    {
-        RuneData.RuneOnWater = false;
-    }
-
     public void StatueInteraction(Transform _target)
     {
         m_runeControl.target = _target.position;
-        RuneData.RuneUseControl = false;
+        RuneData.Instance.useControl = false;
         transform.Rotate(Vector3.back * m_rotationSpeed);
         transform.DOMove(m_runeControl.target, m_moveTime);
         StartCoroutine(StatueInteractionDelay());
@@ -207,9 +194,9 @@ public class RuneManager : MonoBehaviour
     {
         yield return new WaitForSeconds(m_moveTime);
 
-        RuneData.RuneUseControl = true;
-        RuneData.RuneActive = false;
-        PlayerData.PlayerIsGetRune = true;
+        RuneData.Instance.useControl = true;
+        RuneData.Instance.isActive = false;
+        PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().m_isGetRune = true;
         m_isStatueInteraction = false;
         transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
         m_statue.GetComponent<RuneStatue>().isActive = true;

@@ -72,7 +72,8 @@ public class GetRuneTrigger : MonoBehaviour
 
     private bool CanActivateRune(Collider2D collision)
     {
-        return !m_isActive && collision.gameObject.CompareTag("Player") && !PlayerData.PlayerIsGetRune;
+        return !m_isActive && collision.gameObject.CompareTag("Player") && 
+            !PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().m_isGetRune;
     }
 
     private void ActivateRune()
@@ -93,6 +94,6 @@ public class GetRuneTrigger : MonoBehaviour
     {
         m_isActive = false;
         runeManager.transform.rotation = Quaternion.identity;
-        PlayerData.PlayerIsGetRune = true;
+        PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().m_isGetRune = true;
     }
 }

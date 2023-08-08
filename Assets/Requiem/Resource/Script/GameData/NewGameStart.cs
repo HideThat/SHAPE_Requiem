@@ -9,8 +9,11 @@ public class NewGameStart : MonoBehaviour
 {
     [SerializeField] private Transform player; // 플레이어 오브젝트
     [SerializeField] private Transform rune; // 룬 오브젝트
+    [SerializeField] private Animator playerAnimator; // 플레이어 애니메이터
 
-    private Animator playerAnimator; // 플레이어 애니메이터
+    PlayerControllerGPT playerController;
+    HP_SystemGPT hP_SystemGPT;
+    RuneControllerGPT runeController;
 
 
     private void Start()
@@ -20,12 +23,12 @@ public class NewGameStart : MonoBehaviour
 
     private void InitializeGame()
     {
-        player = PlayerData.PlayerObj.transform;
-        rune = RuneData.RuneObj.transform;
+        playerController = player.GetComponent<PlayerControllerGPT>();
+        hP_SystemGPT = player.GetComponent<HP_SystemGPT>();
+        runeController = player.GetComponent<RuneControllerGPT>();
 
-        PlayerData.PlayerIsMove = false; // 플레이어 이동 불가능
-        PlayerData.PlayerIsGetRune = false; // 플레이어 룬 획득 불가능
-        playerAnimator = player.GetComponent<Animator>(); // 플레이어 애니메이터 컴포넌트 받아옴
+        playerController.canMove = false; // 플레이어 이동 불가능
+        runeController.m_isGetRune = false; // 플레이어 룬 획득 불가능
         playerAnimator.SetBool("IsFirstStart", true); // 처음 시작 상태로 설정
 
         if (player == null) Debug.Log("player == null");
@@ -51,7 +54,7 @@ public class NewGameStart : MonoBehaviour
     {
         yield return new WaitForSeconds(1f); // 1초 대기
 
-        PlayerData.PlayerIsMove = true; // 플레이어 이동 가능
+        playerController.canMove = true; // 플레이어 이동 가능
         Destroy(GetComponent<NewGameStart>());
     }
 }

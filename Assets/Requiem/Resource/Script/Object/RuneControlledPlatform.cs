@@ -103,7 +103,7 @@ public class RuneControlledPlatform : MonoBehaviour
 
     void AttachRune()
     {
-        RuneData.RuneUseControl = false;
+        RuneData.Instance.useControl = false;
         runeController.moveTime = 0.1f;
         runeController.target = transform.position;
     }
@@ -111,7 +111,7 @@ public class RuneControlledPlatform : MonoBehaviour
     private void DetachRune()
     {
         runeController.moveTime = originalMoveTime;
-        RuneData.RuneUseControl = true;
+        RuneData.Instance.useControl = true;
         runeController.target = player.position;
         isRuneAttached = false;
         runeController.isShoot = false;
@@ -119,7 +119,7 @@ public class RuneControlledPlatform : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Rune") && RuneData.RuneActive)
+        if (collision.gameObject.CompareTag("Rune") && RuneData.Instance.isActive)
         {
             isRuneAttached = true;
         }

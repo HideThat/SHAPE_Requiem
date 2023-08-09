@@ -6525,8 +6525,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   audioSource: {fileID: 803490777064188797}
-  m_maxHP: 0
-  m_HP: 0
+  m_maxHP: 1
+  m_HP: 1
   m_isHit: 0
   m_deathCount: 0
 --- !u!114 &178034531
@@ -6568,7 +6568,7 @@ MonoBehaviour:
   m_randingEffect: {fileID: 0}
   m_playerSpeed: 6
   m_isWarp: 0
-  m_isMove: 0
+  canMove: 0
   hP_System: {fileID: 1996320799}
   walkAudioSource: {fileID: 894907078}
   m_PlayerMoveSoundClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}

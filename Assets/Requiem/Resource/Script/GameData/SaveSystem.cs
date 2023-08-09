@@ -81,12 +81,15 @@ public class SaveSystem : MonoBehaviour
 
     public void LoadPlayerData()
     {
-        // 저장된 플레이어 트랜스폼 로드
-        PlayerData.PlayerObj.transform.position = new Vector2(PlayerPrefs.GetFloat($"Player_PosX"), PlayerPrefs.GetFloat($"Player_PosY"));
-        PlayerData.PlayerObj.transform.rotation = new Quaternion(PlayerPrefs.GetFloat($"Player_RotX"), PlayerPrefs.GetFloat($"Player_RotY"),
-            PlayerPrefs.GetFloat($"Player_RotZ"), PlayerPrefs.GetFloat($"Player_RotW"));
-
-
+        if (PlayerPrefs.GetFloat($"Player_PosX") != 0 && 
+            PlayerPrefs.GetFloat($"Player_PosY") != 0)
+        {
+            // 저장된 플레이어 트랜스폼 로드
+            PlayerData.PlayerObj.transform.position = new Vector2(PlayerPrefs.GetFloat($"Player_PosX"), PlayerPrefs.GetFloat($"Player_PosY"));
+            PlayerData.PlayerObj.transform.rotation = new Quaternion(PlayerPrefs.GetFloat($"Player_RotX"), PlayerPrefs.GetFloat($"Player_RotY"),
+                PlayerPrefs.GetFloat($"Player_RotZ"), PlayerPrefs.GetFloat($"Player_RotW"));
+        }
+        
         if (PlayerPrefs.GetInt($"PlayerIsGetRune") == 0)
         {
             PlayerData.PlayerObj.transform.GetComponent<RuneControllerGPT>().enabled = false;

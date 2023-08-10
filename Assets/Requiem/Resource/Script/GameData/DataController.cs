@@ -123,6 +123,7 @@ public class DataController : MonoBehaviour
 
     private void Awake()
     {
+        SaveSystem.Instance.LoadPlayerData();
 
         if (GameObject.Find("DataController") == null)
         {
@@ -141,8 +142,6 @@ public class DataController : MonoBehaviour
 
     private void Start()
     {
-        SaveSystem.Instance.LoadPlayerData();
-
         if (MainCamera == null) Debug.Log("MainCamera == null");
         if (CameraFollowTime == 0) Debug.Log("CameraFollowTime == 0");
         if (BGMVolume == 0) Debug.Log("BGMVolume == 0");

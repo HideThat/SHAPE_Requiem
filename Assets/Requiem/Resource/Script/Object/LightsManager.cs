@@ -21,7 +21,6 @@ public class LightsManager : MonoBehaviour
     [SerializeField] private Vector2 BlincOffTime; // 불이 깜박이는 시간 범위(Off)
     [SerializeField] private Vector2 BlincMiddleTime; // 불이 깜박이는 중간 시간 범위
     [SerializeField] private Vector2 BlincOnTime; // 불이 깜박이는 시간 범위(On)
-    [SerializeField] private FieldOfView2D view2D; // 불이 깜박이는 시간 범위(On)
 
     public Light2D light2D;  // 2D 라이트 컴포넌트
     private float originIntensity;  // 원래 빛의 세기
@@ -132,13 +131,11 @@ public class LightsManager : MonoBehaviour
         if (light2D.lightType == Light2D.LightType.Freeform)  // 자유형태 빛인 경우
         {
             DOTween.To(() => light2D.shapeLightFalloffSize, x => light2D.shapeLightFalloffSize = x, originFallout, turnOnTime);  // 페이드아웃을 원래 크기로 도트윈 사용해서 부드럽게 변경
-            view2D.TurnOnView(originFallout, turnOnTime);
         }
 
         if (light2D.lightType == Light2D.LightType.Point)  // 점 빛인 경우
         {
             DOTween.To(() => light2D.pointLightOuterRadius, x => light2D.pointLightOuterRadius = x, originOuterRadius, turnOnTime);  // 반경을 원래 크기로 도트윈 사용해서 부드럽게 변경
-            view2D.TurnOnView(originOuterRadius, turnOnTime);
         }
     }
 
@@ -149,13 +146,11 @@ public class LightsManager : MonoBehaviour
         if (light2D.lightType == Light2D.LightType.Freeform)  // 자유형태 빛인 경우
         {
             DOTween.To(() => light2D.shapeLightFalloffSize, x => light2D.shapeLightFalloffSize = x, 0f, turnOffTime);  // 페이드아웃을 0으로 도트윈 사용해서 부드럽게 변경
-            view2D.TurnOffView();
         }
 
         if (light2D.lightType == Light2D.LightType.Point)  // 점 빛인 경우
         {
             DOTween.To(() => light2D.pointLightOuterRadius, x => light2D.pointLightOuterRadius = x, 0f, turnOffTime);  // 반경을 0으로 도트윈 사용해서 부드럽게 변경
-            view2D.TurnOffView();
         }
     }
 

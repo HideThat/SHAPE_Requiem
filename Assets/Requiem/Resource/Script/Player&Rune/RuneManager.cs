@@ -15,7 +15,6 @@ public class RuneManager : MonoBehaviour
     [SerializeField] private Transform m_statue;
     [SerializeField] private float m_moveTime = 3f;
     [SerializeField] private float m_rotationSpeed = 10f;
-    [SerializeField] private bool m_isStatueInteraction = false;
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip[] audioClips;
     public int fullChargeCount = 0;
@@ -36,7 +35,7 @@ public class RuneManager : MonoBehaviour
 
     private void Update()
     {
-        if (m_isStatueInteraction)
+        if (RuneData.Instance.m_isStatueInteraction)
         {
             if (!m_statue.GetComponent<RuneStatue>().isActive)
             {
@@ -71,7 +70,7 @@ public class RuneManager : MonoBehaviour
                     fullChargeCount++;
                 }
                 m_statue = collision.transform;
-                m_isStatueInteraction = true;
+                EnterTheStatue();
             }
         }
 
@@ -176,6 +175,11 @@ public class RuneManager : MonoBehaviour
         audioSource.PlayOneShot(audioClips[4]);
     }
 
+    public void EnterTheStatue()
+    {
+        RuneData.Instance.m_isStatueInteraction = true;
+    }
+
     public void StatueInteraction(Transform _target)
     {
         m_runeControl.target = _target.position;
@@ -197,9 +201,12 @@ public class RuneManager : MonoBehaviour
         RuneData.Instance.useControl = true;
         RuneData.Instance.isActive = false;
         PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().m_isGetRune = true;
-        m_isStatueInteraction = false;
+        RuneData.Instance.m_isStatueInteraction = false;
         transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
         m_statue.GetComponent<RuneStatue>().isActive = true;
+
+        if (PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().runeManager == null)
+            PlayerData.Instance.m_playerObj.GetComponent<RuneControllerGPT>().runeManager = this;
     }
 
     public void Initialized()

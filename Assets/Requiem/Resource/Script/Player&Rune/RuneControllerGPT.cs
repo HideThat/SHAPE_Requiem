@@ -17,10 +17,10 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] private bool isMouseDelay = false; // ¸¶¿ì½º Å¬¸¯ Áö¿¬ ¿©ºÎ
     [SerializeField] public float batteryDrainSpeed = 1f;
     [SerializeField] public float additionalMovementReduction = 50f;
-    [SerializeField] public ParticleSystem runeCharge;
     [SerializeField] SpriteRenderer[] batteryUI;
     [SerializeField] SpriteRenderer batteryBorder;
-    [SerializeField] RuneManager runeManager;
+    [SerializeField] public RuneManager runeManager;
+    [SerializeField] public ParticleSystem runeCharge;
     [SerializeField] LayerMask hitLayerMask;
 
     public bool m_isGetRune; // ·é È¹µæ ÆÇÁ¤
@@ -44,11 +44,7 @@ public class RuneControllerGPT : MonoBehaviour
     }
     private void InitializeRuneController()
     {
-        runeObj = RuneData.RuneObj;
-        runeSight = RuneData.RuneObj.GetComponent<Light2D>();
-        runeObj.transform.parent = null;
         RuneData.Instance.isActive = false;
-        runeObj.SetActive(true);
         target = transform.position;
         isShoot = false;
         layerMask = LayerMask.GetMask("Platform", "Wall", "RiskFactor");
@@ -61,6 +57,23 @@ public class RuneControllerGPT : MonoBehaviour
     private void RuneControl()
     {
         if (!RuneData.Instance.useControl) return;
+
+        if (runeManager == null)
+        {
+            runeManager = GameObject.Find("Rune").GetComponent<RuneManager>();
+        }
+
+        if (runeObj == null)
+        {
+            runeObj = RuneData.RuneObj;
+            runeSight = RuneData.RuneObj.GetComponent<Light2D>();
+        }
+
+        if (runeManager != null)
+        {
+            runeCharge = runeManager.transform.GetComponentInChildren<ParticleSystem>();
+        }
+
 
         HandleRuneShoot(); // ·é ¹ß»ç Ã³¸®
         HandleRuneReturn(); // ·é ¹ÝÈ¯ Ã³¸®

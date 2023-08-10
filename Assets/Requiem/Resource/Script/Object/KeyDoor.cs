@@ -23,7 +23,6 @@ public class KeyDoor : MonoBehaviour
     [Header("프로그래머")]
     [SerializeField] private float delayTime;
     [SerializeField] private float sightRadius;
-    [SerializeField] private FieldOfView2D view2D;
 
     private AudioSource audioSource;
     private bool isInventoryOpen = false;
@@ -35,8 +34,6 @@ public class KeyDoor : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         playerIn = false;
         needKeyUI = transform.Find("NeedKeyUI").GetComponent<SpriteRenderer>();
-
-        view2D.TurnOffView();
 
         if (audioSource == null) Debug.Log("audioSource == null");
         openedSprite.gameObject.SetActive(true);
@@ -157,13 +154,11 @@ public class KeyDoor : MonoBehaviour
         {
             openedSprite.DOColor(new Color(255f, 255f, 255f, 255f), lightsManager.turnOnTime);
             lightsManager.turnOffValue = false;
-            view2D.TurnOnView(sightRadius, lightsManager.turnOnTime);
         }
         else
         {
             openedSprite.DOColor(new Color(255f, 255f, 255f, 0f), lightsManager.turnOffTime);
             lightsManager.turnOffValue = true;
-            view2D.TurnOffView();
         }
     }
     

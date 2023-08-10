@@ -89,11 +89,5 @@ public class SaveSystem : MonoBehaviour
             PlayerData.PlayerObj.transform.rotation = new Quaternion(PlayerPrefs.GetFloat($"Player_RotX"), PlayerPrefs.GetFloat($"Player_RotY"),
                 PlayerPrefs.GetFloat($"Player_RotZ"), PlayerPrefs.GetFloat($"Player_RotW"));
         }
-        
-        if (PlayerPrefs.GetInt($"PlayerIsGetRune") == 0)
-        {
-            PlayerData.PlayerObj.transform.GetComponent<RuneControllerGPT>().enabled = false;
-            RuneData.RuneObj.SetActive(false);
-        }
     }
 }

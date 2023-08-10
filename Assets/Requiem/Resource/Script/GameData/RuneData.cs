@@ -19,6 +19,7 @@ public class RuneData : MonoBehaviour
     [SerializeField] public bool isReturn; // 룬의 리턴 판단
     [SerializeField] public bool isActive; // 룬의 활성화 판단
     [SerializeField] public bool useControl; // 룬의 컨트롤이 가능할 때 온
+    [SerializeField] public bool m_isStatueInteraction = false;
     [SerializeField] public bool isPowerLose;
     [SerializeField] public float battery = 1000f;
     [SerializeField] public float batteryMaxValue = 1000f;

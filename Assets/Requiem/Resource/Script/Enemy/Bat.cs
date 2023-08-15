@@ -173,7 +173,7 @@ public class Bat : Enemy_Dynamic
     private void HandleCollision(Collider2D collision)
     {
         // 룬이 활성화 상태에서 빛 범위에 닿게 되면, 도망 시작
-        if (collision.gameObject.layer == (int)LayerName.LightArea && RuneData.Instance.isActive)
+        if (collision.gameObject.layer == (int)LayerName.LightArea && RuneManager.Instance.isActive)
         {
             m_collider2D.isTrigger = false; // 콜라이더 트리거 오프
             isEscape = true; // 도망 시작

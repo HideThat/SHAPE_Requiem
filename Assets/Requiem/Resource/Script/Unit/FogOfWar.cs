@@ -35,7 +35,6 @@ public class FogOfWar : MonoBehaviour
                 fog.transform.localScale = fogSize;
                 fog.transform.position = initialPosition + new Vector2(j * fogDistance.x, i * fogDistance.y);
                 fog.transform.parent = transform;
-                fog.GetComponent<BoxCollider2D>().size = fogSize;
 
                 // 안개 인스턴스 쿼드트리에 삽입
                 quadTree.Insert(fog);

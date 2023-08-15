@@ -23,7 +23,7 @@ public class GetRuneTrigger : MonoBehaviour
 
     private void InitializeComponents()
     {
-        runeManager = RuneData.RuneObj.GetComponent<RuneManager>();
+        runeManager = RuneManager.Instance.runeObj.GetComponent<RuneManager>();
 
         if (runeStatue == null) Debug.Log("runeStatue == null");
         if (runeManager == null) Debug.Log("runeManager == null");

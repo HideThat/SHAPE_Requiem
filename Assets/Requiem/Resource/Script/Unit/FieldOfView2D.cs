@@ -4,35 +4,6 @@ using UnityEngine;
 using UnityEditor;
 using DG.Tweening;
 
-// UnityEditor namespace를 사용하여 Unity Editor에 대한 커스텀 기능을 만듭니다.
-[CustomEditor(typeof(FieldOfView2D))]
-public class FieldOfViewEditor2D : Editor
-{
-    // OnSceneGUI 함수를 오버라이드하여 Scene 뷰에서의 사용자 인터페이스를 제어합니다.
-    void OnSceneGUI()
-    {
-        // target으로 설정된 현재 선택된 오브젝트를 FieldOfView2D 타입으로 가져옵니다.
-        FieldOfView2D fow = (FieldOfView2D)target;
-
-        // Handles를 이용해 Scene 뷰에 원형의 Field of View를 그립니다.
-        Handles.color = Color.white;
-        Handles.DrawWireArc(fow.transform.position, Vector3.forward, Vector3.up, 360, fow.viewRadius);
-
-        // Field of View의 범위를 나타내는 두 벡터를 계산하고, 이를 Scene 뷰에 그립니다.
-        Vector3 viewAngleA = fow.DirFromAngle(-fow.viewAngle / 2, false);
-        Vector3 viewAngleB = fow.DirFromAngle(fow.viewAngle / 2, false);
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleA * fow.viewRadius);
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleB * fow.viewRadius);
-
-        // Handles를 이용해 감지된 타겟을 빨간색으로 표시합니다.
-        Handles.color = Color.red;
-        foreach (Transform visibleTarget in fow.visibleTargets)
-        {
-            Handles.DrawLine(fow.transform.position, visibleTarget.position);
-        }
-    }
-}
-
 // Raycast의 결과 정보를 저장하는 구조체입니다.
 public struct ViewCastInfo
 {

@@ -6,6 +6,9 @@ using DG.Tweening;
 
 public class RuneControllerGPT : MonoBehaviour
 {
+    // 싱글톤 인스턴스
+    public static RuneControllerGPT Instance { get; private set; }
+
     public Vector2 target; // 룬의 이동 목표 위치
     public float moveTime; // 룬 이동 시간
     public bool isShoot; // 룬이 발사되었는지 여부
@@ -26,8 +29,23 @@ public class RuneControllerGPT : MonoBehaviour
     public bool m_isGetRune; // 룬 획득 판정
 
     private GameObject runeObj; // 룬 게임 오브젝트
-    private Light2D runeSight; // 룬의 조명 컴포넌트
     private LayerMask layerMask; // 충돌 감지 레이어 마스크
+
+    public Tween runeMoveTween;
+
+    void Awake()
+    {
+        // 싱글톤 패턴 적용
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
@@ -44,19 +62,18 @@ public class RuneControllerGPT : MonoBehaviour
     }
     private void InitializeRuneController()
     {
-        RuneData.Instance.isActive = false;
+        RuneManager.Instance.isActive = false;
         target = transform.position;
         isShoot = false;
         layerMask = LayerMask.GetMask("Platform", "Wall", "RiskFactor");
 
-        SetBatteryUIVisible(false, RuneData.Instance.battery / 1000f);
+        SetBatteryUIVisible(false, RuneManager.Instance.battery / 1000f);
 
         if (runeObj == null) Debug.Log("m_runeObj == null");
-        if (runeSight == null) Debug.Log("m_runeSight == null");
     }
     private void RuneControl()
     {
-        if (!RuneData.Instance.useControl) return;
+        if (!RuneManager.Instance.useControl) return;
 
         if (runeManager == null)
         {
@@ -65,8 +82,7 @@ public class RuneControllerGPT : MonoBehaviour
 
         if (runeObj == null)
         {
-            runeObj = RuneData.RuneObj;
-            runeSight = RuneData.RuneObj.GetComponent<Light2D>();
+            runeObj = RuneManager.Instance.runeObj;
         }
 
         if (runeManager != null)
@@ -86,18 +102,18 @@ public class RuneControllerGPT : MonoBehaviour
     }
     private void DecreaseBatteryWhileShooting()
     {
-        if (RuneData.Instance.battery > 0) RuneData.Instance.battery -= batteryDrainSpeed * Time.deltaTime;
-        else if (RuneData.Instance.battery <= 0 && !RuneData.Instance.useControl)
+        if (RuneManager.Instance.battery > 0) RuneManager.Instance.battery -= batteryDrainSpeed * Time.deltaTime;
+        else if (RuneManager.Instance.battery <= 0 && !RuneManager.Instance.useControl)
         {
-            RunePowerLose();
-            RuneData.Instance.battery = 0f;
+            RuneManager.Instance.RunePowerLose();
+            RuneManager.Instance.battery = 0f;
         }
     }
     private void UpdateBatteryUI()
     {
         if (!isShoot) return;
 
-        float batteryPercentage = RuneData.Instance.battery / 1000f;
+        float batteryPercentage = RuneManager.Instance.battery / 1000f;
         Color color;
 
         if (batteryPercentage > 0.75f) color = Color.green;
@@ -155,6 +171,8 @@ public class RuneControllerGPT : MonoBehaviour
     }
     private void MoveRuneToTarget()
     {
+        DOTween.Kill(runeMoveTween);
+
         if (isShoot)
         {
             Vector2 dir = target - (Vector2)runeObj.transform.position;
@@ -162,10 +180,10 @@ public class RuneControllerGPT : MonoBehaviour
 
             RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
 
-            if (rayHit) runeObj.transform.DOMove(rayHit.point, moveTime);
-            else runeObj.transform.DOMove(target, moveTime);
+            if (rayHit) runeMoveTween = runeObj.transform.DOMove(rayHit.point, moveTime);
+            else runeMoveTween = runeObj.transform.DOMove(target, moveTime);
         }
-        else runeObj.transform.DOMove(target, moveTime);
+        else runeMoveTween = runeObj.transform.DOMove(target, moveTime);
     }
     private void HandleMouseClicksForShooting()
     {
@@ -173,7 +191,7 @@ public class RuneControllerGPT : MonoBehaviour
         {
             PlayRuneOffSoundAndDelayMouse();
             isShoot = false;
-            SetBatteryUIVisible(false, RuneData.Instance.battery / 1000f);
+            SetBatteryUIVisible(false, RuneManager.Instance.battery / 1000f);
         }
         else if (Input.GetMouseButtonDown(0) && !isMouseDelay)
         {
@@ -181,7 +199,7 @@ public class RuneControllerGPT : MonoBehaviour
             PlayRuneOnSoundAndDelayMouse();
             HandleShootingWithBattery();
             runeManager.RuneShootSoundPlay();
-            RuneData.Instance.isReturn = false;
+            RuneManager.Instance.isReturn = false;
         }
         else if (!isShoot) ReturnRune();
     }
@@ -199,13 +217,13 @@ public class RuneControllerGPT : MonoBehaviour
 
     private void HandleShootingWithBattery()
     {
-        RuneData.Instance.isActive = true;
-        RuneData.RuneLightArea.enabled = true;
+        RuneManager.Instance.isActive = true;
+        RuneManager.Instance.runeLightArea.enabled = true;
 
-        if (isShoot && RuneData.Instance.battery > 0) RuneData.Instance.battery -= additionalMovementReduction;
+        if (isShoot && RuneManager.Instance.battery > 0) RuneManager.Instance.battery -= additionalMovementReduction;
 
         isShoot = true;
-        SetBatteryUIVisible(true, RuneData.Instance.battery / 1000f);
+        SetBatteryUIVisible(true, RuneManager.Instance.battery / 1000f);
     }
 
 
@@ -221,10 +239,10 @@ public class RuneControllerGPT : MonoBehaviour
     {
         if (transform.rotation.y == 0) target = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
         else if (transform.rotation.y != 0f) target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
-        if (!RuneData.Instance.isReturn) runeManager.RuneReturnSoundPlay();
-        RuneData.Instance.isReturn = true;
-        RuneData.Instance.isActive = false;
-        RuneData.RuneLightArea.enabled = false;
+        if (!RuneManager.Instance.isReturn) runeManager.RuneReturnSoundPlay();
+        RuneManager.Instance.isReturn = true;
+        RuneManager.Instance.isActive = false;
+        RuneManager.Instance.runeLightArea.enabled = false;
     }
 
     // 룬 발사 처리
@@ -258,26 +276,7 @@ public class RuneControllerGPT : MonoBehaviour
         StartCoroutine(MouseClickDelay());
     }
 
-    // 룬 파워 감소
-    public void RunePowerLose()
-    {
-        RuneData.Instance.isPowerLose = true;
-        runeManager.RuneBatteryDepletionSoundPlay();
-        DecreaseRunePowerOverTime(0f, RuneData.Instance.runePowerBackTime);
-    }
-
-    // 룬 파워 회복
-    public void RunePowerBack()
-    {
-        RuneData.Instance.isPowerLose = false;
-        RuneData.RuneLightArea.enabled = true;
-        DecreaseRunePowerOverTime(RuneData.Instance.runeOuterRadius, RuneData.Instance.runePowerBackTime);
-    }
-
-    private void DecreaseRunePowerOverTime(float targetRadius, float duration)
-    {
-        DOTween.To(() => runeSight.pointLightOuterRadius, x => runeSight.pointLightOuterRadius = x, targetRadius, duration);
-    }
+    
 
 
     // 룬 반환 거리 설정

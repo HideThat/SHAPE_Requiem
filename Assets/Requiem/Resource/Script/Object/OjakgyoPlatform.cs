@@ -33,25 +33,9 @@ public class OjakgyoPlatform : MonoBehaviour
         MovePlatform();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == (int)LayerName.Player)
-        {
-            collision.transform.parent = transform;
-        }
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == (int)LayerName.Player)
-        {
-            collision.transform.parent = null;
-        }
-    }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == (int)LayerName.Rune && RuneData.Instance.isActive)
+        if (collision.gameObject.layer == (int)LayerName.Rune && RuneManager.Instance.isActive)
         {
             isActive = true;
         }

@@ -10,6 +10,7 @@ using DG.Tweening;
 
 public class RuneStatue : MonoBehaviour
 {
+    [SerializeField] public int statueNumber;
     [SerializeField] private Vector2 savePoint; // 세이브 포인트
     [SerializeField] private FieldOfView2D view2D; // 세이브 포인트
     [SerializeField] private float effectDelay = 5f; // 효과 딜레이 시간
@@ -21,6 +22,7 @@ public class RuneStatue : MonoBehaviour
     [SerializeField] public float view2DChangeTime = 50f;
     [SerializeField] public float view2DDelayTime = 3f;
 
+    private string currentScene;
     private Animator animator; // 자신의 애니매이터
     private AudioSource audioSource; // 자신의 오디오 소스
     private AudioSource audioSourceActive; // 동작 시의 오디오 소스
@@ -33,11 +35,14 @@ public class RuneStatue : MonoBehaviour
     {
         InitializeComponents();
         InitializeValues();
+
+        LoadStatueState();
     }
 
     // 컴포넌트 초기화를 위한 함수
     private void InitializeComponents()
     {
+        currentScene = SceneManager.GetActiveScene().name;
         animator = GetComponent<Animator>();
         audioSource = GetComponent<AudioSource>();
         audioSourceActive = transform.Find("Sound").GetComponent<AudioSource>();
@@ -66,6 +71,11 @@ public class RuneStatue : MonoBehaviour
         isPlay = false;
     }
 
+    private void Update()
+    {
+        
+    }
+
     // 트리거에 다른 오브젝트가 있을 때 처리하는 함수
     private void OnTriggerStay2D(Collider2D collision)
     {
@@ -74,7 +84,7 @@ public class RuneStatue : MonoBehaviour
             return;
         }
 
-        if (collision.CompareTag("Rune") && RuneData.Instance.isActive)
+        if (collision.CompareTag("Rune") && RuneManager.Instance.isActive)
         {
             EnterTheRune();
         }
@@ -88,7 +98,7 @@ public class RuneStatue : MonoBehaviour
     // 룬 입장 처리를 위한 함수
     public void EnterTheRune()
     {
-        if (!isActive || RuneData.Instance.battery <= 0)
+        if (!isActive || RuneManager.Instance.battery <= 0)
         {
             UpdatePlayerData();
             ActivateRuneStatue();
@@ -114,8 +124,43 @@ public class RuneStatue : MonoBehaviour
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
         Invoke("ActiveView2D", view2DDelayTime);
-        DOTween.To(() => RuneData.Instance.battery, x => RuneData.Instance.battery = x, RuneData.Instance.batteryMaxValue, 5f);
+        DOTween.To(() => RuneManager.Instance.battery, x => RuneManager.Instance.battery = x, RuneManager.Instance.batteryMaxValue, 5f);
         PlayAudioClip();
+        
+        SetStatueState(true);
+    }
+
+    void LoadStatueState()
+    {
+        if (SaveSystem.Instance.runeStatueActiveData == null)
+        {
+            Debug.LogError("runeStatueActiveData is not initialized!");
+            return;
+        }
+
+        string key = $"{currentScene}_{statueNumber}";
+
+        if (SaveSystem.Instance.runeStatueActiveData.ContainsKey(key))
+        {
+            isActive = SaveSystem.Instance.runeStatueActiveData.ContainsKey(key);
+            SetActive(isActive);
+            TurnOnLights();
+        }
+        else
+        {
+            // 키가 없을 경우 기본값 설정
+            isActive = false;
+
+            // 선택적으로 경고 메시지 출력
+            Debug.LogWarning($"Key {key} not found in runeStatueActiveData. Default value has been set.");
+        }
+
+        Debug.Log($"SaveSystem.Instance.runeStatueActiveData.ContainsKey(key) = {SaveSystem.Instance.runeStatueActiveData.ContainsKey(key)}");
+    }
+
+    void SetStatueState(bool _TF)
+    {
+        SaveSystem.Instance.runeStatueActiveData.Add($"{currentScene}_{statueNumber}", _TF);
     }
 
     void ActiveView2D()
@@ -136,6 +181,7 @@ public class RuneStatue : MonoBehaviour
         isActive = _TF;
         activeEffect.gameObject.SetActive(_TF);
         activeLight.gameObject.SetActive(_TF);
+        DOTween.To(() => activeLight.shapeLightFalloffSize, x => activeLight.shapeLightFalloffSize = x, 5, 10);
     }
 
     // 오디오 클립 재생을 위한 함수

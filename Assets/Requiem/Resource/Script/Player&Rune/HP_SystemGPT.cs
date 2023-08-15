@@ -294,12 +294,12 @@ public class HP_SystemGPT : MonoBehaviour
     {
         if (SaveSystem.Instance.responPoint.responSceneName == SceneManager.GetActiveScene().name)
         {
-            SaveSystem.Instance.SetPlayerData();
+            SaveSystem.Instance.SetPlayerNextPos();
             transform.position = SaveSystem.Instance.responPoint.responScenePoint;
         }
         else
         {
-            SaveSystem.Instance.SetPlayerData();
+            SaveSystem.Instance.SetPlayerNextPos();
             SceneManager.LoadScene(SaveSystem.Instance.responPoint.responSceneName);
         }
     }

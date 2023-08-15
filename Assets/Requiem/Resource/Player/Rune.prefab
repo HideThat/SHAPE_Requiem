@@ -5408,7 +5408,6 @@ GameObject:
   - component: {fileID: 3022128085652882588}
   - component: {fileID: 4223708011944544914}
   - component: {fileID: 5859258104839063984}
-  - component: {fileID: 4080423014940689250}
   m_Layer: 6
   m_Name: Rune
   m_TagString: Rune
@@ -5603,7 +5602,6 @@ MonoBehaviour:
   m_statue: {fileID: 0}
   m_moveTime: 3
   m_rotationSpeed: 10
-  m_isStatueInteraction: 0
   audioSource: {fileID: 3022128085652882588}
   audioClips:
   - {fileID: 8300000, guid: b4a00417835919e4cb82e1fecf97ca3d, type: 3}
@@ -5612,6 +5610,22 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 8ca432eb4a18bf548962b09616fd59d9, type: 3}
   - {fileID: 8300000, guid: 072179646c84c99469c444731806d9ab, type: 3}
   fullChargeCount: 0
+  runeObj: {fileID: 8235980309105655851}
+  isStop: 0
+  isReturn: 0
+  isActive: 0
+  useControl: 0
+  m_isStatueInteraction: 0
+  battery: 1000
+  batteryMaxValue: 1000
+  getLightAblity: 0
+  runeLightArea: {fileID: 6783670264394380712}
+  runeIntensity: 1
+  runeOuterRadius: 0
+  runePowerBackTime: 0.5
+  isPowerLose: 0
+  runeSight: {fileID: 8235980309105655849}
+  lightAreaForFog: {fileID: 5651191780876553394}
 --- !u!82 &3022128085652882588
 AudioSource:
   m_ObjectHideFlags: 0
@@ -5832,31 +5846,6 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!114 &4080423014940689250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8235980309105655851}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0627728cc00d1a946a88ba6d20908bc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  runeObj: {fileID: 0}
-  runeLightArea: {fileID: 0}
-  runeIntensity: 1
-  runeOuterRadius: 0
-  runePowerBackDistance: 3
-  runePowerBackTime: 0.5
-  isStop: 0
-  isReturn: 0
-  isActive: 0
-  useControl: 0
-  isPowerLose: 0
-  battery: 1000
-  batteryMaxValue: 1000
 --- !u!1001 &1616864283979719409
 PrefabInstance:
   m_ObjectHideFlags: 0

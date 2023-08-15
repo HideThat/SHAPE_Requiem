@@ -75,7 +75,7 @@ public class DataController : MonoBehaviour
         }
     }
 
-    // 메인 카메라 데이터
+    #region 메인 카메라 데이터
     public static GameObject MainCamera
     {
         get { return instance.cameraData.mainCamera; }
@@ -91,8 +91,8 @@ public class DataController : MonoBehaviour
         get { return instance.cameraData.mainCM; }
         set { instance.cameraData.mainCM = value; }
     }
-
-    // 사운드매니저
+    #endregion
+    #region 사운드매니저
     public static float BGMVolume
     {
         get { return instance.soundManager.bgmVolume; }
@@ -113,17 +113,18 @@ public class DataController : MonoBehaviour
         get { return instance.soundManager.jumpSoundVolume; }
         set { instance.soundManager.jumpSoundVolume = value; }
     }
-
-    // 트리거 데이터
+    #endregion
+    #region 트리거 데이터
     public static bool PlayerIn
     {
         get { return instance.triggerData.playerIn; }
         set { instance.triggerData.playerIn = value; }
     }
+    #endregion
 
     private void Awake()
     {
-        SaveSystem.Instance.LoadPlayerData();
+        
 
         if (GameObject.Find("DataController") == null)
         {
@@ -137,11 +138,16 @@ public class DataController : MonoBehaviour
 
         cameraData.mainCM = GameObject.Find("MainCM").GetComponent<CinemachineVirtualCamera>();
 
-        DataController.PlayerIn = false;
+        PlayerIn = false;
     }
 
     private void Start()
     {
+        SaveSystem.Instance.LoadPlayerData();
+        SaveSystem.Instance.LoadRuneData();
+
+        FadeManager.Instance.FadeOutAndIn(1f, 2f);
+
         if (MainCamera == null) Debug.Log("MainCamera == null");
         if (CameraFollowTime == 0) Debug.Log("CameraFollowTime == 0");
         if (BGMVolume == 0) Debug.Log("BGMVolume == 0");

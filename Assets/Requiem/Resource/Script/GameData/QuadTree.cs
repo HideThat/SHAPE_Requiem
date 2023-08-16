@@ -1,16 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
+[Serializable]
 public class QuadTree
 {
     // 최대 객체 수 및 최대 레벨 수 설정
-    private int maxObjects = 4;
-    private int maxLevels = 4;
+    [SerializeField] private int maxObjects = 4;
+    [SerializeField] private int maxLevels = 4;
 
-    private int level;
-    private List<GameObject> objects;
-    private Rect bounds;
-    private QuadTree[] nodes;
+    [SerializeField] private int level;
+    [SerializeField] private List<GameObject> objects;
+    [SerializeField] private Rect bounds;
+    [SerializeField] private QuadTree[] nodes;
 
     // QuadTree 생성자
     public QuadTree(int level, Rect bounds)

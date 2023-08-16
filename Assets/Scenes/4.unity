@@ -31663,7 +31663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3cc9a8030a45ea419a095a050ea26b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 3
+  nextScene: 3
   contactObjectName: Player
   fadeOutTime: 0.5
   nextPlayerPos: {x: -26.72, y: -26.89}
@@ -32854,7 +32854,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6001985537439763904, guid: 4e0f70d2f38afd14990845b696d044e6, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6001985537439763904, guid: 4e0f70d2f38afd14990845b696d044e6, type: 3}
       propertyPath: listSize.x
@@ -45122,7 +45122,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3cc9a8030a45ea419a095a050ea26b2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  sceneName: 5
+  nextScene: 5
   contactObjectName: Player
   fadeOutTime: 0.5
   nextPlayerPos: {x: 20.6, y: -23.9}

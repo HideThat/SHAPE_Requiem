@@ -28,7 +28,6 @@ public class NewGameStart : MonoBehaviour
         runeController = player.GetComponent<RuneControllerGPT>();
 
         playerController.canMove = false; // 플레이어 이동 불가능
-        runeController.m_isGetRune = false; // 플레이어 룬 획득 불가능
         playerAnimator.SetBool("IsFirstStart", true); // 처음 시작 상태로 설정
 
         if (player == null) Debug.Log("player == null");

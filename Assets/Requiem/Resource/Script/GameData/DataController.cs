@@ -124,7 +124,6 @@ public class DataController : MonoBehaviour
 
     private void Awake()
     {
-        
 
         if (GameObject.Find("DataController") == null)
         {
@@ -139,6 +138,8 @@ public class DataController : MonoBehaviour
         cameraData.mainCM = GameObject.Find("MainCM").GetComponent<CinemachineVirtualCamera>();
 
         PlayerIn = false;
+
+        SaveSystem.Instance.SearchAndAddNewScene();
     }
 
     private void Start()

@@ -3,6 +3,22 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
+using System;
+
+public enum ArmState
+{
+    Front,
+    Up,
+    Down,
+    Return
+}
+
+[Serializable]
+public class ArmStatePair
+{
+    public ArmState state;
+    public GameObject armObject;
+}
 
 public class RuneControllerGPT : MonoBehaviour
 {
@@ -25,6 +41,10 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] public RuneManager runeManager;
     [SerializeField] public ParticleSystem runeCharge;
     [SerializeField] LayerMask hitLayerMask;
+    [SerializeField] GameObject magicCircle;
+    [SerializeField] Transform rightArm;
+    [SerializeField] Transform leftArm;
+    [SerializeField] List<ArmStatePair> StandArms = new List<ArmStatePair>();
 
     public bool m_isGetRune; // 룬 획득 판정
 
@@ -173,17 +193,8 @@ public class RuneControllerGPT : MonoBehaviour
     {
         DOTween.Kill(runeMoveTween);
 
-        if (isShoot)
-        {
-            Vector2 dir = target - (Vector2)runeObj.transform.position;
-            float dis = Vector2.Distance(target, (Vector2)runeObj.transform.position);
+        runeMoveTween = runeObj.transform.DOMove(target, moveTime);
 
-            RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
-
-            if (rayHit) runeMoveTween = runeObj.transform.DOMove(rayHit.point, moveTime);
-            else runeMoveTween = runeObj.transform.DOMove(target, moveTime);
-        }
-        else runeMoveTween = runeObj.transform.DOMove(target, moveTime);
     }
     private void HandleMouseClicksForShooting()
     {
@@ -192,6 +203,22 @@ public class RuneControllerGPT : MonoBehaviour
             PlayRuneOffSoundAndDelayMouse();
             isShoot = false;
             SetBatteryUIVisible(false, RuneManager.Instance.battery / 1000f);
+            float xDiration = target.x - transform.position.x; // 플레이어랑 룬의 상대적 위치에 따라 방향 결정
+            StandArmSummon(StandArms, xDiration, ArmState.Return);
+
+            
+
+            if (transform.rotation.y == 0f)
+            {
+                Vector2 circlePos = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
+                MagicCircleSummon(circlePos);
+            }
+            else
+            {
+                Vector2 circlePos = new Vector2(transform.position.x - runePosition.x, transform.position.y + runePosition.y);
+                MagicCircleSummon(circlePos);
+            }
+            
         }
         else if (Input.GetMouseButtonDown(0) && !isMouseDelay)
         {
@@ -230,8 +257,195 @@ public class RuneControllerGPT : MonoBehaviour
     // 마우스 위치로 목표 변경
     private void ChangeTargetToMouse()
     {
-        target = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
+        #region 방어코드
+        // 카메라를 찾지 못한 경우 로그를 출력하고 메서드를 종료합니다.
+        if (Camera.main == null)
+        {
+            Debug.LogError("Main Camera not found!");
+            return;
+        }
+
+        // runeObj가 없는 경우 로그를 출력하고 메서드를 종료합니다.
+        if (runeObj == null)
+        {
+            Debug.LogError("Rune Object is missing!");
+            return;
+        }
+
+        // magicCircle이 없는 경우 로그를 출력하고 메서드를 종료합니다.
+        if (magicCircle == null)
+        {
+            Debug.LogError("Magic Circle prefab is missing!");
+            return;
+        }
+        #endregion
+        Vector2 newTarget = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
             Input.mousePosition.y, -Camera.main.transform.position.z));
+
+        Vector2 dir = newTarget - (Vector2)runeObj.transform.position;
+        float dis = Vector2.Distance(newTarget, (Vector2)runeObj.transform.position);
+
+        RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
+
+        if (rayHit)
+        {
+            newTarget = rayHit.point; // 타겟을 rayHit.point로 설정
+        }
+
+        MagicCircleSummon(newTarget);
+
+        Vector2 directionAB = target - newTarget; // 점 A와 B 사이의 벡터
+        Vector2 xLine = new Vector2(1, 0); // x축 방향의 벡터
+
+        float angle = Vector2.Angle(directionAB, xLine); // 두 벡터 사이의 각도를 계산합니다.
+
+        // 외적을 사용하여 방향을 확인하고, 필요한 경우 각도에 음수 부호를 붙입니다.
+        if (Vector3.Cross(directionAB, xLine).z < 0)
+        {
+            angle = -angle;
+        }
+
+        float xDiration = newTarget.x - transform.position.x; // 플레이어랑 룬의 상대적 위치에 따라 방향 결정
+
+        StandArmSummon(StandArms, xDiration, angle);
+        target = newTarget;
+    }
+
+    GameObject MagicCircleSummon(Vector2 _point)
+    {
+        GameObject newCircle = Instantiate(magicCircle);
+        newCircle.transform.position = _point;
+
+        return newCircle;
+    }
+
+    void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, float _angle)
+    {
+        #region 방어코드
+        // _Arms가 null이거나 비어 있는 경우 로그를 출력하고 메서드를 종료합니다.
+        if (_Arms == null || _Arms.Count == 0)
+        {
+            Debug.LogError("Arms list is null or empty!");
+            return;
+        }
+
+        // rightArm과 leftArm이 없는 경우 로그를 출력하고 메서드를 종료합니다.
+        if (rightArm == null || leftArm == null)
+        {
+            Debug.LogError("Right or Left Arm Transform is missing!");
+            return;
+        }
+        #endregion
+        int index = 0;
+        ArmState _armState = ArmState.Front;
+
+        if (_angle > -45f && _angle < 45f)
+            _armState = ArmState.Front; // angle이 -45 ~ 45 사이일 때 실행할 코드
+        else if (_angle >= 45f)
+            _armState = ArmState.Up; // angle이 45 이상일 때 실행할 코드
+        else
+            _armState = ArmState.Down; // angle이 -45 이하일 때 실행할 코드
+
+        for (int i = 0; i < _Arms.Count; i++)
+        {
+            if (_Arms[i].state == _armState)
+            {
+                index = i;
+                break;
+            }
+            else if (i == _Arms.Count - 1)
+            {
+                Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
+                return;
+            }
+        }
+
+        GameObject newArm = Instantiate(_Arms[index].armObject);
+
+        if (transform.rotation.y == 0f)
+        {
+            if (_xDiration >= 0f)
+            {
+                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                newArm.transform.position = rightArm.position;
+                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+            }
+            else
+            {
+                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                newArm.transform.position = leftArm.position;
+                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+            }
+        }
+        else
+        {
+            if (_xDiration >= 0f)
+            {
+                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                newArm.transform.position = leftArm.position;
+                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+            }
+            else
+            {
+                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                newArm.transform.position = rightArm.position;
+                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+            }
+        }
+    }
+
+    void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
+    {
+        int index = 0;
+
+        for (int i = 0; i < _Arms.Count; i++)
+        {
+            if (_Arms[i].state == _armState)
+            {
+                index = i;
+                break;
+            }
+            else if (i == _Arms.Count - 1)
+            {
+                Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
+                return;
+            }
+        }
+
+        GameObject newArm = Instantiate(_Arms[index].armObject);
+
+        if (transform.rotation.y == 0f)
+        {
+            
+
+            if (_xDiration >= 0f)
+            {
+                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                newArm.transform.position = rightArm.position;
+                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+            }
+            else
+            {
+                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                newArm.transform.position = leftArm.position;
+                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+            }
+        }
+        else
+        {
+            if (_xDiration >= 0f)
+            {
+                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                newArm.transform.position = leftArm.position;
+                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+            }
+            else
+            {
+                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                newArm.transform.position = rightArm.position;
+                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+            }
+        }
     }
 
     // 룬 반환
@@ -276,7 +490,7 @@ public class RuneControllerGPT : MonoBehaviour
         StartCoroutine(MouseClickDelay());
     }
 
-    
+
 
 
     // 룬 반환 거리 설정

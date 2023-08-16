@@ -25,11 +25,9 @@ public class SaveSystem : MonoBehaviour
     HashSet<string> sceneNames = new HashSet<string>();
     [SerializeField] string beforeScene;
     [SerializeField] string currentScene;
-    //[SerializeField] public KeyItem[] keyItems;
-    //[SerializeField] public KeyDoor[] keyDoors;
-    //[SerializeField] public RuneStatue[] runeStatues;
 
     public Dictionary<string, bool> runeStatueActiveData = new Dictionary<string, bool>();
+    public Dictionary<string, List<bool>> sceneFogData = new Dictionary<string, List<bool>>();
     public PlayerResponPoint responPoint = new PlayerResponPoint();
     public PlayerState playerState = new PlayerState();
 
@@ -63,7 +61,6 @@ public class SaveSystem : MonoBehaviour
         }
 
         SearchAndAddNewScene();
-        //LoadScene();
     }
 
     public void SearchAndAddNewScene()
@@ -77,6 +74,7 @@ public class SaveSystem : MonoBehaviour
         }
     }
 
+    #region 플레이어 씬 전환 시스템
     public void SetPlayerNextPos()
     {
         nextPlayerPos = responPoint.responScenePoint;
@@ -117,7 +115,8 @@ public class SaveSystem : MonoBehaviour
             Debug.Log("플레이어 위치 데이터가 저장되지 않았습니다.");
         }
     }
-
+    #endregion
+    #region 룬 씬 전환 시스템
     public void SetRuneNextPos(Vector2 _runePosition)
     {
         nextRunePos = _runePosition;
@@ -160,4 +159,87 @@ public class SaveSystem : MonoBehaviour
             Debug.Log("룬을 아직 획득하지 않았습니다.");
         }
     }
+    #endregion
+    #region 씬 안개 저장 시스템
+    public void SetSceneFogData(List<Transform> _fogList)
+    {
+        if (_fogList == null)
+        {
+            Debug.LogError("_fogList가 null로 호출되었습니다.");
+            return; // Early return
+        }
+
+        if (string.IsNullOrEmpty(currentScene))
+        {
+            Debug.LogError("현재 씬이 설정되지 않았습니다!");
+            return; // Early return
+        }
+
+        List<bool> fogDataList;
+
+        if (sceneFogData.ContainsKey(currentScene))
+        {
+            fogDataList = sceneFogData[currentScene];
+            fogDataList.Clear(); // 기존 데이터를 지움
+        }
+        else
+        {
+            fogDataList = new List<bool>(capacity: _fogList.Count); // 크기를 지정하여 초기화
+        }
+
+        for (int i = 0; i < _fogList.Count; i++)
+        {
+            if (_fogList[i] == null || _fogList[i].gameObject == null)
+            {
+                Debug.LogWarning($"_fogList[{i}] 또는 그것의 gameObject가 null입니다.");
+                continue; // Skip this iteration
+            }
+
+            fogDataList.Add(_fogList[i].gameObject.activeSelf);
+        }
+
+        sceneFogData[currentScene] = fogDataList; // 키가 이미 존재하면 값을 업데이트, 그렇지 않으면 추가
+    }
+
+    public void LoadSceneFogData(List<Transform> _fogList)
+    {
+        if (_fogList == null)
+        {
+            Debug.LogError("_fogList가 null로 호출되었습니다.");
+            return; // Early return
+        }
+
+        if (string.IsNullOrEmpty(currentScene))
+        {
+            Debug.LogError("현재 씬이 설정되지 않았습니다!");
+            return; // Early return
+        }
+
+        if (!sceneFogData.ContainsKey(currentScene))
+        {
+            Debug.LogError("현재 씬의 안개 데이터가 없습니다!");
+            return; // Early return
+        }
+
+        List<bool> fogDataList = sceneFogData[currentScene];
+
+        if (_fogList.Count != fogDataList.Count)
+        {
+            Debug.LogError("안개 데이터와 _fogList의 크기가 일치하지 않습니다!");
+            return; // Early return
+        }
+
+        for (int i = 0; i < _fogList.Count; i++)
+        {
+            if (_fogList[i] == null || _fogList[i].gameObject == null)
+            {
+                Debug.LogWarning($"_fogList[{i}] 또는 그것의 gameObject가 null입니다.");
+                continue; // Skip this iteration
+            }
+
+            _fogList[i].gameObject.SetActive(fogDataList[i]);
+        }
+    }
+    #endregion
+
 }

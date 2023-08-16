@@ -5408,6 +5408,37 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!1 &1775502534530834113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8248105144776559643}
+  m_Layer: 3
+  m_Name: RightArmPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8248105144776559643
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1775502534530834113}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.827, y: 0.404, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2529985360050657736}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2529985360050657747
 GameObject:
   m_ObjectHideFlags: 0
@@ -5443,7 +5474,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2529985360050657747}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -20.65, y: -4.42, z: 0}
+  m_LocalPosition: {x: -20.603, y: -4.509, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -5452,6 +5483,8 @@ Transform:
   - {fileID: 994749242}
   - {fileID: 6450772960701366481}
   - {fileID: 7403656253838633359}
+  - {fileID: 8248105144776559643}
+  - {fileID: 1222601787123434398}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5772,7 +5805,6 @@ MonoBehaviour:
   isMouseDelay: 0
   batteryDrainSpeed: 30
   additionalMovementReduction: 250
-  runeCharge: {fileID: 0}
   batteryUI:
   - {fileID: 2284996640730960531}
   - {fileID: 7402420963738954539}
@@ -5780,9 +5812,22 @@ MonoBehaviour:
   - {fileID: 2169097335350878584}
   batteryBorder: {fileID: 658186468653632156}
   runeManager: {fileID: 0}
+  runeCharge: {fileID: 0}
   hitLayerMask:
     serializedVersion: 2
     m_Bits: 1920
+  magicCircle: {fileID: 7410333081184765770, guid: 560c68bf290296a47b887a04df89ee13, type: 3}
+  rightArm: {fileID: 8248105144776559643}
+  leftArm: {fileID: 1222601787123434398}
+  StandArms:
+  - state: 0
+    armObject: {fileID: 5356592383222036230, guid: 82c0dfd64a8ca6744bb6c61b9fc3a6a4, type: 3}
+  - state: 1
+    armObject: {fileID: 5356592383222036230, guid: 82c0dfd64a8ca6744bb6c61b9fc3a6a4, type: 3}
+  - state: 2
+    armObject: {fileID: 7775122627022469786, guid: fedef5cdb03a9c44ab8b517fa102dabd, type: 3}
+  - state: 3
+    armObject: {fileID: 8107082586286213728, guid: c2e8697f05aa47d409e30f83516edb3a, type: 3}
   m_isGetRune: 0
   hasRestarted: 0
 --- !u!114 &1996320799
@@ -11083,6 +11128,37 @@ Transform:
   - {fileID: 7806964842815179752}
   m_Father: {fileID: 2529985360050657736}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &7212497645079457217
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1222601787123434398}
+  m_Layer: 3
+  m_Name: LeftArmPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1222601787123434398
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7212497645079457217}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.827, y: 0.404, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2529985360050657736}
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7995338939610877458
 GameObject:

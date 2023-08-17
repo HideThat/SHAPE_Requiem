@@ -280,46 +280,35 @@ public class RuneControllerGPT : MonoBehaviour
         }
         #endregion
         Vector2 newTarget = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
-            Input.mousePosition.y, -Camera.main.transform.position.z));
+        Input.mousePosition.y, -Camera.main.transform.position.z));
 
         Vector2 dir = newTarget - (Vector2)runeObj.transform.position;
         float dis = Vector2.Distance(newTarget, (Vector2)runeObj.transform.position);
 
         RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
-
-        if (rayHit)
-        {
-            newTarget = rayHit.point; // 타겟을 rayHit.point로 설정
-        }
+        if (rayHit) newTarget = rayHit.point;
 
         MagicCircleSummon(newTarget);
 
-        Vector2 directionAB = target - newTarget; // 점 A와 B 사이의 벡터
-        Vector2 xLine = new Vector2(1, 0); // x축 방향의 벡터
+        Vector2 directionAB = newTarget - target; // 점 A와 B 사이의 벡터
+        ArmState _armState = DetermineArmState(directionAB);
+        float xDiration = newTarget.x - transform.position.x;
 
-        float angle = Vector2.Angle(directionAB, xLine); // 두 벡터 사이의 각도를 계산합니다.
-
-        // 외적을 사용하여 방향을 확인하고, 필요한 경우 각도에 음수 부호를 붙입니다.
-        if (Vector3.Cross(directionAB, xLine).z < 0)
-        {
-            angle = -angle;
-        }
-
-        float xDiration = newTarget.x - transform.position.x; // 플레이어랑 룬의 상대적 위치에 따라 방향 결정
-
-        StandArmSummon(StandArms, xDiration, angle);
+        StandArmSummon(StandArms, xDiration, _armState);
         target = newTarget;
     }
 
-    GameObject MagicCircleSummon(Vector2 _point)
+    ArmState DetermineArmState(Vector2 direction)
     {
-        GameObject newCircle = Instantiate(magicCircle);
-        newCircle.transform.position = _point;
-
-        return newCircle;
+        if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
+            return ArmState.Front;
+        else if (direction.y > 0)
+            return ArmState.Up;
+        else
+            return ArmState.Down;
     }
 
-    void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, float _angle)
+    void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
     {
         #region 방어코드
         // _Arms가 null이거나 비어 있는 경우 로그를 출력하고 메서드를 종료합니다.
@@ -336,116 +325,106 @@ public class RuneControllerGPT : MonoBehaviour
             return;
         }
         #endregion
-        int index = 0;
-        ArmState _armState = ArmState.Front;
-
-        if (_angle > -45f && _angle < 45f)
-            _armState = ArmState.Front; // angle이 -45 ~ 45 사이일 때 실행할 코드
-        else if (_angle >= 45f)
-            _armState = ArmState.Up; // angle이 45 이상일 때 실행할 코드
-        else
-            _armState = ArmState.Down; // angle이 -45 이하일 때 실행할 코드
-
-        for (int i = 0; i < _Arms.Count; i++)
+        int index = GetArmIndex(_Arms, _armState);
+        if (index == -1)
         {
-            if (_Arms[i].state == _armState)
-            {
-                index = i;
-                break;
-            }
-            else if (i == _Arms.Count - 1)
-            {
-                Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
-                return;
-            }
+            Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
+            return;
         }
 
         GameObject newArm = Instantiate(_Arms[index].armObject);
+        Transform targetArm = DetermineTargetArm(_xDiration);
 
-        if (transform.rotation.y == 0f)
-        {
-            if (_xDiration >= 0f)
-            {
-                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-                newArm.transform.position = rightArm.position;
-                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-            }
-            else
-            {
-                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-                newArm.transform.position = leftArm.position;
-                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-            }
-        }
-        else
-        {
-            if (_xDiration >= 0f)
-            {
-                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-                newArm.transform.position = leftArm.position;
-                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-            }
-            else
-            {
-                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-                newArm.transform.position = rightArm.position;
-                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-            }
-        }
+        newArm.transform.rotation = DetermineRotation(_xDiration);
+        newArm.transform.position = targetArm.position;
+        newArm.GetComponent<StandArm>().followPoint = targetArm.position - transform.position;
     }
 
-    void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
+    int GetArmIndex(List<ArmStatePair> _Arms, ArmState _armState)
     {
-        int index = 0;
-
         for (int i = 0; i < _Arms.Count; i++)
-        {
             if (_Arms[i].state == _armState)
-            {
-                index = i;
-                break;
-            }
-            else if (i == _Arms.Count - 1)
-            {
-                Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
-                return;
-            }
-        }
+                return i;
 
-        GameObject newArm = Instantiate(_Arms[index].armObject);
+        return -1;
+    }
 
+    Transform DetermineTargetArm(float _xDiration)
+    {
         if (transform.rotation.y == 0f)
-        {
+            return _xDiration >= 0f ? rightArm : leftArm;
+        else
+            return _xDiration >= 0f ? leftArm : rightArm;
+    }
+
+    Quaternion DetermineRotation(float _xDiration)
+    {
+        if (transform.rotation.y == 0f)
+            return _xDiration >= 0f ? new Quaternion(0f, 0f, 0f, 0f) : new Quaternion(0f, 180f, 0f, 0f);
+        else
+            return _xDiration >= 0f ? new Quaternion(0f, 0f, 0f, 0f) : new Quaternion(0f, 180f, 0f, 0f);
+    }
+
+    //void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
+    //{
+    //    int index = 0;
+
+    //    for (int i = 0; i < _Arms.Count; i++)
+    //    {
+    //        if (_Arms[i].state == _armState)
+    //        {
+    //            index = i;
+    //            break;
+    //        }
+    //        else if (i == _Arms.Count - 1)
+    //        {
+    //            Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
+    //            return;
+    //        }
+    //    }
+
+    //    GameObject newArm = Instantiate(_Arms[index].armObject);
+
+    //    if (transform.rotation.y == 0f)
+    //    {
             
 
-            if (_xDiration >= 0f)
-            {
-                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-                newArm.transform.position = rightArm.position;
-                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-            }
-            else
-            {
-                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-                newArm.transform.position = leftArm.position;
-                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-            }
-        }
-        else
-        {
-            if (_xDiration >= 0f)
-            {
-                newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-                newArm.transform.position = leftArm.position;
-                newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-            }
-            else
-            {
-                newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-                newArm.transform.position = rightArm.position;
-                newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-            }
-        }
+    //        if (_xDiration >= 0f)
+    //        {
+    //            newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+    //            newArm.transform.position = rightArm.position;
+    //            newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+    //        }
+    //        else
+    //        {
+    //            newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+    //            newArm.transform.position = leftArm.position;
+    //            newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if (_xDiration >= 0f)
+    //        {
+    //            newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+    //            newArm.transform.position = leftArm.position;
+    //            newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
+    //        }
+    //        else
+    //        {
+    //            newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+    //            newArm.transform.position = rightArm.position;
+    //            newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
+    //        }
+    //    }
+    //}
+
+    GameObject MagicCircleSummon(Vector2 _point)
+    {
+        GameObject newCircle = Instantiate(magicCircle);
+        newCircle.transform.position = _point;
+
+        return newCircle;
     }
 
     // 룬 반환

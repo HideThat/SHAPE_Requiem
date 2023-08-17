@@ -170,9 +170,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7ec75654124bf8e46992322905f33c96, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.8
   m_Pitch: 1.05
   Loop: 0
   Mute: 0
@@ -5823,7 +5823,7 @@ MonoBehaviour:
   - state: 0
     armObject: {fileID: 5356592383222036230, guid: 82c0dfd64a8ca6744bb6c61b9fc3a6a4, type: 3}
   - state: 1
-    armObject: {fileID: 5356592383222036230, guid: 82c0dfd64a8ca6744bb6c61b9fc3a6a4, type: 3}
+    armObject: {fileID: 6627811336850610187, guid: a25d408d8eb7a5548957b949191cb394, type: 3}
   - state: 2
     armObject: {fileID: 7775122627022469786, guid: fedef5cdb03a9c44ab8b517fa102dabd, type: 3}
   - state: 3
@@ -5916,10 +5916,10 @@ MonoBehaviour:
   m_playerObj: {fileID: 2529985360050657747}
   m_playerMoveAudioSource: {fileID: 894907078}
   m_playerJumpAudioSource: {fileID: 990802244}
-  m_playerMoveAudioClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
+  m_playerMoveAudioClip: {fileID: 8300000, guid: 7ec75654124bf8e46992322905f33c96, type: 3}
   m_playerJumpAudioClip:
-  - {fileID: 8300000, guid: 450e113220877a147aa94c7b28851622, type: 3}
-  - {fileID: 8300000, guid: 5afd529ab5050e14d91949a10a3718a7, type: 3}
+  - {fileID: 8300000, guid: a1f0fe7c98364bc4a914daa98760fabb, type: 3}
+  - {fileID: 8300000, guid: 62fd7f731e118f04aad82bc785b3db7b, type: 3}
 --- !u!1 &4883901960957327275
 GameObject:
   m_ObjectHideFlags: 0

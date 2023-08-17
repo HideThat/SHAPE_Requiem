@@ -4,31 +4,53 @@ using UnityEngine;
 public class Wraith : Enemy_Dynamic
 {
     [SerializeField] private Transform target;
+    [SerializeField] Animator animator;
     [SerializeField] private float speed;
     [SerializeField] private float sightRadius;
     [SerializeField] private float rushSpeed;
     [SerializeField] private float rushDistance;
     [SerializeField] private float rushDelay;
     [SerializeField] private float actDelay;
+    [SerializeField] private string[] animationParamiterList;
+    [SerializeField] GameObject trail;
 
     [SerializeField] Vector2 rushTarget;
-    [SerializeField] private State currentState = State.Chasing;
+    [SerializeField] public WraithState currentState = WraithState.Chasing;
 
     [HideInInspector] private Vector2 rushDirection; // 러쉬할 방향을 저장
     [HideInInspector] public Vector2 rushStartPoint; // 돌진 시작 지점
     private float rushedDistance = 0f; // 현재 러쉬한 거리
+    private bool isDead = false;
 
-    private enum State
+    public enum WraithState
     {
         Chasing,
         PreparingRush,
         Rushing,
-        Resting
+        Resting,
+        Dead
     }
 
 
     private void Start()
     {
+        trail.SetActive(false);
+
+        if (target == null)
+        {
+            target = PlayerData.Instance?.m_playerObj?.transform;
+        }
+
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator component not found!");
+        }
+
+        if (target == null)
+        {
+            Debug.LogWarning("Target not set!");
+        }
+
         damage = 0;
         target = PlayerData.Instance.m_playerObj.transform;
     }
@@ -37,24 +59,29 @@ public class Wraith : Enemy_Dynamic
     {
         switch (currentState)
         {
-            case State.Chasing:
-                Chasing();
+            case WraithState.Chasing: Chasing();
                 break;
-            case State.PreparingRush:
-                // This state is handled by the coroutine
+            case WraithState.PreparingRush:
                 break;
-            case State.Rushing:
-                Rushing();
+            case WraithState.Rushing: Rushing();
                 break;
-            case State.Resting:
-                // This state is handled by the coroutine
+            case WraithState.Resting:
+                break;
+            case WraithState.Dead: Dead();
+                break;
+            default:
                 break;
         }
     }
 
     private void Chasing()
     {
+        if (target == null)
+            return; // 아무 것도 하지 않고 반환
+
         float distanceToTarget = Vector2.Distance(transform.position, target.position);
+
+        animator.SetBool(animationParamiterList[0], true);
 
         if (distanceToTarget <= sightRadius)
         {
@@ -69,17 +96,23 @@ public class Wraith : Enemy_Dynamic
 
     private IEnumerator PrepareRush()
     {
-        currentState = State.PreparingRush;
+        currentState = WraithState.PreparingRush;
+        animator.SetBool(animationParamiterList[0], false);
+        animator.SetBool(animationParamiterList[1], true);
 
         rushStartPoint = transform.position; // 돌진 시작 지점 저장
 
         yield return new WaitForSeconds(rushDelay);
 
-        currentState = State.Rushing;
+        currentState = WraithState.Rushing;
+        animator.SetBool(animationParamiterList[1], false);
+        animator.SetBool(animationParamiterList[2], true);
     }
 
     private void Rushing()
     {
+        trail.SetActive(true);
+
         if (rushedDistance >= rushDistance)
         {
             rushedDistance = 0f; // 초기화
@@ -94,30 +127,76 @@ public class Wraith : Enemy_Dynamic
 
     private IEnumerator RestAfterRush()
     {
-        currentState = State.Resting;
+        currentState = WraithState.Resting;
+        animator.SetBool(animationParamiterList[2], false);
+        animator.SetBool(animationParamiterList[3], true);
 
         yield return new WaitForSeconds(actDelay);
 
-        currentState = State.Chasing;
+        trail.SetActive(false);
+        currentState = WraithState.Chasing;
+        animator.SetBool(animationParamiterList[3], false);
+        animator.SetBool(animationParamiterList[0], true);
     }
 
     private void MoveTowardsTarget(float moveSpeed)
     {
+        if (target == null && currentState == WraithState.Chasing)
+            return; // 아무 것도 하지 않고 반환
+
         Vector2 moveDirection;
 
         switch (currentState)
         {
-            case State.Chasing:
+            case WraithState.Chasing:
                 moveDirection = ((Vector2)target.position - (Vector2)transform.position).normalized;
                 transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
                 break;
-            case State.Rushing:
+            case WraithState.Rushing:
                 moveDirection = rushDirection; // 러쉬 방향 사용
                 transform.Translate(moveDirection * moveSpeed * Time.deltaTime);
                 break;
             default:
                 break;
         }
+    }
+
+    public override void Dead()
+    {
+        if (isDead) return;
+
+        base.Dead();
+
+        
+        animator.SetTrigger(animationParamiterList[4]);
+        isDead = true;
+
+        // 정지하려면 현재 진행 중인 코루틴을 모두 정지
+        StopAllCoroutines();
+
+        // 현재 위치를 저장
+        Vector3 currentPos = transform.position;
+
+        // 미래의 어떤 변화도 이 위치에 영향을 미치지 못하게 함
+        transform.position = currentPos;
+
+        StartCoroutine(DeadDelay(3f));
+    }
+
+
+    IEnumerator DeadDelay(float _delayTime)
+    {
+        if (animator == null)
+        {
+            Debug.LogWarning("Animator component not found!");
+            yield break;
+        }
+
+        animator.Play("Dead");
+
+        yield return new WaitForSeconds(_delayTime);
+
+        Destroy(gameObject);
     }
 
     private void OnDrawGizmos()
@@ -127,7 +206,7 @@ public class Wraith : Enemy_Dynamic
         Gizmos.DrawWireSphere(transform.position, sightRadius);
 
         // Draw line towards rush direction during PrepareRush or Rushing
-        if (currentState == State.PreparingRush || currentState == State.Rushing)
+        if (currentState == WraithState.PreparingRush || currentState == WraithState.Rushing)
         {
             Gizmos.color = Color.blue;  // Change color for the rush line
             Vector3 rushEndPoint = (Vector3)rushStartPoint + (Vector3)(rushDirection * rushDistance); // 시작 지점을 기반으로 끝 지점 계산

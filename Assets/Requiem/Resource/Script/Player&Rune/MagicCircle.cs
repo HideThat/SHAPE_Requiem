@@ -8,6 +8,8 @@ public class MagicCircle : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] float destroyTime;
 
+    private bool isDestroyed = false; // 추가된 변수
+
     void Start()
     {
         StartCoroutine(CircleDestroyDelay(spriteRenderer, destroyTime));
@@ -20,9 +22,21 @@ public class MagicCircle : MonoBehaviour
 
         yield return new WaitForSeconds(_delayTime);
 
+        // 트윈 중지
         DOTween.Kill(myTween0);
         DOTween.Kill(myTween1);
 
+        isDestroyed = true; // 추가된 부분
+
         Destroy(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        if (!isDestroyed) // 추가된 체크
+        {
+            // 이 오브젝트의 모든 Tween 중지
+            DOTween.Kill(gameObject);
+        }
     }
 }

@@ -12,6 +12,7 @@ public class StandArm : MonoBehaviour
     [SerializeField] float destroyTime;
 
     Tween tween0;
+    private bool isDestroyed = false; // 추가된 변수
 
     void Start()
     {
@@ -20,6 +21,12 @@ public class StandArm : MonoBehaviour
 
     private void Update()
     {
+        if (isDestroyed)
+        {
+            DOTween.Kill(gameObject);
+            return; // 추가된 체크
+        }
+
         target = PlayerData.Instance.m_playerObj.transform.position;
 
         DOTween.Kill(tween0);
@@ -34,6 +41,14 @@ public class StandArm : MonoBehaviour
 
         DOTween.Kill(myTween0);
 
+        isDestroyed = true; // 추가된 부분
+
         Destroy(gameObject);
+    }
+
+    void OnDestroy()
+    {
+        // 이 오브젝트의 모든 Tween 중지
+        DOTween.Kill(gameObject);
     }
 }

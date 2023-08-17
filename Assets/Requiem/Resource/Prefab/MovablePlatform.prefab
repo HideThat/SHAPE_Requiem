@@ -324,8 +324,8 @@ GameObject:
   m_Component:
   - component: {fileID: 5631861487386818890}
   - component: {fileID: 5631861487386818893}
-  - component: {fileID: 3760526344615060577}
   - component: {fileID: 2546358473416172012}
+  - component: {fileID: 5704323365236802858}
   m_Layer: 8
   m_Name: Wall
   m_TagString: Untagged
@@ -401,87 +401,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!60 &3760526344615060577
-PolygonCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5631861487386818891}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.61, y: 5.89}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: 0.6012497, y: -2.45625}
-      - {x: 0.6012497, y: -2.34375}
-      - {x: 0.6387497, y: -1.85625}
-      - {x: 0.6387497, y: -1.55625}
-      - {x: 0.5387497, y: -1.4562501}
-      - {x: 0.50124973, y: -1.28125}
-      - {x: 0.5887497, y: -1.21875}
-      - {x: 0.6637497, y: -1.0812501}
-      - {x: 0.68874973, y: 0.14375}
-      - {x: 0.7137497, y: 0.25625}
-      - {x: 0.7012497, y: 0.44375}
-      - {x: 0.62624973, y: 0.51875}
-      - {x: 0.5512497, y: 0.55625004}
-      - {x: 0.7012497, y: 0.70625}
-      - {x: 0.7137497, y: 1.34375}
-      - {x: 0.68874973, y: 1.40625}
-      - {x: 0.5887497, y: 1.46875}
-      - {x: 0.75124973, y: 1.79375}
-      - {x: 0.7762497, y: 1.85625}
-      - {x: 0.7887497, y: 1.8937501}
-      - {x: 0.7887497, y: 2.49375}
-      - {x: 0.5762497, y: 2.7562501}
-      - {x: 0.2262497, y: 2.8187501}
-      - {x: 0.013749695, y: 2.84375}
-      - {x: -0.1362503, y: 2.84375}
-      - {x: -0.44875032, y: 2.7562501}
-      - {x: -0.5612503, y: 2.68125}
-      - {x: -0.61125034, y: 2.18125}
-      - {x: -0.6487503, y: 2.0062501}
-      - {x: -0.4862503, y: 1.74375}
-      - {x: -0.61125034, y: 1.73125}
-      - {x: -0.6987503, y: 1.65625}
-      - {x: -0.7112503, y: 1.49375}
-      - {x: -0.7487503, y: 0.74375004}
-      - {x: -0.61125034, y: 0.59375}
-      - {x: -0.67375034, y: 0.51875}
-      - {x: -0.6987503, y: 0.45625}
-      - {x: -0.73625034, y: 0.28125}
-      - {x: -0.7737503, y: -0.36875}
-      - {x: -0.7737503, y: -0.76875}
-      - {x: -0.7487503, y: -1.00625}
-      - {x: -0.7737503, y: -1.09375}
-      - {x: -0.7737503, y: -1.19375}
-      - {x: -0.7612503, y: -1.29375}
-      - {x: -0.7612503, y: -1.53125}
-      - {x: -0.7737503, y: -1.81875}
-      - {x: -0.73625034, y: -2.3812501}
-      - {x: -0.6487503, y: -2.48125}
-      - {x: -0.5112503, y: -2.48125}
-      - {x: -0.2987503, y: -2.49375}
-      - {x: -0.2987503, y: -2.74375}
-      - {x: -0.22375031, y: -2.84375}
-      - {x: -0.086250305, y: -2.84375}
-      - {x: -0.023750305, y: -2.78125}
-      - {x: 0.013749695, y: -2.6937501}
-      - {x: 0.5387497, y: -2.55625}
 --- !u!82 &2546358473416172012
 AudioSource:
   m_ObjectHideFlags: 0
@@ -578,6 +497,32 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!61 &5704323365236802858
+BoxCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5631861487386818891}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0.0038690567, y: 0.19670773}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.61, y: 5.89}
+    newSize: {x: 1, y: 1}
+    adaptiveTilingThreshold: 0.5
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  serializedVersion: 2
+  m_Size: {x: 1.4320354, y: 5.3858547}
+  m_EdgeRadius: 0
 --- !u!1 &5631861488578538328
 GameObject:
   m_ObjectHideFlags: 0

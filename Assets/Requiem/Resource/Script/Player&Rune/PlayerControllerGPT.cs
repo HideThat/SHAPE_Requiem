@@ -148,7 +148,7 @@ public class PlayerControllerGPT : MonoBehaviour
         if (!walkAudioSource.isPlaying)
         {
             // 걷는 소리 재생
-            if (!walkAudioSource.gameObject.active)
+            if (!walkAudioSource.gameObject.activeSelf)
             {
                 walkAudioSource.gameObject.SetActive(true);
             }

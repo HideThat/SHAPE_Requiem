@@ -6,6 +6,9 @@ using UnityEngine;
 
 public class Enemy_Dynamic : Enemy
 {
+    public int souls;
+    public GameObject soulObject;
+
     public virtual void TriggerOn()
     {
         
@@ -19,5 +22,14 @@ public class Enemy_Dynamic : Enemy
     public int GetDamage
     {
         get { return damage; }
+    }
+
+    public virtual void Dead()
+    {
+        for (int i = 0; i < souls; i++)
+        {
+            GameObject gameObject = Instantiate(soulObject);
+            gameObject.transform.position = transform.position;
+        }
     }
 }

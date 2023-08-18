@@ -59,6 +59,8 @@ public class ReactiveLamp : MonoBehaviour
         // Check if the light2D is null
         if (light2D == null) return;
 
+        StopCoroutine(BlinkingEffect());
+
         // Preventing continuous calling if the state is already in Infinity
         if (state == ReactiveLampState.Infinity) return;
 

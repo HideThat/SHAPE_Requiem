@@ -72,6 +72,15 @@ public class Wraith : Enemy_Dynamic
             default:
                 break;
         }
+
+        if (target.position.x - transform.position.x <= 0f)
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        }
+        else
+        {
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        }
     }
 
     private void Chasing()
@@ -122,6 +131,9 @@ public class Wraith : Enemy_Dynamic
         {
             MoveTowardsTarget(rushSpeed);
             rushedDistance += rushSpeed * Time.deltaTime; // 러쉬한 거리 갱신
+
+            // 회전 로직 추가
+            animator.transform.Rotate(0, 0, rushSpeed*0.3f);
         }
     }
 
@@ -130,6 +142,7 @@ public class Wraith : Enemy_Dynamic
         currentState = WraithState.Resting;
         animator.SetBool(animationParamiterList[2], false);
         animator.SetBool(animationParamiterList[3], true);
+        animator.transform.rotation = Quaternion.Euler(0f, 0f, 0f);
 
         yield return new WaitForSeconds(actDelay);
 

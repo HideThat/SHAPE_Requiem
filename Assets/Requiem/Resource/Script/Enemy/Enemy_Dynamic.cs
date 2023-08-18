@@ -31,5 +31,7 @@ public class Enemy_Dynamic : Enemy
             GameObject gameObject = Instantiate(soulObject);
             gameObject.transform.position = transform.position;
         }
+
+        GetComponent<Collider2D>().enabled = false;
     }
 }

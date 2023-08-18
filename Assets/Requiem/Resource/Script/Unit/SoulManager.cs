@@ -9,6 +9,7 @@ public class SoulManager : MonoBehaviour
     [SerializeField] Transform target;
 
     private Vector2 randomDirection;
+    private bool isMove = false;
 
     void Start()
     {
@@ -25,12 +26,16 @@ public class SoulManager : MonoBehaviour
         randomDirection = Quaternion.Euler(0, 0, angle) * Vector2.up;
 
         // 먼저 spreadTime 동안 랜덤 방향으로 직진
-        transform.DOMove((Vector2)transform.position + randomDirection, spreadTime).OnComplete(MoveToTarget);
+        transform.DOMove((Vector2)transform.position + randomDirection, spreadTime).OnComplete(MoveToTarget).
+            OnComplete(() => { isMove = true; });
     }
 
     private void Update()
     {
-        MoveToTarget();
+        if (isMove)
+        {
+            MoveToTarget();
+        }
     }
 
     private void MoveToTarget()

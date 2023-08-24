@@ -13,6 +13,7 @@ public class ReactiveLamp : MonoBehaviour
     [SerializeField] float changeTime;
     [SerializeField] ReactiveLampState state;
     [SerializeField] LayerMask enemyLayer;
+    [SerializeField] CircleCollider2D circleCollider;
 
     private bool isTurningOff = false;
     private float circleCastRadius = 0f;
@@ -47,10 +48,14 @@ public class ReactiveLamp : MonoBehaviour
 
         RaycastHit2D enemy = Physics2D.CircleCast(transform.position, circleCastRadius, Vector2.zero, enemyLayer);
 
-        if (enemy.transform.GetComponent<Wraith>() != null)
+        if (enemy)
         {
-            enemy.transform.GetComponent<Wraith>().currentState = Wraith.WraithState.Dead;
+            if (enemy.transform.GetComponent<Wraith>() != null)
+            {
+                enemy.transform.GetComponent<Wraith>().currentState = Wraith.WraithState.Dead;
+            }
         }
+        
 
     }
 
@@ -64,6 +69,7 @@ public class ReactiveLamp : MonoBehaviour
         // Preventing continuous calling if the state is already in Infinity
         if (state == ReactiveLampState.Infinity) return;
 
+        DOTween.To(() => circleCollider.radius, x => circleCollider.radius = x, maxRadius * 0.7f, changeTime);
         DOTween.To(() => circleCastRadius, x => circleCastRadius = x, maxRadius * 0.7f, changeTime);
         DOTween.To(() => light2D.intensity, x => light2D.intensity = x, brightness, changeTime);
         lit.DOColor(new Color(lit.color.r, lit.color.g, lit.color.b, 1f), changeTime);
@@ -87,6 +93,7 @@ public class ReactiveLamp : MonoBehaviour
 
         isTurningOff = true; // Mark as turning off
 
+        DOTween.To(() => circleCollider.radius, x => circleCollider.radius = x, 0f, changeTime);
         DOTween.To(() => circleCastRadius, x => circleCastRadius = x, 0f, changeTime);
         DOTween.To(() => light2D.intensity, x => light2D.intensity = x, 1f, changeTime);
         DOTween.To(() => light2D.pointLightOuterRadius, x => light2D.pointLightOuterRadius = x, 1.5f, changeTime);

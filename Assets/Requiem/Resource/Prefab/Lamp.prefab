@@ -4908,9 +4908,10 @@ GameObject:
   - component: {fileID: 8693613352785301137}
   - component: {fileID: 1097023339676669582}
   - component: {fileID: 2447025570526102945}
-  m_Layer: 0
+  - component: {fileID: 6333863751302036643}
+  m_Layer: 11
   m_Name: Light
-  m_TagString: Untagged
+  m_TagString: LightArea
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -5091,6 +5092,22 @@ MonoBehaviour:
   - {x: 0.5, y: -0.5, z: 0}
   - {x: 0.5, y: 0.5, z: 0}
   - {x: -0.5, y: 0.5, z: 0}
+--- !u!58 &6333863751302036643
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072544917711833325}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 9
 --- !u!1 &5735316943426960261
 GameObject:
   m_ObjectHideFlags: 0
@@ -10030,6 +10047,7 @@ MonoBehaviour:
   enemyLayer:
     serializedVersion: 2
     m_Bits: 1024
+  circleCollider: {fileID: 6333863751302036643}
 --- !u!61 &8976930295879546528
 BoxCollider2D:
   m_ObjectHideFlags: 0

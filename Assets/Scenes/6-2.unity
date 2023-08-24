@@ -1066,7 +1066,7 @@ GameObject:
   - component: {fileID: 419008000}
   - component: {fileID: 419007999}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: FearMan
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1082,7 +1082,7 @@ Animator:
   m_GameObject: {fileID: 419007994}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3052b48e7d5b4404d89398560fe55f25, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1132,7 +1132,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: -1
   m_Sprite: {fileID: -9095717837082945937, guid: 207ee8102dd4143d288186ef0be518ee, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -1189,16 +1189,100 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   NPC_name: FearMan
+  animator: {fileID: 419007995}
+  talkable: 1
   textBoxImage: {fileID: 2073435620}
   textBox: {fileID: 1064127436}
-  animator: {fileID: 419007995}
-  textData:
-  - text: 
-    textBox_x: 0
-    textBox_y: 0
-    fontSize: 0
-    fontType: {fileID: 0}
-  talkable: 0
+  textGroups:
+  - textDatas:
+    - text: "\uBC40\uC744 \uD53C\uD574\uC11C \uC774\uACF3\uC73C\uB85C \uC654\uC5B4..."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uBE68\uB9AC \uBD88\uC744 \uCF1C\uC57C\uD574..."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uACE7 \uC720\uB839\uC774 \uC62C\uAC70\uC57C..."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+  - textDatas:
+    - text: "\uBD88\uC774 \uCF1C\uC84C\uC5B4!!!"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uB8EC\uC744 \uB2E4\uB8E8\uB294 \uC0AC\uC81C\uAD6C\uB098!"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uBC40\uC744 \uD53C\uD574\uC11C \uB3C4\uB9DD\uCE58\uB2E4\uBCF4\uB2C8"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uC720\uB839\uB4E4\uC774 \uB098\uC624\uB294 \uACF3\uAE4C\uC9C0 \uC654\uC5B4"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uB7A8\uD504\uB97C \uCF1C\uC9C8 \uBABB\uD574\uC11C \uC554\uB2F4\uD588\uB294\uB370"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uB124\uAC00 \uC640\uC11C \uC815\uB9D0 \uB2E4\uD589\uC774\uB2E4"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uBB34\uC11C\uC6CC\uC11C \uC55E\uC5D0 \uBB38\uB3C4 \uC7A0\uAD9C\uB294\uB370"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uC774\uC81C \uADF8\uB7F4 \uD544\uC694 \uC5C6\uACA0\uB2E4."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uC5EC\uAE30 \uC5F4\uC1E0\uC57C!"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uAC19\uC774 \uC5EC\uAE30\uC11C \uB098\uAC00\uC790"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uB0B4 \uB4A4\uC5D0 \uC788\uB294 \uBB38\uC744 \uC5F4\uACE0 \uB098\uC544\uAC00\uBA74
+        \uB3FC"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+  - textDatas:
+    - text: "\uB0B4 \uB4A4\uC5D0 \uC788\uB294 \uBB38\uC744 \uC5F4\uACE0 \uB098\uC544\uAC00\uBA74
+        \uB3FC!"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+  isTalking: 0
+  isPlayerInRange: 0
+  textIndex: 0
+  currentTextIndex: 0
+  finishTextIndex: -1
+  capsuleCollider: {fileID: 419007999}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2048
 --- !u!1 &431918827
 GameObject:
   m_ObjectHideFlags: 3
@@ -44433,6 +44517,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4919869103622984899, guid: 1fc4f9b3d6f39a847a97498e6895c7ee, type: 3}
+      propertyPath: delayTime
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 5729045677217607131, guid: 1fc4f9b3d6f39a847a97498e6895c7ee, type: 3}
       propertyPath: m_Color.a
       value: 0.45490196

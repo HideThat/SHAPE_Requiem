@@ -15,92 +15,120 @@ public class TextData
     public TMP_FontAsset fontType;
 }
 
+[Serializable]
+public class TextDataGroup
+{
+    public List<TextData> textDatas;
+}
+
 public class NPC : MonoBehaviour
 {
     public string NPC_name;
-    public Image textBoxImage;
-    public TextMeshProUGUI textBox;
-    public Animator animator;
-    public List<TextData> textData;
-    public bool talkable = false;
+    public Animator animator; // NPC 애니메이션
 
-    private bool isPlayerInRange = false; // 플레이어가 범위 내에 있는지 판단
+    [Header("대화 시스템")]
+    public bool talkable = false; // 대화 가능 여부
+    public Image textBoxImage; // 텍스트 박스 이미지
+    public TextMeshProUGUI textBox; // 텍스트 박스 내용
+    public List<TextDataGroup> textGroups;
 
-    void Start()
+    [Header("인게임 데이터")]
+    public bool isTalking = false; // 대화 중인지 여부
+    public bool isPlayerInRange = false; // 플레이어가 범위 내에 있는지 여부
+    public int textIndex = 0;
+    public int currentTextIndex = 0; // 현재 대화 인덱스
+    public int finishTextIndex = -1;
+
+    protected void Start()
     {
-        // 대화 끝나면 텍스트 박스 다시 숨기기
-        textBoxImage.gameObject.SetActive(false);
+        textBoxImage.gameObject.SetActive(false); // 시작 시 텍스트 박스 숨기기
     }
 
-    
-    void Update()
+
+    protected void Update()
     {
-        // 여기서 state에 따른 로직을 구현하면 됩니다.
-        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && talkable)
+        // 플레이어가 범위 내에 있고 'F' 키를 누르면 대화 시작
+        if (isPlayerInRange && Input.GetKeyDown(KeyCode.F) && talkable) 
         {
-            StartCoroutine(InteractWithPlayer(0));
+            ConversationSystem(textGroups[textIndex].textDatas);
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other)
+    protected void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.CompareTag("Player")) // "Player"는 플레이어의 태그명이어야 함
+        // 플레이어가 범위 내에 들어오면 isPlayerInRange를 true로 설정
+        if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
         }
     }
 
-    void OnTriggerExit2D(Collider2D other)
+    protected void OnTriggerExit2D(Collider2D other)
     {
+        // 플레이어가 범위 밖으로 나가면 isPlayerInRange를 false로 설정
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
         }
     }
 
-    IEnumerator InteractWithPlayer(int index)
+    void ConversationSystem(List<TextData> text)
     {
-        talkable = false;
-        // 대화 시작 전 텍스트 박스 활성화
-        textBoxImage.gameObject.SetActive(true);
-
-        // 대화 내용 출력
-        for (int i = index; i < textData.Count; i++)
+        if (isTalking) // 대화 중일 경우
         {
-            // 대화 중 플레이어가 범위를 벗어났을 경우
-            if (!isPlayerInRange)
-            {
-                // 몇 초 동안 isPlayerInRange가 false면 대화 일시 중단
-                yield return new WaitForSeconds(2f); // 예: 2초 동안 대기
-
-                // 플레이어가 다시 범위 내로 들어올 때까지 대기
-                yield return new WaitUntil(() => isPlayerInRange);
-            }
-
-            // 텍스트 박스 크기 설정
-            textBox.rectTransform.sizeDelta = new Vector2(textData[i].textBox_x, textData[i].textBox_y);
-
-            // 텍스트 글꼴 및 크기 설정
-            textBox.fontSize = textData[i].fontSize;
-            textBox.font = textData[i].fontType;
-
-            // 텍스트 내용 설정
-            textBox.text = textData[i].text;
-
-            // 상호작용 키를 누를 때까지 대기
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.F));
+            ContinueTalking(text);
         }
-
-        // 대화 끝나면 텍스트 박스 다시 숨기기
-        textBoxImage.gameObject.SetActive(false);
-        talkable = true; // 다시 대화 가능 상태로 설정
+        else // 대화가 아직 시작되지 않았을 경우
+        {
+            StartTalking(text);
+        }
     }
 
+    void StartTalking(List<TextData> texts)
+    {
+        isTalking = true;
+        textBoxImage.gameObject.SetActive(true);
+        DisplayText(texts);
+    }
 
+    
 
+    void ContinueTalking(List<TextData> texts)
+    {
+        // 대화 계속
+        currentTextIndex++;
+        if (currentTextIndex < texts.Count)
+        {
+            DisplayText(texts);
+        }
+        else
+        {
+            EndTalking();
+        }
+    }
+
+    void DisplayText(List<TextData> texts)
+    {
+        // 현재 인덱스의 텍스트 데이터를 표시
+        var data = texts[currentTextIndex];
+        textBox.rectTransform.sizeDelta = new Vector2(data.textBox_x, data.textBox_y);
+        textBox.fontSize = data.fontSize;
+        textBox.font = data.fontType;
+        textBox.text = data.text;
+    }
+
+    void EndTalking()
+    {
+        // 대화 종료
+        isTalking = false;
+        currentTextIndex = 0;
+        textBoxImage.gameObject.SetActive(false);
+        finishTextIndex = textIndex;
+    }
 
     public void AnimationPlay(string _animationName)
     {
-        animator.Play(_animationName); // 애니메이터의 "StateIndex" 파라미터 값을 설정
+        // 애니메이션 재생
+        animator.Play(_animationName);
     }
 }

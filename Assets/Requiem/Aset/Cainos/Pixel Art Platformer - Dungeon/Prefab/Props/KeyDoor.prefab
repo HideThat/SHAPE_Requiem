@@ -269,7 +269,6 @@ MonoBehaviour:
   BlincOffTime: {x: 0, y: 0}
   BlincMiddleTime: {x: 0, y: 0}
   BlincOnTime: {x: 0, y: 0}
-  view2D: {fileID: 0}
   light2D: {fileID: 0}
   originOuterRadius: 0
 --- !u!1 &6828834926812266292
@@ -628,7 +627,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59b88a626c47a794c94c926bf195cbe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyID: 0
+  keyData:
+    itemName: 
+    itemID: 0
+    icon: {fileID: 0}
+    itemType: 0
   doorSound: {fileID: 8300000, guid: fd0b0df2031d357428b6247a01b7f9fb, type: 3}
   isOpened: 0
   openedSprite: {fileID: 3415922894158842168}
@@ -641,7 +644,11 @@ MonoBehaviour:
   needKeyUIOpen: 0
   delayTime: 0.3
   sightRadius: 0
-  view2D: {fileID: 0}
+  boxCollider: {fileID: 2022600363}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
+  player: {fileID: 0}
 --- !u!61 &2022600363
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -581,6 +581,8 @@ MonoBehaviour:
   BlincOffTime: {x: 0, y: 0}
   BlincMiddleTime: {x: 0, y: 0}
   BlincOnTime: {x: 0, y: 0}
+  light2D: {fileID: 0}
+  originOuterRadius: 0
 --- !u!1 &6828834926812266292
 GameObject:
   m_ObjectHideFlags: 0
@@ -937,9 +939,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59b88a626c47a794c94c926bf195cbe5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  keyID: 0
+  keyData:
+    itemName: Key
+    itemID: 0
+    icon: {fileID: 21300000, guid: 7c1b36b404e0aec45b63bf1f2aecea5d, type: 3}
+    itemType: 2
   doorSound: {fileID: 8300000, guid: f09a033e70f1f2549ab06981c6f97391, type: 3}
-  invokeTime: 0
   isOpened: 0
   openedSprite: {fileID: 3415922894158842168}
   lightsManager: {fileID: 2117307532}
@@ -949,6 +954,12 @@ MonoBehaviour:
   playerIn: 0
   needKeyUI: {fileID: 4538860257621887385}
   needKeyUIOpen: 0
+  delayTime: 0
+  sightRadius: 0
+  boxCollider: {fileID: 2022600363}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!61 &2022600363
 BoxCollider2D:
   m_ObjectHideFlags: 0

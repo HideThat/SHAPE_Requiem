@@ -35,9 +35,11 @@ public class NPC : MonoBehaviour
     [Header("인게임 데이터")]
     public bool isTalking = false; // 대화 중인지 여부
     public bool isPlayerInRange = false; // 플레이어가 범위 내에 있는지 여부
+    public bool notComtpleteTalk = false;
     public int textIndex = 0;
     public int currentTextIndex = 0; // 현재 대화 인덱스
     public int finishTextIndex = -1;
+    public Coroutine coroutine;
 
     protected void Start()
     {
@@ -60,6 +62,7 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = true;
+            StopCoroutine(coroutine);
         }
     }
 
@@ -69,8 +72,22 @@ public class NPC : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             isPlayerInRange = false;
+            if (isTalking)
+            {
+                coroutine = StartCoroutine(ResetConversationAfterDelay(2f)); // 3초 후 대화 초기화
+            }
         }
     }
+
+    IEnumerator ResetConversationAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (!isPlayerInRange) // 플레이어가 범위 내에 있지 않은 경우만 초기화
+        {
+            NotCompleteTalking();
+        }
+    }
+
 
     void ConversationSystem(List<TextData> text)
     {
@@ -124,6 +141,17 @@ public class NPC : MonoBehaviour
         currentTextIndex = 0;
         textBoxImage.gameObject.SetActive(false);
         finishTextIndex = textIndex;
+        notComtpleteTalk = false;
+        StopCoroutine(coroutine);
+    }
+
+    void NotCompleteTalking()
+    {
+        // 중간에 대화 종료
+        isTalking = false;
+        currentTextIndex = 0;
+        textBoxImage.gameObject.SetActive(false);
+        notComtpleteTalk = true;
     }
 
     public void AnimationPlay(string _animationName)

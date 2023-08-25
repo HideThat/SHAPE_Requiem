@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using Mono.Cecil.Cil;
 
 public class InventorySysyem : MonoBehaviour
 {
@@ -13,36 +14,72 @@ public class InventorySysyem : MonoBehaviour
 
     private void Start()
     {
-        int count = ItemPanel.transform.childCount;
+        int count = ItemPanel?.transform.childCount ?? 0;
 
         for (int i = 0; i < count; i++)
         {
             ItemSlot itemslot = ItemPanel.transform.GetChild(i).GetComponent<ItemSlot>();
-
             if (itemslot != null)
             {
                 itemSlots.Add(itemslot);
+                itemslot.ClearSlot(); // 초기 상태를 정리합니다.
             }
         }
-
         maxInventorySize = count;
+
+        InvenOnOff(false);
+    }
+
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (ItemPanel.activeInHierarchy)
+            {
+                InvenOnOff(false);
+            }
+            else
+            {
+                InvenOnOff(true);
+            }
+        }
+    }
+
+    public void InvenOnOff(bool _TF)
+    {
+        ItemPanel.SetActive(_TF);
     }
 
     public bool AddItem(Item item)
     {
-        if (items.Count < maxInventorySize)
+        bool wasOpen = ItemPanel.activeInHierarchy; // 초기 활성화 상태 저장
+
+        if (items.Count < maxInventorySize && item != null)
         {
-            Item invenItem = new Item(item);
+            if (!wasOpen)
+                InvenOnOff(true); // 패널 활성화
 
-            items.Add(invenItem);
+            items.Add(item);
 
-            // 해당 슬롯에 아이템 설정
-            itemSlots[items.Count - 1].SetItem(invenItem);
+            if (itemSlots[items.Count - 1].gameObject.activeInHierarchy)
+            {
+                itemSlots[items.Count - 1].SetItem(item);
+            }
+            else
+            {
+                Debug.Log("itemSlots error");
+            }
+
+            if (!wasOpen)
+                InvenOnOff(false); // 초기에 비활성화되어 있었다면 다시 비활성화
 
             return true; // 아이템 추가 성공
         }
-        return false; // 인벤토리 공간 부족
+
+        return false; // 아이템 추가 실패
     }
+
 
     public void RemoveItem(Item item)
     {
@@ -50,9 +87,9 @@ public class InventorySysyem : MonoBehaviour
         if (index != -1)
         {
             items.RemoveAt(index);
-            itemSlots[index].ClearSlot(); // 해당 슬롯의 아이템 제거
+            itemSlots[index].ClearSlot();
 
-            // 나머지 아이템들을 위로 이동
+            // 나머지 아이템들 재배치
             for (int i = index; i < items.Count; i++)
             {
                 itemSlots[i].SetItem(items[i]);
@@ -68,6 +105,14 @@ public class InventorySysyem : MonoBehaviour
 
     public bool ContainsItem(Item item)
     {
-        return items.Contains(item);
+        for (int i = 0; i < items.Count; i++)
+        {
+            if (items[i].Equals(item))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

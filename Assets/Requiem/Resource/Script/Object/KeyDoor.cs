@@ -1,4 +1,4 @@
-// 1Â÷ ¸®ÆåÅä¸µ
+// 1ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ä¸µ
 
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ using DG.Tweening;
 
 public class KeyDoor : MonoBehaviour
 {
-    [SerializeField] private int keyID; // Å° ID
+    [SerializeField] private Item keyData; // Å° ID
     [SerializeField] private AudioClip doorSound;
     [SerializeField] public bool isOpened;
     [SerializeField] private SpriteRenderer openedSprite;
@@ -20,9 +20,12 @@ public class KeyDoor : MonoBehaviour
     [SerializeField] private bool playerIn = false;
     [SerializeField] private SpriteRenderer needKeyUI;
     [SerializeField] private bool needKeyUIOpen = false;
-    [Header("ÇÁ·Î±×·¡¸Ó")]
+    [Header("programer")]
     [SerializeField] private float delayTime;
     [SerializeField] private float sightRadius;
+    [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private LayerMask layerMask;
+    [SerializeField] private Transform player;
 
     private AudioSource audioSource;
     private bool isInventoryOpen = false;
@@ -49,16 +52,30 @@ public class KeyDoor : MonoBehaviour
     {
         DoorStateChange();
         OnOffUI();
+
+        if (!isOpened && playerIn)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                if (player.GetComponent<InventorySysyem>().ContainsItem(keyData))
+                {
+                    player.GetComponent<InventorySysyem>().RemoveItem(keyData);
+                    isOpened = true;
+                    audioSource.PlayOneShot(doorSound);
+                }
+            }
+        }
     }
 
-    // Æ®¸®°Å¿¡ ´Ù¸¥ ¿ÀºêÁ§Æ®°¡ ÀÖÀ» ¶§ Ã³¸®ÇÏ´Â ÇÔ¼ö
+    // Æ®ï¿½ï¿½ï¿½Å¿ï¿½ ï¿½Ù¸ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ Ã³ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     private void OnTriggerStay2D(Collider2D collision)
     {
-        //»óÈ£ÀÛ¿ë À¯µµ UI ¹èÄ¡
+        //ï¿½ï¿½È£ï¿½Û¿ï¿½ ï¿½ï¿½ï¿½ï¿½ UI ï¿½ï¿½Ä¡
 
         if (IsPlayer(collision))
         {
             playerIn = true;
+            player = collision.transform;
 
             if (isOpened)
             {
@@ -66,45 +83,7 @@ public class KeyDoor : MonoBehaviour
                 SaveSystem.Instance.responPoint.responScenePoint = transform.position;
             }
         }
-
-        if (IsPlayer(collision) && Input.GetKeyDown(KeyCode.F) && !isOpened)
-        {
-            //PlayerInventorySystem inven = GetPlayerInventorySystem(collision);
-            //StartCoroutine(OpenAndSearchInventoryCoroutine(inven));
-        }
     }
-
-    //private IEnumerator OpenAndSearchInventoryCoroutine(PlayerInventorySystem inven)
-    //{
-    //    isInventoryOpen = true;
-    //    yield return new WaitForSeconds(delayTime);
-
-    //    if (!isOpened) // ¹®ÀÌ ÀÌ¹Ì ¿­·ÁÀÖÁö ¾ÊÀº °æ¿ì¿¡¸¸ Å° °Ë»ç ¼öÇà
-    //    {
-    //        inven.OpenInventory();
-    //        bool hasKey = false;
-
-    //        for (int i = 0; i < inven.currentIndex; i++)
-    //        {
-    //            if (HasKey(inven, i))
-    //            {
-    //                hasKey = true;
-    //                UseKeyAndActiveDoor(inven, i);
-    //                break;
-    //            }
-    //        }
-
-    //        if (!hasKey)
-    //        {
-    //            needKeyUIOpen = true;
-    //        }
-
-    //        inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
-    //        inven.CloseInventory();
-    //    }
-
-    //    isInventoryOpen = false;
-    //}
 
     private void OnTriggerExit2D(Collider2D collision)
     {
@@ -114,39 +93,11 @@ public class KeyDoor : MonoBehaviour
         }
     }
 
-    // ÇÃ·¹ÀÌ¾îÀÎÁö È®ÀÎÇÏ´Â ÇÔ¼ö
+    // ï¿½Ã·ï¿½ï¿½Ì¾ï¿½ï¿½ï¿½ï¿½ï¿½ È®ï¿½ï¿½ï¿½Ï´ï¿½ ï¿½Ô¼ï¿½
     private bool IsPlayer(Collider2D collision)
     {
         return collision.gameObject.layer == (int)LayerName.Player;
     }
-
-    // ÇÃ·¹ÀÌ¾î ÀÎº¥Åä¸® ½Ã½ºÅÛÀ» °¡Á®¿À´Â ÇÔ¼ö
-    //private PlayerInventorySystem GetPlayerInventorySystem(Collider2D collision)
-    //{
-    //    return collision.GetComponent<PlayerInventorySystem>();
-    //}
-
-    // ÀÎº¥Åä¸®¿¡ Å°°¡ ÀÖ´ÂÁö È®ÀÎÇÏ´Â ÇÔ¼ö
-    //private bool HasKey(PlayerInventorySystem inven, int index)
-    //{
-    //    return inven.items[index].m_ID == keyID;
-    //}
-
-    // Å°¸¦ »ç¿ëÇÏ°í ¹®À» ÀÛµ¿ÇÏ´Â ÇÔ¼ö
-    //private void UseKeyAndActiveDoor(PlayerInventorySystem inven, int index)
-    //{
-    //    inven.UseItem(index);
-    //    inven.CloseInventory();
-    //    isOpened = true;
-    //    audioSource.PlayOneShot(doorSound);
-    //}
-
-    // ÀÎº¥Åä¸®¸¦ ¾÷µ¥ÀÌÆ®ÇÏ°í ´Ý´Â ÇÔ¼ö
-    //private void UpdateAndCloseInventory(PlayerInventorySystem inven)
-    //{
-    //    inven.playerInventory.GetComponent<InventorySystem>().UpdateInventory();
-    //    inven.CloseInventory();
-    //}
 
     void DoorStateChange()
     {

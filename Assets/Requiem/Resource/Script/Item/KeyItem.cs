@@ -1,44 +1,24 @@
-// 1차 리펙토링
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeyItem : Item
+public class KeyItem : MonoBehaviour
 {
-    [SerializeField] public float distance = 1.0f;  // 움직일 거리
-    [SerializeField] public float speed = 1.0f;  // 움직임 속도
+    public Item itemData;
+    public BoxCollider2D myCollider;
+    public LayerMask layerMask;
+    public Collider2D hitInfo;
+    public bool isActive = false;
 
-    private Vector2 startPos;
-
-    void Start()
+    private void FixedUpdate()
     {
-        gameObject.layer = (int)LayerName.Item; // 아이템 레이어 설정
-        m_collider = GetComponent<Collider2D>(); // 자신의 콜라이더
-        m_animator = GetComponent<Animator>(); // 자신의 애니매이터
-        startPos = transform.position;  // 시작 위치 저장
+        hitInfo = Physics2D.OverlapBox(transform.position, myCollider.size, 0f, layerMask);
 
-        if (m_collider == null) Debug.Log("m_collider == null");
-        if (m_animator == null) Debug.Log("m_animator == null");
-        if (startPos == null) Debug.Log("startPos == null");
-
-        StartCoroutine(MoveUpDown());
-    }
-
-    IEnumerator MoveUpDown()
-    {
-        while (true)
+        if (hitInfo != null && !isActive)
         {
-            yield return new WaitForSeconds(0.01f);
-
-            // 삼각함수를 이용하여 움직임을 구현
-            float newY = startPos.y + Mathf.PingPong(Time.time * speed, distance * 2) - distance;
-            transform.position = new Vector3(startPos.x, newY, 0f);
+            hitInfo.GetComponent<InventorySysyem>().AddItem(itemData);
+            isActive = true;
+            Destroy(gameObject);
         }
-    }
-
-    public void KeyActive(bool _TF)
-    {
-        gameObject.SetActive(_TF);
     }
 }

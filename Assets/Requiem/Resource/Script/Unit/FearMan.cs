@@ -57,7 +57,10 @@ public class FearMan : NPC
     {
         if (Physics2D.OverlapCapsule(transform.position, capsuleCollider.size, CapsuleDirection2D.Vertical, 0f, layerMask))
         {
-            textIndex = 1; // 6-1 기본 상태 대화
+            if (textIndex != 2)
+            {
+                textIndex = 1; // 6-1 기본 상태 대화
+            }
             state = StateFearMan.Idle;
         }
         else
@@ -66,4 +69,5 @@ public class FearMan : NPC
             state = StateFearMan.Fear;
         }
     }
+
 }

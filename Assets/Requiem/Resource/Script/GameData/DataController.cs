@@ -7,6 +7,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 using Cinemachine;
+using DG.Tweening;
+using UnityEngine.Rendering.VirtualTexturing;
 
 
 //레이어 번호
@@ -36,6 +38,8 @@ class CameraData
     public GameObject mainCamera; // 메인 카메라 오브젝트
     public CinemachineVirtualCamera mainCM; // 메인 시네머신
     public float followTime; // 메인 카메라가 플레이어를 추적하는 시간
+    public float cameraSize;
+    public Tween cameraTween;
 }
 
 [Serializable]
@@ -53,13 +57,20 @@ public class TriggerData
     public bool playerIn;
 }
 
+[Serializable]
+public class MovablePlatformData
+{
+    public List<MovablePlatform> movablePlatforms;
+}
+
 public class DataController : MonoBehaviour
 {
     static DataController instance = null;
 
-    [SerializeField] CameraData cameraData = new CameraData();
-    [SerializeField] SoundManager soundManager = new SoundManager();
-    [SerializeField] TriggerData triggerData = new TriggerData();
+    [SerializeField] CameraData cameraData = new();
+    [SerializeField] SoundManager soundManager = new();
+    [SerializeField] TriggerData triggerData = new();
+    [SerializeField] MovablePlatformData movablePlatformData = new();
 
 
     public static DataController Instance
@@ -91,6 +102,15 @@ public class DataController : MonoBehaviour
         get { return instance.cameraData.mainCM; }
         set { instance.cameraData.mainCM = value; }
     }
+    public static float CurrentCameraSize
+    {
+        get { return instance.cameraData.cameraSize; }
+    }
+    public static Tween CameraTween
+    {
+        get { return instance.cameraData.cameraTween; }
+        set { instance.cameraData.cameraTween = value; }
+    }
     #endregion
     #region 사운드매니저
     public static float BGMVolume
@@ -121,6 +141,12 @@ public class DataController : MonoBehaviour
         set { instance.triggerData.playerIn = value; }
     }
     #endregion
+    #region 맵 오브젝트 데이터
+    public static List<MovablePlatform> MovablePlatformList
+    {
+        get { return instance.movablePlatformData.movablePlatforms; }
+    }
+    #endregion
 
     private void Awake()
     {
@@ -146,8 +172,11 @@ public class DataController : MonoBehaviour
     {
         SaveSystem.Instance.LoadPlayerData();
         SaveSystem.Instance.LoadRuneData();
+        SaveSystem.Instance.LoadSceneMovablePlatformData(movablePlatformData.movablePlatforms);
 
         FadeManager.Instance.FadeOutAndIn(1f, 2f);
+
+        cameraData.cameraSize = cameraData.mainCamera.GetComponent<Camera>().orthographicSize;
 
         if (MainCamera == null) Debug.Log("MainCamera == null");
         if (CameraFollowTime == 0) Debug.Log("CameraFollowTime == 0");

@@ -626,9 +626,9 @@ MonoBehaviour:
   moveSpeed: 3
   moveDirection: 0
   moveAlongYAxis: 1
-  audioSource: {fileID: 0}
+  audioSource: {fileID: 2546358473416172012}
   audioClip: {fileID: 8300000, guid: b5bd3d4967c3c20499ba76f09fe6ca0b, type: 3}
-  platformSwitch: {fileID: 0}
+  platformSwitch: {fileID: 7129884415960986738}
 --- !u!1001 &5631861488591757761
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -690,6 +690,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b03680c18fa20b7479f3a95ac257fadc, type: 3}
+--- !u!114 &7129884415960986738 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3231917908599002547, guid: b03680c18fa20b7479f3a95ac257fadc, type: 3}
+  m_PrefabInstance: {fileID: 5631861488591757761}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87586c7e2953381418c035b9e65f0c59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &7129884415960986740 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3231917908599002549, guid: b03680c18fa20b7479f3a95ac257fadc, type: 3}

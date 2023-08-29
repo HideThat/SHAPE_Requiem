@@ -25,9 +25,10 @@ public class SaveSystem : MonoBehaviour
     HashSet<string> sceneNames = new HashSet<string>();
     [SerializeField] string beforeScene;
     [SerializeField] string currentScene;
-
+    
     public Dictionary<string, bool> runeStatueActiveData = new Dictionary<string, bool>();
     public Dictionary<string, List<bool>> sceneFogData = new Dictionary<string, List<bool>>();
+    public Dictionary<string, List<bool>> sceneMovablePlatfomData = new Dictionary<string, List<bool>>();
     public PlayerResponPoint responPoint = new PlayerResponPoint();
     public PlayerState playerState = new PlayerState();
 
@@ -241,5 +242,94 @@ public class SaveSystem : MonoBehaviour
         }
     }
     #endregion
+    #region 무브어블 플랫폼 저장 시스템
+    public void SetSceneMovablePlatformData(List<MovablePlatform> _platformList)
+    {
+        if (_platformList == null)
+        {
+            Debug.LogError("_fogList가 null로 호출되었습니다.");
+            return; // Early return
+        }
+
+        if (string.IsNullOrEmpty(currentScene))
+        {
+            Debug.LogError("현재 씬이 설정되지 않았습니다!");
+            return; // Early return
+        }
+
+        List<bool> switchDataList;
+
+        if (sceneMovablePlatfomData.ContainsKey(currentScene))
+        {
+            switchDataList = sceneMovablePlatfomData[currentScene];
+            switchDataList.Clear(); // 기존 데이터를 지움
+        }
+        else
+        {
+            switchDataList = new List<bool>(capacity: _platformList.Count); // 크기를 지정하여 초기화
+        }
+
+        for (int i = 0; i < _platformList.Count; i++)
+        {
+            if (_platformList[i] == null || _platformList[i].gameObject == null)
+            {
+                Debug.LogWarning($"_fogList[{i}] 또는 그것의 gameObject가 null입니다.");
+                continue; // Skip this iteration
+            }
+
+            switchDataList.Add(_platformList[i].platformSwitch.isActive);
+        }
+
+        sceneMovablePlatfomData[currentScene] = switchDataList; // 키가 이미 존재하면 값을 업데이트, 그렇지 않으면 추가
+    }
+
+    public void LoadSceneMovablePlatformData(List<MovablePlatform> _platformList)
+    {
+        // 입력 리스트 검증
+        if (_platformList == null)
+        {
+            Debug.LogError("_platformList가 null로 호출되었습니다.");
+            return; // 함수를 더 이상 실행하지 않고 종료
+        }
+
+        // 현재 씬 이름 검증
+        if (string.IsNullOrEmpty(currentScene))
+        {
+            Debug.LogError("현재 씬이 설정되지 않았습니다!");
+            return; // 함수를 더 이상 실행하지 않고 종료
+        }
+
+        // 해당 씬에 대한 데이터 존재 유무 검증
+        if (!sceneMovablePlatfomData.ContainsKey(currentScene))
+        {
+            Debug.LogError("현재 씬의 무브어블 플랫폼 데이터가 없습니다!");
+            return; // 함수를 더 이상 실행하지 않고 종료
+        }
+
+        // 현재 씬에 대한 무브어블 플랫폼 상태 데이터 로드
+        List<bool> switchDataList = sceneMovablePlatfomData[currentScene];
+
+        // 로드된 데이터와 입력 리스트의 크기 검증
+        if (_platformList.Count != switchDataList.Count)
+        {
+            Debug.LogError("무브어블 플랫폼 데이터와 _platformList의 크기가 일치하지 않습니다!");
+            return; // 함수를 더 이상 실행하지 않고 종료
+        }
+
+        // 모든 무브어블 플랫폼에 대한 상태를 업데이트
+        for (int i = 0; i < _platformList.Count; i++)
+        {
+            if (_platformList[i] == null || _platformList[i].gameObject == null)
+            {
+                Debug.LogWarning($"_platformList[{i}] 또는 그것의 gameObject가 null입니다.");
+                continue; // 이번 반복을 건너뛰고 다음으로 넘어감
+            }
+
+            _platformList[i].platformSwitch.isActive = switchDataList[i];
+        }
+    }
+
+    #endregion
+
 
 }

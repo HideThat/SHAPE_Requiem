@@ -99,8 +99,8 @@ public class HP_SystemGPT : MonoBehaviour
     void Update()
     {
         PlayerStateUpdate(); // 플레이어 상태 업데이트
-        ReControlHit(); // 제어 되찾기
-        ReControlDead(); // 사망 후 부활하기
+        //ReControlHit(); // 제어 되찾기
+        //ReControlDead(); // 사망 후 부활하기
     }
 
     void OnCollisionStay2D(Collision2D collision)
@@ -192,6 +192,8 @@ public class HP_SystemGPT : MonoBehaviour
             m_isHit = true; // 플레이어가 피격되었음
             playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
 
+            StartCoroutine(ReControl(resetDelay));
+
             if (_Enemy.GetComponent<ArrowScript>() != null) // 적이 발사된 화살일 경우
             {
                 _Enemy.GetComponent<ArrowScript>().ArrowDestroy(); // 화살을 파괴
@@ -204,43 +206,55 @@ public class HP_SystemGPT : MonoBehaviour
     }
 
 
-    void ReControlHit() // 피격 시 플레이어 제어 회복
-    {
-        if (loseControl) // 제어 상실 상태인 경우
-        {
-            if (timeLeft < resetDelay) // 시간이 리셋 지연시간보다 작을 경우
-            {
-                isInvincibility = true; // 무적 상태로 전환
-                timeLeft += Time.deltaTime; // 시간을 누적
-            }
-            else
-            {
-                loseControl = false; // 제어 상실 상태를 해제
-                timeLeft = 0f; // 시간을 초기화
-                m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
-                isInvincibility = false; // 무적 상태를 해제
-            }
-        }
-    }
+    //void ReControlHit() // 피격 시 플레이어 제어 회복
+    //{
+    //    if (loseControl) // 제어 상실 상태인 경우
+    //    {
+    //        if (timeLeft < resetDelay) // 시간이 리셋 지연시간보다 작을 경우
+    //        {
+    //            isInvincibility = true; // 무적 상태로 전환
+    //            timeLeft += Time.deltaTime; // 시간을 누적
+    //        }
+    //        else
+    //        {
+    //            loseControl = false; // 제어 상실 상태를 해제
+    //            timeLeft = 0f; // 시간을 초기화
+    //            m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
+    //            isInvincibility = false; // 무적 상태를 해제
+    //        }
+    //    }
+    //}
 
 
-    void ReControlDead() // 죽음 시 플레이어 제어 회복
+    //void ReControlDead() // 죽음 시 플레이어 제어 회복
+    //{
+    //    if (SaveSystem.Instance.playerState.playerDead) // 죽은 상태인 경우
+    //    {
+    //        if (timeLeft < recorverDelay) // 시간이 복구 지연시간보다 작을 경우
+    //        {
+    //            isInvincibility = true; // 무적 상태로 전환
+    //            timeLeft += Time.deltaTime; // 시간을 누적
+    //        }
+    //        else
+    //        {
+    //            timeLeft = 0f;  // 시간을 초기화
+    //            m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
+    //            SaveSystem.Instance.playerState.playerDead = false;
+    //            isInvincibility = false;  // 무적 상태를 해제
+    //        }
+    //    }
+    //}
+
+    IEnumerator ReControl(float _delay)
     {
-        if (SaveSystem.Instance.playerState.playerDead) // 죽은 상태인 경우
-        {
-            if (timeLeft < recorverDelay) // 시간이 복구 지연시간보다 작을 경우
-            {
-                isInvincibility = true; // 무적 상태로 전환
-                timeLeft += Time.deltaTime; // 시간을 누적
-            }
-            else
-            {
-                timeLeft = 0f;  // 시간을 초기화
-                m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
-                SaveSystem.Instance.playerState.playerDead = false;
-                isInvincibility = false;  // 무적 상태를 해제
-            }
-        }
+        isInvincibility = true; // 무적 상태로 전환
+
+        yield return new WaitForSeconds(_delay);
+
+        loseControl = false; // 제어 상실 상태를 해제
+        m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
+        SaveSystem.Instance.playerState.playerDead = false;
+        isInvincibility = false;  // 무적 상태를 해제
     }
 
     void Dead() // 죽음 처리하는 메소드
@@ -256,12 +270,36 @@ public class HP_SystemGPT : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
         playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
         mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
-        DOTween.To(() => mainCM.m_Lens.OrthographicSize,
+        DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
         Invoke("PlayerMoveSavePoint", recorverDelay);
         FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
         EnemyManager.Instance.ResetAllEnemies();
         RisingFloorManager.Instance.ResetAllRisingFloors();
+
+        StartCoroutine(ReControl(recorverDelay));
+    }
+
+    public void Dead(float _delay)
+    {
+        mainCM = DataController.MainCM;
+
+        loseControl = true;  // 제어 상실 상태로 전환
+        cameraChange = true;
+        audioSource.Play();
+        m_HP = m_maxHP; // 플레이어 체력을 최대치로 복구
+        animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
+        SaveSystem.Instance.playerState.playerDead = true;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
+        playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+        mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
+        DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
+            x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
+        FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
+        EnemyManager.Instance.ResetAllEnemies();
+        RisingFloorManager.Instance.ResetAllRisingFloors();
+
+        StartCoroutine(ReControl(_delay));
     }
 
     public void StartCorutineDeadAnimaitionPlay()

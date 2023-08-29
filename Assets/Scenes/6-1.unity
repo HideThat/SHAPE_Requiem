@@ -30280,9 +30280,9 @@ MonoBehaviour:
   nextScene: 6-2
   contactObjectName: Player
   fadeOutTime: 0.5
-  nextPlayerPos: {x: -22.04, y: -24}
+  nextPlayerPos: {x: 19.69, y: -24}
   nextPlayerRot: {x: 0, y: 0, z: 0, w: 0}
-  nextRunePos: {x: -22.04, y: -23.89}
+  nextRunePos: {x: 19.69, y: -23.89}
   nextRuneRot: {x: 0, y: 0, z: 0, w: 0}
 --- !u!61 &1114722477
 BoxCollider2D:
@@ -30503,6 +30503,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 33
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1188585291 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5631861488578538333, guid: a7d8b2b3e08e5ed4db133ad07c7c78c0, type: 3}
+  m_PrefabInstance: {fileID: 678839327}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c70cbe98500e6ea479e874ee5883bd5f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1206389563
 GameObject:
   m_ObjectHideFlags: 3
@@ -36537,6 +36548,14 @@ PrefabInstance:
       propertyPath: sceneObjectData.runeStatues.Array.data[0]
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 7543882171348522628, guid: c165c726b296ee64baf62b56734b2fde, type: 3}
+      propertyPath: movablePlatformData.movablePlatforms.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7543882171348522628, guid: c165c726b296ee64baf62b56734b2fde, type: 3}
+      propertyPath: movablePlatformData.movablePlatforms.Array.data[0]
+      value: 
+      objectReference: {fileID: 1188585291}
     - target: {fileID: 7543882171348522629, guid: c165c726b296ee64baf62b56734b2fde, type: 3}
       propertyPath: m_Name
       value: DataControllor

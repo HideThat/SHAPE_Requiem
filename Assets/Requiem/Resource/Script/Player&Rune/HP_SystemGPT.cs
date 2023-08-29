@@ -46,6 +46,7 @@ public class HP_SystemGPT : MonoBehaviour
     string[] staticEnemyName;
 
     // 제어를 되찾기 위한 시간, 무적 상태 여부, 제어 불가 상태 여부, 사망 여부
+    float currentCameraSize;
     float timeLeft;
     bool isInvincibility = false;
     bool loseControl = false;
@@ -269,6 +270,7 @@ public class HP_SystemGPT : MonoBehaviour
         SaveSystem.Instance.playerState.playerDead = true;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
         playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+        currentCameraSize = mainCM.m_Lens.OrthographicSize;
         mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
         DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
@@ -332,6 +334,7 @@ public class HP_SystemGPT : MonoBehaviour
     {
         if (SaveSystem.Instance.responPoint.responSceneName == SceneManager.GetActiveScene().name)
         {
+            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, currentCameraSize, 2f);
             SaveSystem.Instance.SetPlayerNextPos();
             transform.position = SaveSystem.Instance.responPoint.responScenePoint;
         }

@@ -5,7 +5,7 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.Tilemaps;
 using DG.Tweening;
 
-public class DisapearTrigger : Trigger_Requiem
+public class DisapearTrigger : MonoBehaviour
 {
 
     [SerializeField] Tilemap m_tileMap;

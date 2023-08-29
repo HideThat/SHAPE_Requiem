@@ -1,14 +1,18 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class FearMan : NPC
 {
-    public KeyItem keyItem;
-    public float keyCoolTime;
-    public bool wasGiveKey = false;
-    public float throwTime;
+    
+
+    public enum SituationFearMan
+    {
+        FirstMeet, RuneStatueDescription
+    }
 
     public enum StateFearMan
     {
@@ -18,8 +22,15 @@ public class FearMan : NPC
     [Header("FearMan")]
     [SerializeField] private CapsuleCollider2D capsuleCollider; // 인스펙터에서만 접근 가능하게
     [SerializeField] private LayerMask layerMask; // 인스펙터에서만 접근 가능하게
+    [SerializeField] Image keyImage;
+    [SerializeField] GameObject keyText;
+    public KeyItem keyItem;
+    public float keyCoolTime;
+    public bool wasGiveKey = false;
+    public float throwTime;
 
-    private StateFearMan state = StateFearMan.Idle;
+    public SituationFearMan situation = SituationFearMan.FirstMeet;
+    public StateFearMan state = StateFearMan.Idle;
 
     new void Start()
     {
@@ -35,14 +46,33 @@ public class FearMan : NPC
     {
         base.Update();
 
-        if (SceneManager.GetActiveScene().name == "6-2")
+        switch (situation)
         {
-            if (capsuleCollider == null) return; // 방어 코드, 콜라이더가 없으면 업데이트를 건너뜁니다.
+            case SituationFearMan.FirstMeet:
+                if (capsuleCollider == null) return; // 방어 코드, 콜라이더가 없으면 업데이트를 건너뜁니다.
 
-            HandleAnimationState();
-            CheckFearState();
-            HandleDialogueState();
-            HandleKeyThrowing();
+                HandleAnimationState();
+                CheckFearState();
+                HandleDialogueState();
+                HandleKeyThrowing();
+                break;
+            case SituationFearMan.RuneStatueDescription:
+                AnimationPlay("Idle");
+                textIndex = 4;
+                break;
+            default:
+                break;
+        }
+
+        if (isPlayerInRange)
+        {
+            keyImage.DOColor(new Color(1f, 1f, 1f, 1f), 1f);
+            keyText.SetActive(true);
+        }
+        else
+        {
+            keyImage.DOColor(new Color(1f, 1f, 1f, 0f), 1f);
+            keyText.SetActive(false);
         }
     }
 

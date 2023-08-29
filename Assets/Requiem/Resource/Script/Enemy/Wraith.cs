@@ -14,6 +14,8 @@ public class Wraith : Enemy_Dynamic
     [SerializeField] private string[] animationParamiterList;
     [SerializeField] GameObject trail;
 
+    [SerializeField] CircleCollider2D circleCollider;
+    [SerializeField] LayerMask layerMask;
     [SerializeField] Vector2 rushTarget;
     [SerializeField] public WraithState currentState = WraithState.Chasing;
 
@@ -81,6 +83,14 @@ public class Wraith : Enemy_Dynamic
         {
             transform.localScale = new Vector3(-1f, 1f, 1f);
         }
+
+        Collider2D colli = Physics2D.OverlapCircle(transform.position, circleCollider.radius, layerMask);
+
+        if (colli)
+        {
+            currentState = WraithState.Dead;
+        }
+        
     }
 
     private void Chasing()

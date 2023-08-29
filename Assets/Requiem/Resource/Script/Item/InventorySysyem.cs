@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
-using Mono.Cecil.Cil;
 
 public class InventorySysyem : MonoBehaviour
 {

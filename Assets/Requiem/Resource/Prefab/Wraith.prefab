@@ -65,6 +65,10 @@ MonoBehaviour:
   - Wraith_Rush_Grogie
   - Wraith__Die
   trail: {fileID: 2063778860822366239}
+  circleCollider: {fileID: 754793049477194991}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 2048
   rushTarget: {x: 0, y: 0}
   currentState: 0
   rushStartPoint: {x: 0, y: 0}

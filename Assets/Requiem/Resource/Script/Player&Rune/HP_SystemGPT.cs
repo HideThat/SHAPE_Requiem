@@ -120,6 +120,14 @@ public class HP_SystemGPT : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!isInvincibility)
+        {
+            CheckCollision(collision.gameObject); // 충돌 처리
+        }
+    }
+
     void CheckCollision(GameObject obj) // 게임 오브젝트에 충돌이 일어날 때 호출되는 메소드.
     {
 

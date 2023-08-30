@@ -15,7 +15,8 @@ public class ReactiveLamp : MonoBehaviour
     [SerializeField] LayerMask enemyLayer;
     [SerializeField] CircleCollider2D circleCollider;
 
-    private bool isTurningOff = false;
+    private Coroutine myRoutine;
+
     private float circleCastRadius = 0f;
 
     private void Start()
@@ -45,18 +46,6 @@ public class ReactiveLamp : MonoBehaviour
             default:
                 break;
         }
-
-        RaycastHit2D enemy = Physics2D.CircleCast(transform.position, circleCastRadius, Vector2.zero, enemyLayer);
-
-        if (enemy)
-        {
-            if (enemy.transform.GetComponent<Wraith>() != null)
-            {
-                enemy.transform.GetComponent<Wraith>().currentState = Wraith.WraithState.Dead;
-            }
-        }
-        
-
     }
 
     private void TurnOn()
@@ -64,11 +53,9 @@ public class ReactiveLamp : MonoBehaviour
         // Check if the light2D is null
         if (light2D == null) return;
 
-        StopCoroutine(BlinkingEffect());
+        StopCoroutine(myRoutine);
 
         // Preventing continuous calling if the state is already in Infinity
-        if (state == ReactiveLampState.Infinity) return;
-
         DOTween.To(() => circleCollider.radius, x => circleCollider.radius = x, maxRadius * 0.7f, changeTime);
         DOTween.To(() => circleCastRadius, x => circleCastRadius = x, maxRadius * 0.7f, changeTime);
         DOTween.To(() => light2D.intensity, x => light2D.intensity = x, brightness, changeTime);
@@ -88,17 +75,12 @@ public class ReactiveLamp : MonoBehaviour
         // Check if the light2D or lit is null
         if (light2D == null || lit == null) return;
 
-        // Check if already in the process of turning off
-        if (isTurningOff) return;
-
-        isTurningOff = true; // Mark as turning off
-
         DOTween.To(() => circleCollider.radius, x => circleCollider.radius = x, 0f, changeTime);
         DOTween.To(() => circleCastRadius, x => circleCastRadius = x, 0f, changeTime);
         DOTween.To(() => light2D.intensity, x => light2D.intensity = x, 1f, changeTime);
         DOTween.To(() => light2D.pointLightOuterRadius, x => light2D.pointLightOuterRadius = x, 1.5f, changeTime);
 
-        StartCoroutine(BlinkingEffect());
+        myRoutine = StartCoroutine(BlinkingEffect());
     }
 
     private IEnumerator BlinkingEffect()
@@ -112,8 +94,6 @@ public class ReactiveLamp : MonoBehaviour
             lit.color = new Color(lit.color.r, lit.color.g, lit.color.b, 0.3f);
             yield return new WaitForSeconds(blinkDelay);
         }
-
-        isTurningOff = false; // Reset the turning off flag
     }
 
     IEnumerator DelayedTurnOff()

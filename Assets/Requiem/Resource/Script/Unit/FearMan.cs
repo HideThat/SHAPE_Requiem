@@ -11,7 +11,7 @@ public class FearMan : NPC
 
     public enum SituationFearMan
     {
-        FirstMeet, RuneStatueDescription
+        FirstMeet, RuneStatueDescription, NearMoon
     }
 
     public enum StateFearMan
@@ -59,6 +59,10 @@ public class FearMan : NPC
             case SituationFearMan.RuneStatueDescription:
                 AnimationPlay("Idle");
                 textIndex = 4;
+                break;
+            case SituationFearMan.NearMoon:
+                AnimationPlay("Idle");
+                textIndex = 5;
                 break;
             default:
                 break;

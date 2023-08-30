@@ -213,9 +213,13 @@ public class RuneManager : MonoBehaviour
     // ·é ÆÄ¿ö È¸º¹
     public void RunePowerBack()
     {
-        isPowerLose = false;
-        runeLightArea.enabled = true;
-        DecreaseRunePowerOverTime(RuneManager.Instance.runeOuterRadius, RuneManager.Instance.runePowerBackTime);
+        if (getLightAblity)
+        {
+            isPowerLose = false;
+            runeLightArea.enabled = true;
+            DecreaseRunePowerOverTime(RuneManager.Instance.runeOuterRadius, RuneManager.Instance.runePowerBackTime);
+        }
+        
     }
 
     private void DecreaseRunePowerOverTime(float targetRadius, float duration)

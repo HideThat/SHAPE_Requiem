@@ -245,7 +245,6 @@ public class RuneControllerGPT : MonoBehaviour
     private void HandleShootingWithBattery()
     {
         RuneManager.Instance.isActive = true;
-        RuneManager.Instance.runeLightArea.enabled = true;
 
         if (isShoot && RuneManager.Instance.battery > 0) RuneManager.Instance.battery -= additionalMovementReduction;
 
@@ -435,7 +434,6 @@ public class RuneControllerGPT : MonoBehaviour
         if (!RuneManager.Instance.isReturn) runeManager.RuneReturnSoundPlay();
         RuneManager.Instance.isReturn = true;
         RuneManager.Instance.isActive = false;
-        RuneManager.Instance.runeLightArea.enabled = false;
     }
 
     // ·é ¹ß»ç Ã³¸®

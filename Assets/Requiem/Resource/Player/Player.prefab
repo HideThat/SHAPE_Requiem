@@ -42,9 +42,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: b9bb455630c38344fa606a0225432990, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 7d759711b581d0349bd728e23aeaf329, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.15
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -170,9 +170,9 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: 7ec75654124bf8e46992322905f33c96, type: 3}
+  m_audioClip: {fileID: 8300000, guid: c9625bb8522c76a4c8a2fccb3c045322, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1.05
   Loop: 0
   Mute: 0
@@ -5460,6 +5460,7 @@ GameObject:
   - component: {fileID: 1810196480}
   - component: {fileID: 7513601501572537083}
   - component: {fileID: 4148396558850641356}
+  - component: {fileID: 358682107979883340}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -5574,7 +5575,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -5857,6 +5858,9 @@ MonoBehaviour:
   m_HP: 1
   m_isHit: 0
   m_deathCount: 0
+  currentCameraSize: 0
+  isInvincibility: 0
+  loseControl: 0
 --- !u!114 &178034531
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5899,7 +5903,12 @@ MonoBehaviour:
   canMove: 0
   hP_System: {fileID: 1996320799}
   walkAudioSource: {fileID: 894907078}
-  m_PlayerMoveSoundClip: {fileID: 8300000, guid: c36ba4cfb31232a47a2e62f58fddeb90, type: 3}
+  jumpAudioSource: {fileID: 990802244}
+  m_PlayerMoveSoundClip: {fileID: 8300000, guid: c9625bb8522c76a4c8a2fccb3c045322, type: 3}
+  m_PlayerJumpSoundClips:
+  - {fileID: 8300000, guid: f9cd5a4e35acdd541921c5729b384a46, type: 3}
+  - {fileID: 8300000, guid: 14875209844808c4fb4df157757a5cca, type: 3}
+  - {fileID: 8300000, guid: 7aba7f243115b6840a55c7f7f23851bd, type: 3}
   m_rigid: {fileID: 2529985360050657742}
   m_animator: {fileID: 2529985360050657732}
   m_collider: {fileID: 1396653073}
@@ -5916,12 +5925,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_playerObj: {fileID: 2529985360050657747}
-  m_playerMoveAudioSource: {fileID: 894907078}
-  m_playerJumpAudioSource: {fileID: 990802244}
-  m_playerMoveAudioClip: {fileID: 8300000, guid: 7ec75654124bf8e46992322905f33c96, type: 3}
-  m_playerJumpAudioClip:
-  - {fileID: 8300000, guid: a1f0fe7c98364bc4a914daa98760fabb, type: 3}
-  - {fileID: 8300000, guid: 62fd7f731e118f04aad82bc785b3db7b, type: 3}
 --- !u!114 &4148396558850641356
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5938,6 +5941,14 @@ MonoBehaviour:
   maxInventorySize: 20
   ItemPanel: {fileID: 5148118367250669991}
   itemSlots: []
+--- !u!81 &358682107979883340
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2529985360050657747}
+  m_Enabled: 1
 --- !u!1 &4883901960957327275
 GameObject:
   m_ObjectHideFlags: 0
@@ -10852,7 +10863,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 2d49055b1bc60554eb305b73d203e21d, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.3
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

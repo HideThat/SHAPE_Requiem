@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 165729592985616759}
   - component: {fileID: 165729592985616753}
-  - component: {fileID: 3864069318762174026}
+  - component: {fileID: 1688330173814997769}
   m_Layer: 0
   m_Name: DoorTrigger
   m_TagString: Trigger
@@ -59,7 +59,7 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 3.8156166, y: 2.0570924}
   m_EdgeRadius: 0
---- !u!114 &3864069318762174026
+--- !u!114 &1688330173814997769
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -68,76 +68,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 165729592985616756}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b361066b602cbad4f88a844e7c35908e, type: 3}
+  m_Script: {fileID: 11500000, guid: 86fce2a2199caa84e9340571e5f1de91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectTagList:
-  - Player
-  valueCheckList:
-  - targetObject: {fileID: 0}
-    className: KeyDoor
-    valueName: isOpened
-    targetValue: True
-  isActive: 0
-  interactionCheck: 1
-  valueCheck: 1
-  repeatCheck: 1
-  delayTime: 0
-  repeatDeleyTime: 0.1
-  repeatCount: -1
-  onTriggerEvent:
-    TriggerEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    TriggerStay:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 368728190814276627}
-          m_TargetAssemblyTypeName: Cainos.PixelArtPlatformer_Dungeon.Door, Assembly-CSharp
-          m_MethodName: Open
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-    TriggerExit:
-      m_PersistentCalls:
-        m_Calls:
-        - m_Target: {fileID: 368728190814276627}
-          m_TargetAssemblyTypeName: Cainos.PixelArtPlatformer_Dungeon.Door, Assembly-CSharp
-          m_MethodName: Close
-          m_Mode: 1
-          m_Arguments:
-            m_ObjectArgument: {fileID: 0}
-            m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-            m_IntArgument: 0
-            m_FloatArgument: 0
-            m_StringArgument: 
-            m_BoolArgument: 0
-          m_CallState: 2
-  onCollisionEvent:
-    CollisionEnter:
-      m_PersistentCalls:
-        m_Calls: []
-    CollisionStay:
-      m_PersistentCalls:
-        m_Calls: []
-    CollisionExit:
-      m_PersistentCalls:
-        m_Calls: []
-  timeTriggerEvent:
-    TimeEvent:
-      m_PersistentCalls:
-        m_Calls: []
-  onButtonEventNodes: []
-  onBuildValueCheck:
-    currentTime0: 0
-    currentTime1: 0
-    firstActive: 0
+  door: {fileID: 368728190814276627}
+  keyDoor: {fileID: 0}
 --- !u!1 &1548954191333533010
 GameObject:
   m_ObjectHideFlags: 0
@@ -320,6 +255,7 @@ MonoBehaviour:
   spriteRenderer: {fileID: 4265238450219689883}
   spriteOpened: {fileID: 1690681290, guid: 0afeb8577b003fb4589464f46d5b4b88, type: 3}
   spriteClosed: {fileID: -431880276, guid: 0afeb8577b003fb4589464f46d5b4b88, type: 3}
+  audioSource: {fileID: 0}
   isOpened: 0
 --- !u!1 &8808186201308755640
 GameObject:

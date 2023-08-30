@@ -46,11 +46,9 @@ public class HP_SystemGPT : MonoBehaviour
     string[] staticEnemyName;
 
     // 제어를 되찾기 위한 시간, 무적 상태 여부, 제어 불가 상태 여부, 사망 여부
-    float currentCameraSize;
-    float timeLeft;
-    bool isInvincibility = false;
-    bool loseControl = false;
-    bool cameraChange = false;
+    public float currentCameraSize;
+    public bool isInvincibility = false;
+    public bool loseControl = false;
 
     private void Awake()
     {
@@ -70,7 +68,7 @@ public class HP_SystemGPT : MonoBehaviour
         m_collider = GetComponent<Collider2D>();
         hitEffect = PlayerData.PlayerObj.transform.Find("HitEffect").gameObject;
         animator = GetComponent<Animator>();
-        playerMoveSound = PlayerData.PlayerMoveSoundSource.gameObject;
+        playerMoveSound = PlayerControllerGPT.Instance.walkAudioSource.gameObject;
 
         if (playerController == null) Debug.Log("playerController == null");
         if (rb == null) Debug.Log("rb == null");
@@ -214,46 +212,6 @@ public class HP_SystemGPT : MonoBehaviour
         }
     }
 
-
-    //void ReControlHit() // 피격 시 플레이어 제어 회복
-    //{
-    //    if (loseControl) // 제어 상실 상태인 경우
-    //    {
-    //        if (timeLeft < resetDelay) // 시간이 리셋 지연시간보다 작을 경우
-    //        {
-    //            isInvincibility = true; // 무적 상태로 전환
-    //            timeLeft += Time.deltaTime; // 시간을 누적
-    //        }
-    //        else
-    //        {
-    //            loseControl = false; // 제어 상실 상태를 해제
-    //            timeLeft = 0f; // 시간을 초기화
-    //            m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
-    //            isInvincibility = false; // 무적 상태를 해제
-    //        }
-    //    }
-    //}
-
-
-    //void ReControlDead() // 죽음 시 플레이어 제어 회복
-    //{
-    //    if (SaveSystem.Instance.playerState.playerDead) // 죽은 상태인 경우
-    //    {
-    //        if (timeLeft < recorverDelay) // 시간이 복구 지연시간보다 작을 경우
-    //        {
-    //            isInvincibility = true; // 무적 상태로 전환
-    //            timeLeft += Time.deltaTime; // 시간을 누적
-    //        }
-    //        else
-    //        {
-    //            timeLeft = 0f;  // 시간을 초기화
-    //            m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
-    //            SaveSystem.Instance.playerState.playerDead = false;
-    //            isInvincibility = false;  // 무적 상태를 해제
-    //        }
-    //    }
-    //}
-
     IEnumerator ReControl(float _delay)
     {
         isInvincibility = true; // 무적 상태로 전환
@@ -270,7 +228,6 @@ public class HP_SystemGPT : MonoBehaviour
     {
         mainCM = DataController.MainCM;
 
-        cameraChange = true;
         audioSource.Play();
         m_HP = m_maxHP; // 플레이어 체력을 최대치로 복구
         animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
@@ -295,7 +252,6 @@ public class HP_SystemGPT : MonoBehaviour
         mainCM = DataController.MainCM;
 
         loseControl = true;  // 제어 상실 상태로 전환
-        cameraChange = true;
         audioSource.Play();
         m_HP = m_maxHP; // 플레이어 체력을 최대치로 복구
         animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
@@ -321,7 +277,6 @@ public class HP_SystemGPT : MonoBehaviour
     {
         mainCM = DataController.MainCM;
 
-        cameraChange = true;
         audioSource.Play();
         m_HP = m_maxHP; // 플레이어 체력을 최대치로 복구
         animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
@@ -332,7 +287,6 @@ public class HP_SystemGPT : MonoBehaviour
 
         yield return new WaitForSeconds(_delay);
 
-        timeLeft = 0f;  // 시간을 초기화
         m_isHit = false; // 플레이어가 피격되지 않았음을 나타낸다
         SaveSystem.Instance.playerState.playerDead = false;
         isInvincibility = false;  // 무적 상태를 해제
@@ -342,7 +296,9 @@ public class HP_SystemGPT : MonoBehaviour
     {
         if (SaveSystem.Instance.responPoint.responSceneName == SceneManager.GetActiveScene().name)
         {
-            DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, currentCameraSize, 2f);
+            DOTween.Kill(DataController.CameraTween);
+
+            DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, currentCameraSize, 2f);
             SaveSystem.Instance.SetPlayerNextPos();
             transform.position = SaveSystem.Instance.responPoint.responScenePoint;
         }

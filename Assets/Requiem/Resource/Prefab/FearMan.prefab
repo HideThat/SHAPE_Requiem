@@ -37,7 +37,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 10, y: 1}
+  m_SizeDelta: {x: 10.5, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2806544522293943354
 CanvasRenderer:
@@ -60,15 +60,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.70980394}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: e4d47d1ee60d55f418141c6a33470794, type: 3}
-  m_Type: 0
+  m_Sprite: {fileID: 21300000, guid: 5e706b1b06907774295072a4e9dc96b4, type: 3}
+  m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -112,7 +112,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0.33}
   m_SizeDelta: {x: 8, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2806544523430021650
@@ -152,8 +152,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -427,6 +427,40 @@ MonoBehaviour:
       textBox_y: 1
       fontSize: 0.5
       fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+  - textDatas:
+    - text: "\uC55E\uC5D0 \uC788\uB294 \uB8EC\uC11D\uC0C1\uC5D0 \uB8EC\uC744 \uB358\uC838\uC8FC\uC138\uC694!"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uC8FC\uBCC0\uC758 \uBE5B\uC744 \uBC1D\uD600\uC918\uC694."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+  - textDatas:
+    - text: "\uC704\uC5D0\uC788\uB294 \uBD89\uC740 \uB2EC\uC744 \uBCF4\uC168\uB098\uC694?"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uADF8\uACF3\uC5D0\uC11C \uC720\uB839\uC774 \uB098\uC640\uC694."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uB8EC\uC758 \uD798\uC774 \uAC15\uD574\uC9C4\uB2E4\uBA74 \uC5C6\uC568
+        \uC218 \uC788\uC9C0\uB9CC"
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
+    - text: "\uC9C0\uAE08\uC740 \uB3C4\uB9DD\uCE58\uB294 \uBC29\uBC95\uBC16\uC5D0
+        \uC5C6\uB124\uC694."
+      textBox_x: 10
+      textBox_y: 1
+      fontSize: 0.5
+      fontType: {fileID: 11400000, guid: 923351c1f3f2cbb4da85359ef4d7e26b, type: 2}
   isTalking: 0
   isPlayerInRange: 0
   notComtpleteTalk: 0
@@ -443,7 +477,7 @@ MonoBehaviour:
   keyCoolTime: 0.5
   wasGiveKey: 0
   throwTime: 0.5
-  situation: 0
+  situation: 2
   state: 0
 --- !u!70 &2806544523923655712
 CapsuleCollider2D:

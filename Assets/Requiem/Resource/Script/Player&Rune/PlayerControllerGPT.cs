@@ -9,6 +9,8 @@ using UnityEngine.SceneManagement; //이걸 써야지 씬에 관한 시스템을 적용시킬수있
 
 public class PlayerControllerGPT : MonoBehaviour
 {
+    public static PlayerControllerGPT Instance;
+
     [Header("점프 시스템")]
     [SerializeField] int m_jumpLeft; // 남은 점프 횟수
     [SerializeField] int m_maxJump = 2; // 남은 점프 횟수
@@ -29,20 +31,32 @@ public class PlayerControllerGPT : MonoBehaviour
     // 플레이어의 컴포넌트
     [SerializeField] HP_SystemGPT hP_System;
     [SerializeField] public AudioSource walkAudioSource;
+    [SerializeField] public AudioSource jumpAudioSource;
     [SerializeField] public AudioClip m_PlayerMoveSoundClip;
+    [SerializeField] public AudioClip[] m_PlayerJumpSoundClips;
     [SerializeField] Rigidbody2D m_rigid;
     [SerializeField] Animator m_animator;
     [SerializeField] Collider2D m_collider;
 
     private void Awake()
     {
+        // 싱글톤 패턴 적용
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+
         canMove = true;
     }
 
     private void Start()
     {
         // 컴포넌트를 가져와 변수에 할당
-        walkAudioSource = PlayerData.PlayerMoveSoundSource;
         m_rigid = GetComponent<Rigidbody2D>();
         m_animator = GetComponent<Animator>();
         m_collider = GetComponent<Collider2D>();
@@ -99,6 +113,11 @@ public class PlayerControllerGPT : MonoBehaviour
 
         if (isGrounded && !m_isGrounded) // 지상에 있고, 이전에 지상이 아니었을 경우
         {
+            if (m_rigid.velocity.y >= -m_maxFallSpeed)
+            {
+                jumpAudioSource.PlayOneShot(m_PlayerJumpSoundClips[2]);
+            }
+
             m_jumpLeft = m_maxJump;
             m_isJump = false;
 
@@ -180,9 +199,9 @@ public class PlayerControllerGPT : MonoBehaviour
 
         // 점프 소리 재생
         if (m_jumpLeft > 1)
-            PlayerData.PlayerJumpSoundSource.PlayOneShot(PlayerData.PlayerJumpAudioClip[0]);
+            jumpAudioSource.PlayOneShot(m_PlayerJumpSoundClips[0]);
         else if (m_jumpLeft == 1)
-            PlayerData.PlayerJumpSoundSource.PlayOneShot(PlayerData.PlayerJumpAudioClip[1]);
+            jumpAudioSource.PlayOneShot(m_PlayerJumpSoundClips[1]);
 
         m_jumpLeft--; // 남은 점프 횟수 감소
 

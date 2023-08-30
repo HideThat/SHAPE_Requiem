@@ -134,6 +134,10 @@ PrefabInstance:
       propertyPath: keyDoor
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 2141258407072665948, guid: 8ce820bbc95aeb142ab6a6990e617c41, type: 3}
+      propertyPath: keyDoor
+      value: 
+      objectReference: {fileID: 1998402245}
     - target: {fileID: 4022599287059613663, guid: 8ce820bbc95aeb142ab6a6990e617c41, type: 3}
       propertyPath: valueCheckList.Array.data[0].targetObject
       value: 
@@ -71386,6 +71390,17 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 7935089473269195797, guid: 99d8c716fc6c486498fab9b30686f47b, type: 3}
   m_PrefabInstance: {fileID: 1998402243}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1998402245 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 400304372, guid: 99d8c716fc6c486498fab9b30686f47b, type: 3}
+  m_PrefabInstance: {fileID: 1998402243}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1998402244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59b88a626c47a794c94c926bf195cbe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2012934534
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -14,6 +14,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         [FoldoutGroup("Reference")] public SpriteRenderer spriteRenderer;
         [FoldoutGroup("Reference")] public Sprite spriteOpened;
         [FoldoutGroup("Reference")] public Sprite spriteClosed;
+        [FoldoutGroup("Reference")] public AudioSource audioSource;
 
         private Collider2D m_collider2D;
 
@@ -21,7 +22,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
         {
             get
             {
-                if (animator == null ) animator = GetComponent<Animator>();
+                if (animator == null) animator = GetComponent<Animator>();
                 return animator;
             }
         }
@@ -45,7 +46,7 @@ namespace Cainos.PixelArtPlatformer_Dungeon
                     EditorUtility.SetDirty(this);
                     EditorSceneManager.MarkSceneDirty(gameObject.scene);
                 }
-                #endif
+#endif
 
 
                 if (Application.isPlaying)
@@ -54,18 +55,18 @@ namespace Cainos.PixelArtPlatformer_Dungeon
                 }
                 else
                 {
-                    if(spriteRenderer) spriteRenderer.sprite = isOpened ? spriteOpened : spriteClosed;
+                    if (spriteRenderer) spriteRenderer.sprite = isOpened ? spriteOpened : spriteClosed;
                 }
             }
         }
-        [SerializeField,HideInInspector]
+        [SerializeField, HideInInspector]
         private bool isOpened;
 
         private void Start()
         {
             if (spriteRenderer.GetComponent<Collider2D>() != null)
                 m_collider2D = spriteRenderer.GetComponent<Collider2D>();
-            
+
 
             Animator.Play(isOpened ? "Opened" : "Closed");
             IsOpened = isOpened;
@@ -78,6 +79,8 @@ namespace Cainos.PixelArtPlatformer_Dungeon
             IsOpened = true;
             if (m_collider2D != null)
                 m_collider2D.isTrigger = IsOpened;
+
+            audioSource.Play();
         }
 
         [FoldoutGroup("Runtime"), HorizontalGroup("Runtime/Button"), Button("Close")]
@@ -86,6 +89,9 @@ namespace Cainos.PixelArtPlatformer_Dungeon
             IsOpened = false;
             if (m_collider2D != null)
                 m_collider2D.isTrigger = IsOpened;
+
+            audioSource.Play();
         }
     }
 }
+

@@ -101,22 +101,30 @@ public class NPC : MonoBehaviour
         }
     }
 
+    Coroutine displayTextCoroutine; // 현재 실행 중인 DisplayText 코루틴을 저장하기 위한 변수
+
     void StartTalking(List<TextData> texts)
     {
         isTalking = true;
         textBoxImage.gameObject.SetActive(true);
-        DisplayText(texts);
-    }
 
-    
+        if (displayTextCoroutine != null) // 이미 실행 중인 코루틴이 있다면 중지
+        {
+            StopCoroutine(displayTextCoroutine);
+        }
+        displayTextCoroutine = StartCoroutine(DisplayText(texts));
+    }
 
     void ContinueTalking(List<TextData> texts)
     {
-        // 대화 계속
         currentTextIndex++;
         if (currentTextIndex < texts.Count)
         {
-            DisplayText(texts);
+            if (displayTextCoroutine != null) // 이미 실행 중인 코루틴이 있다면 중지
+            {
+                StopCoroutine(displayTextCoroutine);
+            }
+            displayTextCoroutine = StartCoroutine(DisplayText(texts));
         }
         else
         {
@@ -124,15 +132,28 @@ public class NPC : MonoBehaviour
         }
     }
 
-    void DisplayText(List<TextData> texts)
+
+
+    IEnumerator DisplayText(List<TextData> texts)
     {
         // 현재 인덱스의 텍스트 데이터를 표시
         var data = texts[currentTextIndex];
         textBox.rectTransform.sizeDelta = new Vector2(data.textBox_x, data.textBox_y);
         textBox.fontSize = data.fontSize;
         textBox.font = data.fontType;
-        textBox.text = data.text;
+
+        // 하나씩 글자를 출력
+        textBox.text = ""; // 초기화
+        for (int i = 0; i < data.text.Length; i++)
+        {
+            textBox.text += data.text[i];
+            yield return new WaitForSeconds(0.03f); // 0.1초 대기 (이 값을 조절해서 글자가 나오는 속도를 변경 가능)
+        }
+
+        yield return null; // 이 부분은 필요에 따라 추가적인 로직을 넣을 수 있습니다.
     }
+
+
 
     void EndTalking()
     {

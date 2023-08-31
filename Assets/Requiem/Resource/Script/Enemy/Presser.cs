@@ -26,7 +26,7 @@ public class Presser : MonoBehaviour
 
             // 오브젝트를 떨어뜨립니다
             float elapsedTime = 0;
-            while (elapsedTime < fallTime)
+            while (elapsedTime < fallTime + 0.1f)
             {
                 transform.position = Vector3.Lerp(originalPosition, fallPosition, (elapsedTime / fallTime));
                 elapsedTime += Time.deltaTime;

@@ -21,6 +21,7 @@ public class SceneChangeTrigger : MonoBehaviour
         {
             SaveFogData();
             SaveMovablePlatformData();
+            SaveMovingStatueData();
             Debug.Log("모든 데이터가 저장되었습니다. FadeOutAndLoadScene 코루틴을 시작합니다.");
             StartCoroutine(FadeOutAndLoadScene());
         }
@@ -85,7 +86,7 @@ public class SceneChangeTrigger : MonoBehaviour
             return;
         }
 
-        List<MovablePlatform> movablePlatforms = DataController.MovablePlatformList;
+        List<MovablePlatform> movablePlatforms = DataController.Instance.sceneObjectData.movablePlatforms;
         if (movablePlatforms != null)
         {
             SaveSystem.Instance.SetSceneMovablePlatformData(movablePlatforms);
@@ -95,6 +96,27 @@ public class SceneChangeTrigger : MonoBehaviour
             Debug.LogWarning("movablePlatforms 목록이 null입니다. 플랫폼 데이터를 저장할 수 없습니다.");
         }
     }
+
+    void SaveMovingStatueData()
+    {
+        if (SaveSystem.Instance == null)
+        {
+            Debug.LogError("SaveSystem 인스턴스가 없습니다. 무빙 스태츄 데이터를 저장할 수 없습니다.");
+            return;
+        }
+
+        List<MovingStatue> movingStatues = DataController.Instance.sceneObjectData.movingStatues; // DataController에서 무빙 스태츄 리스트를 가져옴
+
+        if (movingStatues != null)
+        {
+            SaveSystem.Instance.SetSceneMovingStatueData(movingStatues);
+        }
+        else
+        {
+            Debug.LogWarning("movingStatues 목록이 null입니다. 무빙 스태츄 데이터를 저장할 수 없습니다.");
+        }
+    }
+
 
 
     public IEnumerator FadeOutAndLoadScene()

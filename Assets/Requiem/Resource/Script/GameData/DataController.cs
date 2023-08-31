@@ -58,9 +58,10 @@ public class TriggerData
 }
 
 [Serializable]
-public class MovablePlatformData
+public class SceneObjectData
 {
     public List<MovablePlatform> movablePlatforms;
+    public List<MovingStatue> movingStatues;
 }
 
 public class DataController : MonoBehaviour
@@ -70,7 +71,7 @@ public class DataController : MonoBehaviour
     [SerializeField] CameraData cameraData = new();
     [SerializeField] SoundManager soundManager = new();
     [SerializeField] TriggerData triggerData = new();
-    [SerializeField] MovablePlatformData movablePlatformData = new();
+    [SerializeField] public SceneObjectData sceneObjectData = new();
 
 
     public static DataController Instance
@@ -141,12 +142,6 @@ public class DataController : MonoBehaviour
         set { instance.triggerData.playerIn = value; }
     }
     #endregion
-    #region 맵 오브젝트 데이터
-    public static List<MovablePlatform> MovablePlatformList
-    {
-        get { return instance.movablePlatformData.movablePlatforms; }
-    }
-    #endregion
 
     private void Awake()
     {
@@ -172,7 +167,8 @@ public class DataController : MonoBehaviour
     {
         SaveSystem.Instance.LoadPlayerData();
         SaveSystem.Instance.LoadRuneData();
-        SaveSystem.Instance.LoadSceneMovablePlatformData(movablePlatformData.movablePlatforms);
+        SaveSystem.Instance.LoadSceneMovablePlatformData(sceneObjectData.movablePlatforms);
+        SaveSystem.Instance.LoadSceneMovingStatueData(sceneObjectData.movingStatues);
 
         FadeManager.Instance.FadeOutAndIn(1f, 2f);
 

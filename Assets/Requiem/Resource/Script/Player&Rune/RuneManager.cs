@@ -87,20 +87,6 @@ public class RuneManager : MonoBehaviour
         ToggleLightAbility();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        switch (collision.gameObject.layer)
-        {
-            case (int)LayerName.Platform:
-            case (int)LayerName.Wall:
-            case (int)LayerName.RiskFactor:
-                m_runeControl.RuneStop();
-                break;
-            default:
-                break;
-        }
-    }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("RuneStatue"))

@@ -5803,10 +5803,10 @@ MonoBehaviour:
   isCharge: 0
   runePosition: {x: -0.9, y: 0.5}
   origin: {x: 0, y: 0}
-  shootDelayTime: 0.2
+  shootDelayTime: 0.05
   runeReturnDistance: 25
   isMouseDelay: 0
-  batteryDrainSpeed: 30
+  batteryDrainSpeed: 0
   additionalMovementReduction: 250
   batteryUI:
   - {fileID: 2284996640730960531}

@@ -236,7 +236,11 @@ public class HP_SystemGPT : MonoBehaviour
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
         playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
         currentCameraSize = mainCM.m_Lens.OrthographicSize;
-        mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
+        if (mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D != null)
+        {
+            mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
+        }
+        
         DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
         Invoke("PlayerMoveSavePoint", recorverDelay);

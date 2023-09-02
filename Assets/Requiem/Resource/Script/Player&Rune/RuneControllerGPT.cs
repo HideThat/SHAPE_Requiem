@@ -281,11 +281,11 @@ public class RuneControllerGPT : MonoBehaviour
         Vector2 newTarget = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x,
         Input.mousePosition.y, -Camera.main.transform.position.z));
 
-        Vector2 dir = newTarget - (Vector2)runeObj.transform.position;
-        float dis = Vector2.Distance(newTarget, (Vector2)runeObj.transform.position);
+        //Vector2 dir = newTarget - (Vector2)runeObj.transform.position;
+        //float dis = Vector2.Distance(newTarget, (Vector2)runeObj.transform.position);
 
-        RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
-        if (rayHit) newTarget = rayHit.point;
+        //RaycastHit2D rayHit = Physics2D.Raycast(runeObj.transform.position, dir, dis, hitLayerMask);
+        //if (rayHit) newTarget = rayHit.point;
 
         MagicCircleSummon(newTarget);
 

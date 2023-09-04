@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Rendering.Universal;
 using DG.Tweening;
 using System;
+using UnityEngine.Rendering.Universal.Internal;
 
 public enum ArmState
 {
@@ -45,6 +46,8 @@ public class RuneControllerGPT : MonoBehaviour
     [SerializeField] Transform rightArm;
     [SerializeField] Transform leftArm;
     [SerializeField] List<ArmStatePair> StandArms = new List<ArmStatePair>();
+    [SerializeField] RuneControlMode controlMode;
+    [SerializeField] float speed;
 
     public bool m_isGetRune; // 룬 획득 판정
 
@@ -52,7 +55,12 @@ public class RuneControllerGPT : MonoBehaviour
     private LayerMask layerMask; // 충돌 감지 레이어 마스크
 
     public Tween runeMoveTween;
-
+    public enum RuneControlMode
+    {
+        Click,
+        Follow,
+        Keyboard
+    }
     void Awake()
     {
         // 싱글톤 패턴 적용
@@ -66,19 +74,32 @@ public class RuneControllerGPT : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
     void Start()
     {
         InitializeRuneController(); // 룬 컨트롤러 초기화
     }
     void Update()
     {
-        if (m_isGetRune)
+        switch (controlMode)
         {
-            RuneControl(); // 룬 제어
-            RuneMove(); // 룬 이동
-            RuneCharging(); // 룬 충전 효과
+            case RuneControlMode.Click:
+                if (m_isGetRune)
+                {
+                    RuneControl(); // 룬 제어
+                    RuneMove(); // 룬 이동
+                    RuneCharging(); // 룬 충전 효과
+                }
+                break;
+            case RuneControlMode.Follow:
+                FollowMouse();
+                break;
+            case RuneControlMode.Keyboard:
+                KeyMove();
+                break;
+            default:
+                break;
         }
+        
     }
     private void InitializeRuneController()
     {
@@ -205,9 +226,6 @@ public class RuneControllerGPT : MonoBehaviour
             SetBatteryUIVisible(false, RuneManager.Instance.battery / 1000f);
             float xDiration = target.x - transform.position.x; // 플레이어랑 룬의 상대적 위치에 따라 방향 결정
             StandArmSummon(StandArms, xDiration, ArmState.Return);
-
-            
-
             if (transform.rotation.y == 0f)
             {
                 Vector2 circlePos = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
@@ -218,7 +236,7 @@ public class RuneControllerGPT : MonoBehaviour
                 Vector2 circlePos = new Vector2(transform.position.x - runePosition.x, transform.position.y + runePosition.y);
                 MagicCircleSummon(circlePos);
             }
-            
+
         }
         else if (Input.GetMouseButtonDown(0) && !isMouseDelay)
         {
@@ -235,13 +253,11 @@ public class RuneControllerGPT : MonoBehaviour
         isMouseDelay = true;
         StartCoroutine(MouseClickDelay());
     }
-
     private void PlayRuneOnSoundAndDelayMouse()
     {
         isMouseDelay = true;
         StartCoroutine(MouseClickDelay());
     }
-
     private void HandleShootingWithBattery()
     {
         RuneManager.Instance.isActive = true;
@@ -251,10 +267,7 @@ public class RuneControllerGPT : MonoBehaviour
         isShoot = true;
         SetBatteryUIVisible(true, RuneManager.Instance.battery / 1000f);
     }
-
-
-    // 마우스 위치로 목표 변경
-    private void ChangeTargetToMouse()
+    private void ChangeTargetToMouse()// 마우스 위치로 목표 변경
     {
         #region 방어코드
         // 카메라를 찾지 못한 경우 로그를 출력하고 메서드를 종료합니다.
@@ -296,7 +309,6 @@ public class RuneControllerGPT : MonoBehaviour
         StandArmSummon(StandArms, xDiration, _armState);
         target = newTarget;
     }
-
     ArmState DetermineArmState(Vector2 direction)
     {
         if (Mathf.Abs(direction.x) > Mathf.Abs(direction.y))
@@ -306,7 +318,6 @@ public class RuneControllerGPT : MonoBehaviour
         else
             return ArmState.Down;
     }
-
     void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
     {
         #region 방어코드
@@ -338,7 +349,6 @@ public class RuneControllerGPT : MonoBehaviour
         newArm.transform.position = targetArm.position;
         newArm.GetComponent<StandArm>().followPoint = targetArm.position - transform.position;
     }
-
     int GetArmIndex(List<ArmStatePair> _Arms, ArmState _armState)
     {
         for (int i = 0; i < _Arms.Count; i++)
@@ -347,7 +357,6 @@ public class RuneControllerGPT : MonoBehaviour
 
         return -1;
     }
-
     Transform DetermineTargetArm(float _xDiration)
     {
         if (transform.rotation.y == 0f)
@@ -355,7 +364,6 @@ public class RuneControllerGPT : MonoBehaviour
         else
             return _xDiration >= 0f ? leftArm : rightArm;
     }
-
     Quaternion DetermineRotation(float _xDiration)
     {
         if (transform.rotation.y == 0f)
@@ -363,61 +371,6 @@ public class RuneControllerGPT : MonoBehaviour
         else
             return _xDiration >= 0f ? new Quaternion(0f, 0f, 0f, 0f) : new Quaternion(0f, 180f, 0f, 0f);
     }
-
-    //void StandArmSummon(List<ArmStatePair> _Arms, float _xDiration, ArmState _armState)
-    //{
-    //    int index = 0;
-
-    //    for (int i = 0; i < _Arms.Count; i++)
-    //    {
-    //        if (_Arms[i].state == _armState)
-    //        {
-    //            index = i;
-    //            break;
-    //        }
-    //        else if (i == _Arms.Count - 1)
-    //        {
-    //            Debug.Log("손 생성하는데 뭔가 오류났음 ㅋㅋ");
-    //            return;
-    //        }
-    //    }
-
-    //    GameObject newArm = Instantiate(_Arms[index].armObject);
-
-    //    if (transform.rotation.y == 0f)
-    //    {
-            
-
-    //        if (_xDiration >= 0f)
-    //        {
-    //            newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-    //            newArm.transform.position = rightArm.position;
-    //            newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-    //        }
-    //        else
-    //        {
-    //            newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-    //            newArm.transform.position = leftArm.position;
-    //            newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if (_xDiration >= 0f)
-    //        {
-    //            newArm.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-    //            newArm.transform.position = leftArm.position;
-    //            newArm.GetComponent<StandArm>().followPoint = leftArm.position - transform.position;
-    //        }
-    //        else
-    //        {
-    //            newArm.transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-    //            newArm.transform.position = rightArm.position;
-    //            newArm.GetComponent<StandArm>().followPoint = rightArm.position - transform.position;
-    //        }
-    //    }
-    //}
-
     GameObject MagicCircleSummon(Vector2 _point)
     {
         GameObject newCircle = Instantiate(magicCircle);
@@ -425,9 +378,7 @@ public class RuneControllerGPT : MonoBehaviour
 
         return newCircle;
     }
-
-    // 룬 반환
-    private void ReturnRune()
+    private void ReturnRune()// 룬 반환
     {
         if (transform.rotation.y == 0) target = new Vector2(transform.position.x + runePosition.x, transform.position.y + runePosition.y);
         else if (transform.rotation.y != 0f) target = new Vector2(transform.position.x + (-runePosition.x), transform.position.y + runePosition.y);
@@ -435,65 +386,47 @@ public class RuneControllerGPT : MonoBehaviour
         RuneManager.Instance.isReturn = true;
         RuneManager.Instance.isActive = false;
     }
-
-    // 룬 발사 처리
-    private void HandleRuneShoot()
+    private void HandleRuneShoot()// 룬 발사 처리
     {
-        // 마우스 클릭에 따른 발사 또는 배터리 UI 숨기기 처리
-        HandleMouseClicksForShooting();
+        HandleMouseClicksForShooting();// 마우스 클릭에 따른 발사 또는 배터리 UI 숨기기 처리
     }
-
     private void SetBatteryUIVisible(bool isVisible, float batteryPercentage)
     {
         batteryBorder.gameObject.SetActive(isVisible);
         StartCoroutine(ActivateBatteryUISequentially(isVisible, batteryPercentage));
     }
-
-    // 룬 반환 처리
-    private void HandleRuneReturn()
+    private void HandleRuneReturn()// 룬 반환 처리
     {
         if (RuneIsFarEnough()) StopShooting();
     }
-
     private bool RuneIsFarEnough()
     {
         return Vector2.Distance(runeObj.transform.position, transform.position) >= RuneReturnDistance();
     }
-
     private void StopShooting()
     {
         isShoot = false;
         isMouseDelay = true;
         StartCoroutine(MouseClickDelay());
     }
-
-
-
-
-    // 룬 반환 거리 설정
-    private float RuneReturnDistance()
+    private float RuneReturnDistance()// 룬 반환 거리 설정
     {
         return runeReturnDistance;
     }
-
-    // 룬 이동 중지
-    public void RuneStop()
+    public void RuneStop()// 룬 이동 중지
     {
         target = runeObj.transform.position;
     }
-
-    // 마우스 클릭 지연 코루틴
-    private IEnumerator MouseClickDelay()
+    
+    private IEnumerator MouseClickDelay()// 마우스 클릭 지연 코루틴
     {
         yield return new WaitForSeconds(shootDelayTime);
         ResetMouseDelay();
     }
-
     private void ResetMouseDelay()
     {
         isMouseDelay = false;
     }
-
     private RaycastHit2D GetRaycastHit()
     {
         return Physics2D.Raycast(runeObj.transform.position,
@@ -501,17 +434,14 @@ public class RuneControllerGPT : MonoBehaviour
             GetDistanceToTarget(),
             layerMask);
     }
-
     private Vector2 GetDirectionToTarget()
     {
         return (target - (Vector2)runeObj.transform.position).normalized;
     }
-
     private float GetDistanceToTarget()
     {
         return Vector2.Distance(runeObj.transform.position, target);
     }
-
     private bool HitObjectIsCollidable(RaycastHit2D hit)
     {
         return hit.collider != null &&
@@ -519,7 +449,6 @@ public class RuneControllerGPT : MonoBehaviour
                 hit.collider.gameObject.layer == (int)LayerName.Wall ||
                 hit.collider.gameObject.layer == (int)LayerName.RiskFactor);
     }
-
     public bool hasRestarted = false;
     public void RuneCharging()
     {
@@ -536,5 +465,28 @@ public class RuneControllerGPT : MonoBehaviour
             runeCharge.Stop();
             hasRestarted = false;  // 파티클이 멈추면 다시 시작할 수 있도록 플래그를 리셋합니다.
         }
+    }
+    void FollowMouse()
+    {
+        Vector3 mousePosition = Input.mousePosition; // 마우스의 스크린 좌표를 가져옵니다.
+        Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(new Vector3(mousePosition.x, mousePosition.y, Camera.main.nearClipPlane)); // 스크린 좌표를 월드 좌표로 변환합니다.
+
+        // z 좌표를 오브젝트의 원래 z 좌표로 설정합니다. (필요하다면)
+        mouseWorldPosition.z = runeManager.transform.position.z;
+
+        runeManager.transform.DOMove(mouseWorldPosition, 1f);
+
+        //runeManager.transform.position = mouseWorldPosition;
+    }
+
+    void KeyMove()
+    {
+        float horizontalInput = Input.GetAxis("Debug Horizontal");  // 수평 입력 (왼쪽 또는 오른쪽 방향키)
+        float verticalInput = Input.GetAxis("Debug Vertical");  // 수직 입력 (위 또는 아래 방향키)
+
+        Vector3 movement = new Vector3(horizontalInput, verticalInput, 0);  // 움직일 방향을 설정
+
+        movement = movement.normalized;
+        runeManager.transform.Translate(movement * speed * Time.deltaTime);  // 실제로 오브젝트를 움직임
     }
 }

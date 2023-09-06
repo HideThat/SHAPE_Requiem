@@ -150,7 +150,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aa8a8f0facc22074fa4b92bd5543891b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 0
   damage: 1000
+  m_collider2D: {fileID: 0}
+  myType: 3
+  runeIn: 0
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   resetPoint: {x: 0, y: 0}
 --- !u!1 &1816664384247173716
 GameObject:

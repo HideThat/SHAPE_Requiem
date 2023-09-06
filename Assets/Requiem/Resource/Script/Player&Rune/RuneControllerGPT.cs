@@ -26,16 +26,19 @@ public class RuneControllerGPT : Singleton<RuneControllerGPT>
     public float moveTime; // 룬 이동 시간
     public bool isMouseDelay;
     public float clickDelay;
+    public int damage;
 
-    [SerializeField] Transform target;
+    [SerializeField] Enemy target;
     [SerializeField] GameObject magicCircle;
     [SerializeField] Transform rightArm;
     [SerializeField] Transform leftArm;
     [SerializeField] List<ArmStatePair> StandArms = new List<ArmStatePair>();
+    [SerializeField] CircleCollider2D circleCollider;
 
     public bool m_isGetRune; // 룬 획득 판정
 
     private LayerMask layerMask; // 충돌 감지 레이어 마스크
+    public LayerMask enemyrMask; // 충돌 감지 레이어 마스크
 
     public Tween runeMoveTween;
 
@@ -55,6 +58,22 @@ public class RuneControllerGPT : Singleton<RuneControllerGPT>
     void Update()
     {
         FollowMouse();
+
+        if (Physics2D.OverlapCircle(transform.position, circleCollider.radius, enemyrMask))
+        {
+            target = Physics2D.OverlapCircle(transform.position, circleCollider.radius, enemyrMask).GetComponent<Enemy>();
+
+            if (Input.GetKeyDown(KeyCode.Mouse0) && !isMouseDelay)
+            {
+                Debug.Log("공격");
+                target.Hit(damage);
+                StartCoroutine(ClickDelay(clickDelay));
+            }
+        }
+        else
+        {
+            target = null;
+        }
     }
 
     private void InitializeRuneController()
@@ -155,9 +174,12 @@ public class RuneControllerGPT : Singleton<RuneControllerGPT>
         runeMoveTween = transform.DOMove(mouseWorldPosition, moveTime);
     }
 
-    Transform CheckTarget()
+    IEnumerator ClickDelay(float _delay)
     {
-        return null;
-        //return Physics2D.OverlapCircle()
+        isMouseDelay = true;
+
+        yield return new WaitForSeconds(_delay);
+
+        isMouseDelay = false;
     }
 }

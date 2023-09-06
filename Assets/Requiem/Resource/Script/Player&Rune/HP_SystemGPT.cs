@@ -6,13 +6,10 @@
 // 필요한 변수들을 SerializeField로 Inspector 창에서 설정할 수 있다
 
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 using Cinemachine;
 using DG.Tweening;
-using System;
 
 public class HP_SystemGPT : MonoBehaviour
 {
@@ -32,18 +29,15 @@ public class HP_SystemGPT : MonoBehaviour
     public uint m_deathCount; // 데스 카운트
 
     // 플레이어와 카메라, 애니메이터, 리지드바디 등의 컴포넌트
-    PlayerControllerGPT playerController;
-    Rigidbody2D rb;
-    Collider2D m_collider;
-    GameObject hitEffect;
-    Animator animator;
-    GameObject playerMoveSound;
-    CinemachineVirtualCamera mainCM;
+    [SerializeField] PlayerControllerGPT playerController;
+    [SerializeField] Rigidbody2D rb;
+    [SerializeField] Collider2D m_collider;
+    [SerializeField] GameObject hitEffect;
+    [SerializeField] Animator animator;
+    [SerializeField] CinemachineVirtualCamera mainCM;
 
     // 충돌을 체크할 Raycast 정보를 저장할 배열 및 에너미 정보
     RaycastHit2D[] hitInfo = new RaycastHit2D[2];
-    string[] dynamicEnemyName;
-    string[] staticEnemyName;
 
     // 제어를 되찾기 위한 시간, 무적 상태 여부, 제어 불가 상태 여부, 사망 여부
     public float currentCameraSize;
@@ -62,44 +56,12 @@ public class HP_SystemGPT : MonoBehaviour
 
     void InitializeVariables()
     {
-        // 컴포넌트를 가져와 변수에 할당
-        playerController = PlayerData.PlayerObj.GetComponent<PlayerControllerGPT>();
-        rb = GetComponent<Rigidbody2D>();
-        m_collider = GetComponent<Collider2D>();
-        hitEffect = PlayerData.PlayerObj.transform.Find("HitEffect").gameObject;
-        animator = GetComponent<Animator>();
-        playerMoveSound = PlayerControllerGPT.Instance.walkAudioSource.gameObject;
-
-        if (playerController == null) Debug.Log("playerController == null");
-        if (rb == null) Debug.Log("rb == null");
-        if (m_collider == null) Debug.Log("m_collider == null");
-        if (hitEffect == null) Debug.Log("hitEffect == null");
-        if (animator == null) Debug.Log("animator == null");
-        if (playerMoveSound == null) Debug.Log("playerMoveSound == null");
-
         hitEffect.SetActive(false); // 충돌 효과 오브젝트 비활성화
-
-        // 에너미 정보를 입력 받기
-        dynamicEnemyName = new string[EnemyData.DynamicEnemyNameArr.Length];
-        staticEnemyName = new string[EnemyData.StaticEnemyNameArr.Length];
-
-        // 배열을 복사하여 데이터 저장
-        for (int i = 0; i < dynamicEnemyName.Length; i++)
-        {
-            dynamicEnemyName[i] = EnemyData.DynamicEnemyNameArr[i];
-        }
-
-        for (int i = 0; i < staticEnemyName.Length; i++)
-        {
-            staticEnemyName[i] = EnemyData.StaticEnemyNameArr[i];
-        }
     }
 
     void Update()
     {
         PlayerStateUpdate(); // 플레이어 상태 업데이트
-        //ReControlHit(); // 제어 되찾기
-        //ReControlDead(); // 사망 후 부활하기
     }
 
     void OnCollisionStay2D(Collision2D collision)
@@ -159,7 +121,6 @@ public class HP_SystemGPT : MonoBehaviour
 
     void PlayerStateUpdate() // 플레이어의 상태를 업데이트하는 메소드
     {
-
         playerController.enabled = !loseControl; // 제어 상실 여부에 따라 플레이어 컨트롤러를 활성화/비활성화
         hitEffect.SetActive(loseControl); // 제어 상실 상태일 때 히트 이펙트를 활성화
     }
@@ -176,7 +137,9 @@ public class HP_SystemGPT : MonoBehaviour
             GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
             transform.position = _riskFactor.resetPoint; // 플레이어의 위치를 위험 요소의 리셋 지점으로 이동
             m_isHit = true; // 플레이어가 피격되었음
-            playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+            PlayerControllerGPT.Instance.playerData.walkAudioSource.Stop(); // 플레이어 이동 사운드를 비활성화
+
+            StartCoroutine(ReControl(recorverDelay));
         }
         else // 체력이 0이면 죽음
         {
@@ -197,7 +160,7 @@ public class HP_SystemGPT : MonoBehaviour
             Vector2 pushDirection = (transform.position - _Enemy.transform.position).normalized; // 플레이어를 밀어낼 방향을 계산
             rb.AddForce(pushDirection * pushForce, ForceMode2D.Impulse); // 플레이어를 밀어낸다
             m_isHit = true; // 플레이어가 피격되었음
-            playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+            PlayerControllerGPT.Instance.playerData.walkAudioSource.Stop(); // 플레이어 이동 사운드를 비활성화
 
             StartCoroutine(ReControl(resetDelay));
 
@@ -227,32 +190,31 @@ public class HP_SystemGPT : MonoBehaviour
     void Dead() // 죽음 처리하는 메소드
     {
         mainCM = DataController.MainCM;
-
         audioSource.Play();
-        m_HP = m_maxHP; // 플레이어 체력을 최대치로 복구
-        animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
-        loseControl = true;  // 제어 상실 상태로 전환
+        m_HP = m_maxHP;
+        animator.SetTrigger("IsDead");
+        loseControl = true;
         SaveSystem.Instance.playerState.playerDead = true;
-        GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
-        playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        PlayerControllerGPT.Instance.playerData.walkAudioSource.Stop();
         currentCameraSize = mainCM.m_Lens.OrthographicSize;
         if (mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D != null)
         {
             mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
         }
-        
         DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
-        Invoke("PlayerMoveSavePoint", recorverDelay);
-        FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
+        Invoke("PlayerMoveSavePoint", recorverDelay - 2f);
+        FadeManager.Instance.FadeOutAndIn(recorverDelay - 2f, 1.5f);
         EnemyManager.Instance.ResetAllEnemies();
         RisingFloorManager.Instance.ResetAllRisingFloors();
-
         StartCoroutine(ReControl(recorverDelay));
     }
 
+
     public void Dead(float _delay)
     {
+        Debug.Log("죽음");
         mainCM = DataController.MainCM;
 
         loseControl = true;  // 제어 상실 상태로 전환
@@ -261,13 +223,12 @@ public class HP_SystemGPT : MonoBehaviour
         animator.SetTrigger("IsDead");  // 애니메이션을 죽음 상태로 전환
         SaveSystem.Instance.playerState.playerDead = true;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
-        playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+        PlayerControllerGPT.Instance.playerData.walkAudioSource.Stop(); // 플레이어 이동 사운드를 비활성화
         mainCM.GetComponent<CinemachineConfiner2D>().m_BoundingShape2D.enabled = false;
         DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize,
             x => mainCM.m_Lens.OrthographicSize = x, 3f, recorverDelay - 0.5f);
         FadeManager.Instance.FadeOutAndIn(recorverDelay - 0.5f, 1.5f);
         EnemyManager.Instance.ResetAllEnemies();
-        RisingFloorManager.Instance.ResetAllRisingFloors();
 
         StartCoroutine(ReControl(_delay));
     }
@@ -287,7 +248,7 @@ public class HP_SystemGPT : MonoBehaviour
         loseControl = true;  // 제어 상실 상태로 전환
         SaveSystem.Instance.playerState.playerDead = true;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero; // 리지드바디의 속도를 0으로 만든다
-        playerMoveSound.SetActive(false); // 플레이어 이동 사운드를 비활성화
+        PlayerControllerGPT.Instance.playerData.walkAudioSource.Stop(); // 플레이어 이동 사운드를 비활성화
 
         yield return new WaitForSeconds(_delay);
 
@@ -298,20 +259,23 @@ public class HP_SystemGPT : MonoBehaviour
 
     public void PlayerMoveSavePoint()
     {
+        Debug.Log(SceneManager.GetActiveScene().name);
+        Debug.Log(SaveSystem.Instance.responPoint.responSceneName);
         if (SaveSystem.Instance.responPoint.responSceneName == SceneManager.GetActiveScene().name)
         {
             DOTween.Kill(DataController.CameraTween);
-
             DataController.CameraTween = DOTween.To(() => mainCM.m_Lens.OrthographicSize, x => mainCM.m_Lens.OrthographicSize = x, currentCameraSize, 2f);
             SaveSystem.Instance.SetPlayerNextPos();
             transform.position = SaveSystem.Instance.responPoint.responScenePoint;
         }
         else
         {
+            Debug.Log("세이브 포인트가 현재 씬과 다름");
             SaveSystem.Instance.SetPlayerNextPos();
             SceneManager.LoadScene(SaveSystem.Instance.responPoint.responSceneName);
         }
     }
+
 
     void VerticalCaughtCheck() // 수직으로 끼어있는지 확인하는 메소드
     {

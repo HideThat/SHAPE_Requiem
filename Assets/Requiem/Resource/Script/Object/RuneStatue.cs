@@ -84,7 +84,7 @@ public class RuneStatue : MonoBehaviour
             return;
         }
 
-        if (collision.CompareTag("Rune") && RuneManager.Instance.isActive)
+        if (collision.CompareTag("Rune"))
         {
             EnterTheRune();
         }
@@ -98,7 +98,7 @@ public class RuneStatue : MonoBehaviour
     // 룬 입장 처리를 위한 함수
     public void EnterTheRune()
     {
-        if (!isActive || RuneManager.Instance.battery <= 0)
+        if (!isActive)
         {
             UpdatePlayerData();
             ActivateRuneStatue();
@@ -124,7 +124,6 @@ public class RuneStatue : MonoBehaviour
         Invoke("ActivateEffect", effectDelay);
         Invoke("TurnOnLights", effectDelay);
         Invoke("ActiveView2D", view2DDelayTime);
-        DOTween.To(() => RuneManager.Instance.battery, x => RuneManager.Instance.battery = x, RuneManager.Instance.batteryMaxValue, 5f);
         PlayAudioClip();
         
         SetStatueState(true);

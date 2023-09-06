@@ -27,7 +27,7 @@ public class NewGameStart : MonoBehaviour
         hP_SystemGPT = player.GetComponent<HP_SystemGPT>();
         runeController = player.GetComponent<RuneControllerGPT>();
 
-        playerController.canMove = false; // 플레이어 이동 불가능
+        playerController.playerData.canMove = false; // 플레이어 이동 불가능
         playerAnimator.SetBool("IsFirstStart", true); // 처음 시작 상태로 설정
 
         if (player == null) Debug.Log("player == null");
@@ -53,7 +53,7 @@ public class NewGameStart : MonoBehaviour
     {
         yield return new WaitForSeconds(1f); // 1초 대기
 
-        playerController.canMove = true; // 플레이어 이동 가능
+        playerController.playerData.canMove = true; // 플레이어 이동 가능
         this.enabled = false;
     }
 }

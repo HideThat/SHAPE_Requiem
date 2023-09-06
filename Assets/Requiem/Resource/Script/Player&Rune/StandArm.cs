@@ -27,7 +27,7 @@ public class StandArm : MonoBehaviour
             return; // 추가된 체크
         }
 
-        target = PlayerData.Instance.m_playerObj.transform.position;
+        target = PlayerControllerGPT.Instance.gameObject.transform.position;
 
         DOTween.Kill(tween0);
         tween0 = transform.DOMove(target + followPoint, 0.1f);

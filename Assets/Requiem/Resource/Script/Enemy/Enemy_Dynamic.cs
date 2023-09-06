@@ -14,11 +14,6 @@ public class Enemy_Dynamic : Enemy
         
     }
 
-    public string GetName
-    {
-        get { return m_name; }
-    }
-
     public int GetDamage
     {
         get { return damage; }

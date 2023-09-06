@@ -14,12 +14,6 @@ public class Enemy_Static : Enemy
 
     }
 
-    // 적의 이름을 반환하는 프로퍼티
-    public string GetName
-    {
-        get { return m_name; }
-    }
-
     // 적이 입히는 피해량을 반환하는 프로퍼티
     public int GetDamage
     {

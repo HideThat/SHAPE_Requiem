@@ -1,5 +1,3 @@
-// 1�� �����丵
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +9,7 @@ using DG.Tweening;
 
 public class KeyDoor : MonoBehaviour
 {
-    [SerializeField] private Item keyData; // Ű ID
+    [SerializeField] private Item keyData;
     [SerializeField] private AudioClip doorSound;
     [SerializeField] public bool isOpened;
     [SerializeField] private SpriteRenderer openedSprite;
@@ -28,7 +26,6 @@ public class KeyDoor : MonoBehaviour
     [SerializeField] private Transform player;
 
     private AudioSource audioSource;
-    private bool isInventoryOpen = false;
 
     private void Start()
     {
@@ -67,11 +64,8 @@ public class KeyDoor : MonoBehaviour
         }
     }
 
-    // Ʈ���ſ� �ٸ� ������Ʈ�� ���� �� ó���ϴ� �Լ�
     private void OnTriggerStay2D(Collider2D collision)
     {
-        //��ȣ�ۿ� ���� UI ��ġ
-
         if (IsPlayer(collision))
         {
             playerIn = true;
@@ -93,7 +87,6 @@ public class KeyDoor : MonoBehaviour
         }
     }
 
-    // �÷��̾����� Ȯ���ϴ� �Լ�
     private bool IsPlayer(Collider2D collision)
     {
         return collision.gameObject.layer == (int)LayerName.Player;

@@ -18,9 +18,9 @@ public class SoundController : MonoBehaviour
 
     void Start()
     {
-        m_BGM = PlayerData.PlayerObj.transform.Find("Sound").Find("BG_Audio").GetComponent<AudioSource>();
-        m_playerWalkSound = PlayerData.PlayerObj.transform.Find("Sound").Find("PlayerMoveSound").GetComponent<AudioSource>();
-        m_PlayerJumpSound = PlayerData.PlayerObj.transform.Find("Sound").Find("PlayerJumpSound").GetComponent<AudioSource>();
+        m_BGM = PlayerControllerGPT.Instance.transform.Find("Sound").Find("BG_Audio").GetComponent<AudioSource>();
+        m_playerWalkSound = PlayerControllerGPT.Instance.transform.Find("Sound").Find("PlayerMoveSound").GetComponent<AudioSource>();
+        m_PlayerJumpSound = PlayerControllerGPT.Instance.transform.Find("Sound").Find("PlayerJumpSound").GetComponent<AudioSource>();
         m_bgmScrollbar.value = DataController.BGMVolume;
         m_LuneSoundScrollbar.value = DataController.LuneSoundVolume;
         m_WalkSoundScrollbar.value = DataController.WalkSoundVolume;

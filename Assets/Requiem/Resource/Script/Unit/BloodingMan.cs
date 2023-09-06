@@ -67,7 +67,7 @@ public class BloodingMan : MonoBehaviour
             pointTransforms[i].parent = null;
         }
 
-        player = PlayerData.PlayerObj;
+        player = PlayerControllerGPT.Instance.gameObject;
         mainCM = DataController.MainCM;
         mainCamera = DataController.MainCamera.GetComponent<Camera>();
     }

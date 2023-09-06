@@ -105,8 +105,8 @@ public class SaveSystem : MonoBehaviour
         if (nextPlayerPos.x != 0 && nextPlayerPos.y != 0)
         {
             // 저장된 플레이어 트랜스폼 로드
-            PlayerData.PlayerObj.transform.position = nextPlayerPos;
-            PlayerData.PlayerObj.transform.rotation = nextPlayerRot;
+            PlayerControllerGPT.Instance.transform.position = nextPlayerPos;
+            PlayerControllerGPT.Instance.transform.rotation = nextPlayerRot;
 
             Debug.Log("플레이어 위치 조정 실행");
 
@@ -144,8 +144,8 @@ public class SaveSystem : MonoBehaviour
                 DOTween.KillAll();
 
                 // 저장된 룬 트랜스폼 로드
-                RuneManager.Instance.runeObj.transform.position = nextRunePos;
-                RuneManager.Instance.runeObj.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                RuneControllerGPT.Instance.transform.position = nextRunePos;
+                RuneControllerGPT.Instance.transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
 
                 Debug.Log("룬 위치 조정 실행");
 

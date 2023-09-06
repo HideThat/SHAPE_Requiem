@@ -13,7 +13,7 @@ public class SoulManager : MonoBehaviour
 
     void Start()
     {
-        target = RuneManager.Instance.runeObj.transform;
+        target = RuneControllerGPT.Instance.transform;
 
         if (target == null)
         {

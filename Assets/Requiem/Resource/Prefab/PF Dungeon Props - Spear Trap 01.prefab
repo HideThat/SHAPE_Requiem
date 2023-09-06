@@ -9,9 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6265670936862214329}
-  - component: {fileID: 6379757266769635029}
   - component: {fileID: 8114920054662695992}
   - component: {fileID: 9146697267941285903}
+  - component: {fileID: 5674118279872114310}
   m_Layer: 9
   m_Name: PF Dungeon Props - Spear Trap 01
   m_TagString: Untagged
@@ -39,20 +39,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &6379757266769635029
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 390456860282783827}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8be38d1096371354a8e4af99c8076ffe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 0
-  resetPoint: {x: 0, y: 0}
 --- !u!50 &8114920054662695992
 Rigidbody2D:
   serializedVersion: 4
@@ -94,64 +80,78 @@ CompositeCollider2D:
   m_ColliderPaths:
   - m_Collider: {fileID: 1344481443772617208}
     m_ColliderPaths:
-    - - X: -2479992
+    - - X: -2480001
         Y: 16250000
-      - X: -4042492
+      - X: -4042501
         Y: 16250000
-      - X: -4042492
+      - X: -4042501
         Y: 0
-      - X: -2479992
+      - X: -2480001
         Y: 0
   - m_Collider: {fileID: 4390242745623865931}
     m_ColliderPaths:
-    - - X: -292491
+    - - X: -292501
         Y: 16250000
-      - X: -1854991
+      - X: -1855001
         Y: 16250000
-      - X: -1854991
+      - X: -1855001
         Y: 0
-      - X: -292491
+      - X: -292501
         Y: 0
   - m_Collider: {fileID: 1490350448299437738}
     m_ColliderPaths:
-    - - X: 1895008
+    - - X: 1894998
         Y: 16250000
-      - X: 332508
+      - X: 332498
         Y: 16250000
-      - X: 332508
+      - X: 332498
         Y: 0
-      - X: 1895008
+      - X: 1894998
         Y: 0
   - m_Collider: {fileID: 8337524103949455088}
     m_ColliderPaths:
-    - - X: 4082508
+    - - X: 4082498
         Y: 16250000
-      - X: 2520008
+      - X: 2519998
         Y: 16250000
-      - X: 2520008
+      - X: 2519998
         Y: 0
-      - X: 4082508
+      - X: 4082498
         Y: 0
   m_CompositePaths:
     m_Paths:
-    - - {x: 0.4082215, y: 0}
-      - {x: 0.4082215, y: 1.625}
-      - {x: 0.2520008, y: 1.6249707}
-      - {x: 0.2520301, y: 0}
-    - - {x: 0.1894715, y: 0}
-      - {x: 0.1894715, y: 1.625}
-      - {x: 0.0332508, y: 1.6249707}
-      - {x: 0.0332801, y: 0}
-    - - {x: -0.0292784, y: 0}
-      - {x: -0.0292784, y: 1.625}
-      - {x: -0.1854991, y: 1.6249707}
-      - {x: -0.1854698, y: 0}
-    - - {x: -0.2480285, y: 0}
-      - {x: -0.2480285, y: 1.625}
-      - {x: -0.4042492, y: 1.6249707}
-      - {x: -0.4042199, y: 0}
+    - - {x: 0.4082205, y: 0}
+      - {x: 0.4082205, y: 1.625}
+      - {x: 0.2519998, y: 1.6249707}
+      - {x: 0.2520291, y: 0}
+    - - {x: 0.1894705, y: 0}
+      - {x: 0.1894705, y: 1.625}
+      - {x: 0.0332498, y: 1.6249707}
+      - {x: 0.0332791, y: 0}
+    - - {x: -0.0292794, y: 0}
+      - {x: -0.0292794, y: 1.625}
+      - {x: -0.1855001, y: 1.6249707}
+      - {x: -0.1854708, y: 0}
+    - - {x: -0.2480294, y: 0}
+      - {x: -0.2480294, y: 1.625}
+      - {x: -0.40425012, y: 1.6249707}
+      - {x: -0.40422082, y: 0}
   m_VertexDistance: 0.0005
   m_OffsetDistance: 0.00005
+--- !u!114 &5674118279872114310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 390456860282783827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa8a8f0facc22074fa4b92bd5543891b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1000
+  resetPoint: {x: 0, y: 0}
 --- !u!1 &1816664384247173716
 GameObject:
   m_ObjectHideFlags: 0

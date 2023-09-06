@@ -61,16 +61,14 @@ public class Bat : Enemy_Dynamic
         audioSource1 = transform.Find("Sound").GetComponent<AudioSource>();
         audioSource2 = transform.Find("Sound").Find("FlySound").GetComponent<AudioSource>();
         fly = EnemyData.DynamicEnemyAudioClipArr[1];
-        m_name = EnemyData.DynamicEnemyNameArr[0];
         damage = 1;
-        target = PlayerData.PlayerObj.transform;
+        target = PlayerControllerGPT.Instance.transform;
         origin = CreateBatOrigin();
 
         if (m_collider2D == null) Debug.Log("m_collider2D == null");
         if (rb == null) Debug.Log("rb == null");
         if (audioSource1 == null) Debug.Log("audioSource1 == null");
         if (audioSource2 == null) Debug.Log("audioSource2 == null");
-        if (m_name == null) Debug.Log("m_name == null");
         if (fly == null) Debug.Log("fly == null");
         if (target == null) Debug.Log("target == null");
         if (origin == null) Debug.Log("origin == null");
@@ -173,7 +171,7 @@ public class Bat : Enemy_Dynamic
     private void HandleCollision(Collider2D collision)
     {
         // 룬이 활성화 상태에서 빛 범위에 닿게 되면, 도망 시작
-        if (collision.gameObject.layer == (int)LayerName.LightArea && RuneManager.Instance.isActive)
+        if (collision.CompareTag("LightArea"))
         {
             m_collider2D.isTrigger = false; // 콜라이더 트리거 오프
             isEscape = true; // 도망 시작

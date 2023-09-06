@@ -12,18 +12,4 @@ public class RuneChargeGuide : MonoBehaviour
         runeChargeGuide.SetActive(false);
     }
 
-    void Update()
-    {
-        if (!isActive && RuneManager.Instance.battery <= 0)
-        {
-            runeChargeGuide.SetActive(true);
-            isActive = true;
-        }
-
-        if (isActive && runeChargeGuide.active && RuneManager.Instance.battery > 0)
-        {
-            Destroy(runeChargeGuide);
-            Destroy(gameObject);
-        }
-    }
 }

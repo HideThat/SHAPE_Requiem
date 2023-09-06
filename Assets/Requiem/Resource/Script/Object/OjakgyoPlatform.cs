@@ -35,7 +35,7 @@ public class OjakgyoPlatform : MonoBehaviour
 
     private void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.gameObject.layer == (int)LayerName.Rune && RuneManager.Instance.isActive)
+        if (collision.CompareTag("Rune"))
         {
             isActive = true;
         }

@@ -65,7 +65,7 @@ public class SnakeEatStatue : MonoBehaviour
     {
         snakeOrigin = transform.position;
         mainCM = DataController.MainCM;
-        player = PlayerData.PlayerObj.transform;
+        player = PlayerControllerGPT.Instance.transform;
         points = new Vector3[pointTransforms.Length];
 
         for (int i = 0; i < points.Length; i++)
@@ -184,7 +184,7 @@ public class SnakeEatStatue : MonoBehaviour
     private void OnDestroy()
     {
         mainCM.GetComponent<CinemachineConfiner2D>().enabled = true;
-        mainCM.Follow = PlayerData.PlayerObj.transform;
+        mainCM.Follow = PlayerControllerGPT.Instance.transform;
     }
 
 

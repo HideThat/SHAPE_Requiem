@@ -1,63 +1,30 @@
-// 1차 리펙토링
-
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.Universal;
 
-public class PlayerData : MonoBehaviour // 플레이어 데이터
+[Serializable]
+public class PlayerData
 {
-    public GameObject m_playerObj; // 플레이어 오브젝트
-    
-    [Header("Player Sound System")]
+    [Header("Player Move")]
+    public float playerSpeed = 6f; // 플레이어 이동속도
+    public bool canMove; // 이동 판정
 
-    // 싱글톤 인스턴스
-    private static PlayerData instance;
+    [Header("Player Jump")]
+    public int jumpLeft; // 남은 점프 횟수
+    public int maxJump = 2; // 남은 점프 횟수
+    public float jumpForce; // 점프 파워
+    public float fallForce; // 낙하 속도
+    public float maxFallSpeed; // 최대 낙하 속도
+    public float castDistance; // 땅과의 충돌 판정
+    public bool isJump; // 점프 상태 체크
+    public bool m_isGrounded; // 땅 접촉 상태 체크
+    public LayerMask platform; // 플랫폼 레이어 마스크
+    public ParticleSystem randingEffect;
 
-    // 인스턴스에 접근할 수 있는 프로퍼티
-    public static PlayerData Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindObjectOfType<PlayerData>();
-                if (instance == null)
-                {
-                    GameObject singletonObj = new GameObject("PlayerDataSingleton");
-                    instance = singletonObj.AddComponent<PlayerData>();
-                }
-            }
-            return instance;
-        }
-    }
+    [Header("Player Sound")]
+    [SerializeField] public AudioSource BGM_AudioSource;
+    [SerializeField] public AudioSource walkAudioSource;
+    [SerializeField] public AudioSource jumpAudioSource;
+    [SerializeField] public AudioClip playerMoveSoundClip;
+    [SerializeField] public AudioClip[] playerJumpSoundClips;
 
-    private void Awake()
-    {
-        if (instance == null)
-        {
-            instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        // 아래는 기존 Awake 내용
-        if (PlayerObj == null)
-        {
-            PlayerObj = GameObject.Find("Player");
-        }
-    }
-
-    public PlayerData() { }
-
-    public static GameObject PlayerObj
-    {
-        get { return Instance.m_playerObj; }
-        set { Instance.m_playerObj = value; }
-    }
 }

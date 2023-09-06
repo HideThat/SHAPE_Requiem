@@ -73,6 +73,8 @@ public class DataController : MonoBehaviour
     [SerializeField] TriggerData triggerData = new();
     [SerializeField] public SceneObjectData sceneObjectData = new();
 
+    [SerializeField] Texture2D cursorImg;
+
 
     public static DataController Instance
     {
@@ -165,6 +167,8 @@ public class DataController : MonoBehaviour
 
     private void Start()
     {
+        Cursor.SetCursor(cursorImg, Vector2.zero, CursorMode.ForceSoftware);
+
         SaveSystem.Instance.LoadPlayerData();
         SaveSystem.Instance.LoadRuneData();
         SaveSystem.Instance.LoadSceneMovablePlatformData(sceneObjectData.movablePlatforms);

@@ -5831,6 +5831,8 @@ MonoBehaviour:
     armObject: {fileID: 7775122627022469786, guid: fedef5cdb03a9c44ab8b517fa102dabd, type: 3}
   - state: 3
     armObject: {fileID: 8107082586286213728, guid: c2e8697f05aa47d409e30f83516edb3a, type: 3}
+  controlMode: 0
+  speed: 0
   m_isGetRune: 0
   hasRestarted: 0
 --- !u!114 &1996320799
@@ -5898,7 +5900,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   m_randingEffect: {fileID: 0}
-  m_playerSpeed: 6
+  m_playerSpeed: 5
   m_isWarp: 0
   canMove: 0
   hP_System: {fileID: 1996320799}

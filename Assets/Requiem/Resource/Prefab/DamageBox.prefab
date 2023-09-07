@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 3065006289571682300}
   - component: {fileID: 1190666557047079778}
   - component: {fileID: 1406832003649835689}
+  - component: {fileID: -7403108262854467703}
   m_Layer: 10
   m_Name: DamageBox
   m_TagString: Untagged
@@ -219,7 +220,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &1190666557047079778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -258,3 +259,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!114 &-7403108262854467703
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7479694734853746988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e2cb0de06077f0544b092933ccbbcc79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TMPtext: {fileID: 1208281398215940075}
+  rigid: {fileID: 1406832003649835689}
+  disappearDelay: 2

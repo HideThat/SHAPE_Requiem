@@ -82,6 +82,11 @@ public class Wraith : Enemy_Dynamic
         {
             transform.localScale = new Vector3(-1f, 1f, 1f);
         }
+
+        if (HP <= 0)
+        {
+            currentState = WraithState.Dead;
+        }
     }
 
     private void Chasing()

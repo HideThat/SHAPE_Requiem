@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WraithSpawner : MonoBehaviour
+public class WraithSpawner : Enemy_Dynamic
 {
     [SerializeField] private GameObject wraithPrefab;
     [SerializeField] private GameObject currentWraith;
@@ -15,5 +15,17 @@ public class WraithSpawner : MonoBehaviour
             currentWraith = Instantiate(wraithPrefab);
             currentWraith.transform.position = transform.position;
         }
+
+        if (HP <= 0)
+        {
+            Dead();
+        }
+    }
+
+    public override void Dead()
+    {
+        base.Dead();
+
+        gameObject.SetActive(false);
     }
 }

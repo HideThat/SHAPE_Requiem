@@ -47,8 +47,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801f5185faf34a94399a129178e4dc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  HP: 10
   damage: 0
+  m_collider2D: {fileID: 0}
+  runeIn: 0
   souls: 3
+  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   target: {fileID: 0}
   animator: {fileID: 8766012027520042798}
@@ -66,9 +70,6 @@ MonoBehaviour:
   - Wraith__Die
   trail: {fileID: 2063778860822366239}
   circleCollider: {fileID: 754793049477194991}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 2112
   rushTarget: {x: 0, y: 0}
   currentState: 0
   rushStartPoint: {x: 0, y: 0}

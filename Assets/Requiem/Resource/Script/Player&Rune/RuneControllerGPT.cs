@@ -28,7 +28,7 @@ public class RuneControllerGPT : Singleton<RuneControllerGPT>
     public float clickDelay;
     public int damage;
 
-    [SerializeField] Enemy target;
+    [SerializeField] Enemy_Dynamic target;
     [SerializeField] GameObject magicCircle;
     [SerializeField] Transform rightArm;
     [SerializeField] Transform leftArm;
@@ -61,7 +61,7 @@ public class RuneControllerGPT : Singleton<RuneControllerGPT>
 
         if (Physics2D.OverlapCircle(transform.position, circleCollider.radius, enemyrMask))
         {
-            target = Physics2D.OverlapCircle(transform.position, circleCollider.radius, enemyrMask).GetComponent<Enemy>();
+            target = Physics2D.OverlapCircle(transform.position, circleCollider.radius, enemyrMask).GetComponent<Enemy_Dynamic>();
 
             if (Input.GetKeyDown(KeyCode.Mouse0) && !isMouseDelay)
             {

@@ -19,9 +19,4 @@ public class Enemy_Static : Enemy
     {
         get { return damage; }
     }
-
-    public override void Hit(int _demage)
-    {
-        base.Hit(_demage);
-    }
 }

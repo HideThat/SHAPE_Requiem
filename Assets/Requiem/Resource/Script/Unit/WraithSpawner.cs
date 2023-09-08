@@ -14,6 +14,7 @@ public class WraithSpawner : Enemy_Dynamic
         {
             currentWraith = Instantiate(wraithPrefab);
             currentWraith.transform.position = transform.position;
+            currentWraith.tag = wraithPrefab.tag;
         }
 
         if (HP <= 0)

@@ -5240,6 +5240,7 @@ Transform:
   - {fileID: 6450772960701366481}
   - {fileID: 7403656253838633359}
   - {fileID: 2731798799790165898}
+  - {fileID: 7604139287662505779}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -5567,7 +5568,6 @@ MonoBehaviour:
   m_collider: {fileID: 1396653073}
   hitEffect: {fileID: 994749241}
   animator: {fileID: 2529985360050657732}
-  playerMoveSound: {fileID: 894907076}
   mainCM: {fileID: 0}
   currentCameraSize: 0
   isInvincibility: 0
@@ -5607,7 +5607,7 @@ MonoBehaviour:
     jumpForce: 15
     fallForce: 10
     maxFallSpeed: 7
-    castDistance: 0.05
+    castDistance: 0.25
     isJump: 0
     m_isGrounded: 0
     platform:
@@ -5622,6 +5622,9 @@ MonoBehaviour:
     - {fileID: 8300000, guid: f9cd5a4e35acdd541921c5729b384a46, type: 3}
     - {fileID: 8300000, guid: 14875209844808c4fb4df157757a5cca, type: 3}
     - {fileID: 8300000, guid: 7aba7f243115b6840a55c7f7f23851bd, type: 3}
+    bullet: {fileID: 5084333654501995030, guid: f1aa657544a710344804cdb427b49157, type: 3}
+    shootPosition: {fileID: 7604139287662505779}
+    shootDelay: 0.3
   hP_System: {fileID: 1996320799}
   m_rigid: {fileID: 2529985360050657742}
   m_animator: {fileID: 2529985360050657732}
@@ -5650,6 +5653,37 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2529985360050657747}
   m_Enabled: 1
+--- !u!1 &3121742197954618755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7604139287662505779}
+  m_Layer: 3
+  m_Name: ShootPositon
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7604139287662505779
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3121742197954618755}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2529985360050657736}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4883901960957327275
 GameObject:
   m_ObjectHideFlags: 0

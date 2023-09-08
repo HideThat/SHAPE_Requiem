@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using System;
 using UnityEngine.SceneManagement; //이걸 써야지 씬에 관한 시스템을 적용시킬수있다.
+using Unity.VisualScripting;
 
 public class PlayerControllerGPT : Singleton<PlayerControllerGPT>
 {
@@ -29,12 +30,52 @@ public class PlayerControllerGPT : Singleton<PlayerControllerGPT>
 
         // 변수 초기값 설정
         playerData.isJump = true;
+
+        StartCoroutine(ShootDelay());
     }
 
     private void FixedUpdate()
     {
         FastFall(); // 빠른 추락 처리
     }
+
+    IEnumerator ShootDelay()
+    {
+        while (true)
+        {
+            if (Input.GetKey(KeyCode.Mouse0))
+            {
+                Vector2 mousePos = Input.mousePosition;
+
+                Vector2 worldPos = Camera.main.ScreenToWorldPoint(mousePos);
+
+                Bullet bullet = Instantiate<Bullet>(playerData.bullet);
+                bullet.transform.position = playerData.shootPosition.position;
+                
+                // 마우스 방향으로 공격
+                bullet.SetDirection(playerData.shootPosition.position, worldPos);
+
+                // 바라보는 방향으로 공격
+                //if (Input.GetKey(KeyCode.UpArrow))
+                //{
+                //    bullet.SetDirection(playerData.shootPosition.position, (Vector2)playerData.shootPosition.position + Vector2.up);
+                //}
+                //else if (transform.rotation.y == 0f)
+                //{
+                //    bullet.SetDirection(playerData.shootPosition.position, (Vector2)playerData.shootPosition.position + Vector2.right);
+                //}
+                //else 
+                //{
+                //    bullet.SetDirection(playerData.shootPosition.position, (Vector2)playerData.shootPosition.position + Vector2.left);
+                //}
+
+                yield return new WaitForSeconds(playerData.shootDelay);
+            }
+
+            yield return null;
+        }
+    }
+
 
     private void Update()
     {

@@ -27,4 +27,8 @@ public class PlayerData
     [SerializeField] public AudioClip playerMoveSoundClip;
     [SerializeField] public AudioClip[] playerJumpSoundClips;
 
+    [Header("Player Attack")]
+    [SerializeField] public Bullet bullet;
+    [SerializeField] public Transform shootPosition;
+    [SerializeField] public float shootDelay;
 }

@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 754793049477194977}
   - component: {fileID: 754793049477194976}
   - component: {fileID: 754793049477194991}
+  - component: {fileID: 4113163251940310761}
   m_Layer: 10
   m_Name: Wraith
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -26,7 +27,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754793049477194979}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -45.86, y: 7.15, z: -0.035521045}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -47,20 +48,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 801f5185faf34a94399a129178e4dc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 10
+  HP: 1
   damage: 0
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 3
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   target: {fileID: 0}
   animator: {fileID: 8766012027520042798}
   speed: 3
-  sightRadius: 5.5
+  sightRadius: 3
   rushSpeed: 15
-  rushDistance: 10
-  rushDelay: 1
+  rushDistance: 5
+  rushDelay: 2
   actDelay: 1
   animationParamiterList:
   - Wraith_Move
@@ -70,6 +70,9 @@ MonoBehaviour:
   - Wraith__Die
   trail: {fileID: 2063778860822366239}
   circleCollider: {fileID: 754793049477194991}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 65536
   rushTarget: {x: 0, y: 0}
   currentState: 0
   rushStartPoint: {x: 0, y: 0}
@@ -89,6 +92,27 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!50 &4113163251940310761
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754793049477194979}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1 &2063778860822366239
 GameObject:
   m_ObjectHideFlags: 0
@@ -102,7 +126,7 @@ GameObject:
   - component: {fileID: 5668640082858626103}
   m_Layer: 10
   m_Name: Trail
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -295,7 +319,7 @@ GameObject:
   - component: {fileID: 8766012027520042798}
   m_Layer: 10
   m_Name: Sprite
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

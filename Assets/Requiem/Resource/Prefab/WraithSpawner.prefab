@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 2883065766605508150}
   - component: {fileID: 2883065766605508151}
   - component: {fileID: -6582428778165445775}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: WraithSpawner
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -47,12 +47,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 70a0957ced2d62d4c9fbcfd870bb8252, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 200
+  HP: 50
   damage: 0
   m_collider2D: {fileID: 2188913544578700021, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   runeIn: 0
   souls: 10
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   wraithPrefab: {fileID: 754793049477194979, guid: 5646d90242f283948ba364c8476ff2ec, type: 3}
   currentWraith: {fileID: 0}

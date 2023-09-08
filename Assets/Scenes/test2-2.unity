@@ -135,13 +135,13 @@ GameObject:
   - component: {fileID: 133738725}
   - component: {fileID: 133738724}
   - component: {fileID: 133738726}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Vacuum_Cleaner_R
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &133738723
 Transform:
   m_ObjectHideFlags: 0
@@ -175,13 +175,12 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 0
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   originShadow: {fileID: 793879427}
   spriteRenderer: {fileID: 133738725}
   Area: {fileID: 1427109088}
   attractSpeed: 3
-  attractRadius: 8
+  attractRadius: 10.29
   isActive: 0
   appearDelay: 2
   start_Vacuum_Delay: 2
@@ -265,83 +264,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.921875, y: 0.9375}
   m_EdgeRadius: 0
---- !u!1001 &187345812
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 793879429}
-    m_Modifications:
-    - target: {fileID: 2883065766605508147, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_Name
-      value: WraithSpawner (3)
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508147, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_RootOrder
-      value: 14
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 8.57
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 4.36
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
---- !u!4 &187345813 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-  m_PrefabInstance: {fileID: 187345812}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &220397652 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 2883065766605508149, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
-  m_PrefabInstance: {fileID: 187345812}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 70a0957ced2d62d4c9fbcfd870bb8252, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &238424574
 GameObject:
   m_ObjectHideFlags: 0
@@ -356,7 +278,7 @@ GameObject:
   - component: {fileID: 238424578}
   m_Layer: 10
   m_Name: Hand_Sweep_R
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -378,7 +300,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 5000
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   originShadow: {fileID: 793879427}
   appearDelay: 2
@@ -493,7 +414,7 @@ GameObject:
   - component: {fileID: 322491909}
   m_Layer: 10
   m_Name: Shadow_Sphere
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 5721338939258241955, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -582,7 +503,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 322491909}
   runeIn: 0
   souls: 5000
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   moveTime: 2
   otherHandSweepDelay: 7
@@ -602,7 +522,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 322491905}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -768,9 +688,10 @@ GameObject:
   - component: {fileID: 495654322}
   - component: {fileID: 495654321}
   - component: {fileID: 495654323}
-  m_Layer: 0
+  - component: {fileID: 495654324}
+  m_Layer: 10
   m_Name: LaserEye
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -835,7 +756,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 495654320}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.6, y: 3.0500002, z: 0}
+  m_LocalPosition: {x: -1.6, y: 5.07, z: 0}
   m_LocalScale: {x: 2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -862,7 +783,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 0
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   originShadow: {fileID: 793879427}
   my_Sprite: {fileID: 495654321}
@@ -874,7 +794,7 @@ MonoBehaviour:
   laserDelay: 2
   finishDelay: 6
   rotationTime: 1
-  lineAngle: 25
+  lineAngle: 20
   lineLength: 20
   lineColor: {r: 1, g: 0, b: 0, a: 1}
   eye: {fileID: 327910141}
@@ -882,9 +802,25 @@ MonoBehaviour:
   target: {fileID: 0}
   laser: {fileID: 1593138362}
   laser_Sprite: {fileID: 1593138363}
-  startAngle: 13
-  endAngle: 347
+  startAngle: 10
+  endAngle: 350
   areaImage: {fileID: 1941317067}
+--- !u!70 &495654324
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 495654320}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_Size: {x: 1, y: 0.6}
+  m_Direction: 1
 --- !u!114 &666553803 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4530024341899340901, guid: ee464a973527e784f9f1e9734bafda4a, type: 3}
@@ -910,7 +846,7 @@ GameObject:
   - component: {fileID: 793879430}
   m_Layer: 10
   m_Name: Shadow Of The King
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -932,11 +868,11 @@ MonoBehaviour:
   m_collider2D: {fileID: 793879430}
   runeIn: 0
   souls: 100
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   myState: 0
   idle_Delay: 3
   pattern_Delay: 15
+  spriteRenderer: {fileID: 793879428}
   Shadow_Sphere: {fileID: 322491908}
   Vacuum_Cleaner_R: {fileID: 133738724}
   Vacuum_Cleaner_L: {fileID: 1180193655}
@@ -947,7 +883,6 @@ MonoBehaviour:
   - {fileID: 2114035598}
   - {fileID: 1622946976}
   - {fileID: 1286786396}
-  - {fileID: 220397652}
   ShadowSphere_Target:
   - {fileID: 374163724}
   - {fileID: 832576681}
@@ -1031,7 +966,6 @@ Transform:
   - {fileID: 2114035597}
   - {fileID: 1622946975}
   - {fileID: 1286786395}
-  - {fileID: 187345813}
   m_Father: {fileID: 0}
   m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1042,7 +976,7 @@ CapsuleCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 793879426}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 1
@@ -1124,7 +1058,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &832576680
 GameObject:
@@ -8968,6 +8902,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 7543882171348522628, guid: c165c726b296ee64baf62b56734b2fde, type: 3}
+      propertyPath: cursorImg
+      value: 
+      objectReference: {fileID: 2800000, guid: 61521df2e071645488ba3d05e49289ae, type: 3}
+    - target: {fileID: 7543882171348522628, guid: c165c726b296ee64baf62b56734b2fde, type: 3}
       propertyPath: m_luneData.m_luneObj
       value: 
       objectReference: {fileID: 0}
@@ -9181,7 +9119,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_RootOrder
-      value: 16
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9369,13 +9307,13 @@ GameObject:
   - component: {fileID: 1180193653}
   - component: {fileID: 1180193655}
   - component: {fileID: 1180193656}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Vacuum_Cleaner_L
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!212 &1180193653
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -9461,13 +9399,12 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 0
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   originShadow: {fileID: 793879427}
   spriteRenderer: {fileID: 1180193653}
   Area: {fileID: 1542477647}
   attractSpeed: 3
-  attractRadius: 8
+  attractRadius: 10.29
   isActive: 0
   appearDelay: 2
   start_Vacuum_Delay: 2
@@ -9638,7 +9575,7 @@ Transform:
   m_Children:
   - {fileID: 847461167}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1286786394
 PrefabInstance:
@@ -9661,11 +9598,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.86
+      value: 8.15
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 7.59
+      value: 2.48
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -10021,7 +9958,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 1460742310}
   runeIn: 0
   souls: 500
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
 --- !u!1001 &1482607166
 PrefabInstance:
@@ -10036,7 +9972,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_RootOrder
-      value: 13
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_LocalPosition.x
@@ -10241,7 +10177,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1542477647
 GameObject:
@@ -10623,14 +10559,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1593138361}
-  m_LocalRotation: {x: 0, y: 0, z: -0.11320323, w: 0.9935719}
+  m_LocalRotation: {x: 0, y: 0, z: -0.08715578, w: 0.9961947}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.1, y: 15, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 495654322}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -13}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -10}
 --- !u!212 &1593138363
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -10726,7 +10662,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 0
-  damageBox: {fileID: 0}
   soulObject: {fileID: 0}
 --- !u!1001 &1622946974
 PrefabInstance:
@@ -10749,7 +10684,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.8
+      value: -1.36
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -10866,7 +10801,7 @@ GameObject:
   - component: {fileID: 1756956623}
   m_Layer: 8
   m_Name: Tilemap
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17763,61 +17698,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1810196480, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: playerData.castDistance
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320799, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: m_HP
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320799, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: m_maxHP
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320799, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: m_mainCamera
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320799, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: recorverDelay
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320800, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: speed
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320800, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: runeCharge
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320800, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: controlMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320800, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: m_isGetRune
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1996320800, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: runeManager
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 1495656165233417272, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
-      propertyPath: m_mainCamera
-      value: 
-      objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_RootOrder
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -3.85
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.15
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalPosition.z
@@ -17825,7 +17716,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.99998766
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalRotation.x
@@ -17837,7 +17728,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.0049654744
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -17849,7 +17740,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657736, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0.569
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2529985360050657747, guid: 5f351c7ac94c71e44ade313b74ee4638, type: 3}
       propertyPath: m_Name
@@ -17932,7 +17823,7 @@ GameObject:
   - component: {fileID: 1904917394}
   m_Layer: 10
   m_Name: Hand_Sweep_L
-  m_TagString: Untagged
+  m_TagString: Enemy_Dynamic
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -17954,7 +17845,6 @@ MonoBehaviour:
   m_collider2D: {fileID: 0}
   runeIn: 0
   souls: 5000
-  damageBox: {fileID: 7479694734853746988, guid: 08e2d20648c62da4ebc1a914b49b4f59, type: 3}
   soulObject: {fileID: 2188913544578700017, guid: f6ff92a96c5ddb84b97b1b0111f890ed, type: 3}
   originShadow: {fileID: 793879427}
   appearDelay: 2
@@ -18185,6 +18075,10 @@ PrefabInstance:
     - target: {fileID: 8235980309105655851, guid: e34f8830f6deac34ba09b9f3fbfd6cd7, type: 3}
       propertyPath: m_Name
       value: Rune
+      objectReference: {fileID: 0}
+    - target: {fileID: 8235980309105655851, guid: e34f8830f6deac34ba09b9f3fbfd6cd7, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e34f8830f6deac34ba09b9f3fbfd6cd7, type: 3}
@@ -18543,7 +18437,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2088684398
 PrefabInstance:
@@ -18558,7 +18452,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_RootOrder
-      value: 11
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_LocalPosition.x
@@ -18755,11 +18649,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -11.67
+      value: -11.93
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.94
+      value: 3.1
       objectReference: {fileID: 0}
     - target: {fileID: 2883065766605508148, guid: ae5eacab937917b4d9c403fa991482aa, type: 3}
       propertyPath: m_LocalPosition.z
@@ -18824,7 +18718,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 13
       objectReference: {fileID: 0}
     - target: {fileID: 6265670936862214329, guid: 82785ce9c93aed7428d3599980cb4616, type: 3}
       propertyPath: m_LocalPosition.x

@@ -5,11 +5,14 @@ using DG.Tweening;
 public class SoulManager : MonoBehaviour
 {
     [SerializeField] float moveTime;
-    [SerializeField] float spreadTime;
+    [SerializeField, Range(1f, 10f)] float spreadTime;
     [SerializeField] Transform target;
+    [SerializeField] Collider2D myCollider;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     private Vector2 randomDirection;
     private bool isMove = false;
+    private bool isActive = false;
 
     void Start()
     {
@@ -25,31 +28,45 @@ public class SoulManager : MonoBehaviour
         float angle = Random.Range(0f, 360f);
         randomDirection = Quaternion.Euler(0, 0, angle) * Vector2.up;
 
+        spreadTime = Random.Range(1f, spreadTime); // spreadTime을 랜덤하게 설정
+
         // 먼저 spreadTime 동안 랜덤 방향으로 직진
-        transform.DOMove((Vector2)transform.position + randomDirection, spreadTime).OnComplete(MoveToTarget).
+        transform.DOMove((Vector2)transform.position + randomDirection, spreadTime).
             OnComplete(() => { isMove = true; });
+
+        StartCoroutine(MoveToTarget());
     }
 
-    private void Update()
+    IEnumerator MoveToTarget()
     {
-        if (isMove)
+        while (true)
         {
-            MoveToTarget();
-        }
-    }
+            if (isMove && isActive)
+            {
+                // 타겟을 향해 moveTime 동안 이동
+                transform.DOMove(target.position, moveTime);
+                spriteRenderer.DOColor(Color.clear, moveTime);
 
-    private void MoveToTarget()
-    {
-        // 타겟을 향해 moveTime 동안 이동
-        transform.DOMove(target.position, moveTime);
+                yield return new WaitForSeconds(moveTime);
+
+                DOTween.KillAll(gameObject);
+                StopAllCoroutines();
+                Destroy(gameObject);
+
+                yield return new WaitForSeconds(100f);
+            }
+            yield return null;
+        }
+        
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 타겟과 접촉하면 파괴
-        if (collision.transform == target)
+        if (collision.CompareTag("Rune"))
         {
-            Destroy(gameObject);
+            target = collision.transform;
+            isActive = true;
+            myCollider.enabled = false;
         }
     }
 }

@@ -7,6 +7,7 @@ using UnityEngine.UIElements;
 using System;
 using UnityEngine.SceneManagement; //이걸 써야지 씬에 관한 시스템을 적용시킬수있다.
 using Unity.VisualScripting;
+using Unity.Mathematics;
 
 public class PlayerController : Singleton<PlayerController>
 {
@@ -14,43 +15,107 @@ public class PlayerController : Singleton<PlayerController>
 
     // 플레이어의 컴포넌트
     [SerializeField] HP_System hP_System;
-    [SerializeField] Rigidbody2D m_rigid;
-    [SerializeField] Animator m_animator;
+    [SerializeField] Rigidbody2D rigid;
+    [SerializeField] Animator animator;
     [SerializeField] Collider2D m_collider;
 
     private float jumpPressTime = 0f;  // 점프키를 누르고 있는 시간
     private bool isPressingJump = false; // 점프키를 누르고 있는지 확인
+    private bool jumpEnded = false;  // 새로운 변수 추가
+    public bool isTouchingWall = false;
+    public bool isTouchingRightWall = false;
+    public bool isTouchingLeftWall = false;
 
     private void Start()
     {
         playerData.canMove = true;
 
         if (playerData.walkAudioSource == null) Debug.Log("m_PlayerMoveSound == null");
-        if (m_rigid == null) Debug.Log("m_rigid == null");
-        if (m_animator == null) Debug.Log("m_animator == null");
+        if (rigid == null) Debug.Log("m_rigid == null");
+        if (animator == null) Debug.Log("m_animator == null");
         if (m_collider == null) Debug.Log("m_collider == null");
         if (playerData.randingEffect == null) Debug.Log("m_randingEffect == null");
 
         // 변수 초기값 설정
         playerData.isJump = true;
+
+        StartCoroutine(Attack());
     }
 
     private void FixedUpdate()
     {
         PlayerDataUpdate(); // 플레이어 데이터 업데이트
-        if (!isPressingJump)
+
+        if (playerData.isJump == playerData.m_isGrounded)
         {
-            FastFall(); // 빠른 추락 시작
+            if (Input.GetKeyDown(KeyCode.Z))
+            {
+                playerData.isJump = false;
+            }
         }
     }
 
     private void Update()
     {
-        if (playerData.canMove)
+        if (playerData.canMove && !playerData.isDash)
         {
             Move(); // 이동 처리
             JumpController(); // 점프 제어
         }
+
+        Dash();
+    }
+
+    public IEnumerator Attack()
+    {
+        while (true)
+        {
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                if (Input.GetKey(KeyCode.UpArrow))
+                {
+                    animator.Play("UpAttack");
+
+                    PlayerAttack temp = GameObject.Instantiate(playerData.playerUpAttack);
+                    temp.damage = playerData.damage;
+                    temp.transform.position = transform.position;
+                }
+                else
+                {
+                    if (animator.GetBool("IsJump"))
+                    {
+                        animator.Play("JumpAttack");
+                    }
+                    else
+                    {
+                        animator.Play("Attack");
+                    }
+
+                    PlayerAttack temp = GameObject.Instantiate(playerData.playerAttack);
+                    temp.damage = playerData.damage;
+                    temp.transform.position = transform.position;
+                    temp.transform.rotation = transform.rotation;
+                }
+
+                yield return WaitForFrames(playerData.attackEndFrames);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
+    }
+
+    IEnumerator WaitForFrames(int frameCount)
+    {
+        while (frameCount > 0)
+        {
+            frameCount--;
+            yield return null; // 다음 프레임까지 기다림
+        }
+
+        // 60 프레임 후 실행할 코드
+        Debug.Log("60 프레임이 지났습니다.");
     }
 
     public void CorutineLoseControl(float _delay)
@@ -62,15 +127,15 @@ public class PlayerController : Singleton<PlayerController>
     {
         playerData.canMove = false;
 
-        m_animator.SetBool("IsMove", false);
+        animator.SetBool("IsMove", false);
         playerData.walkAudioSource.Stop();
-        m_rigid.velocity = new Vector2(0f, 0f);
-        m_rigid.constraints = RigidbodyConstraints2D.FreezePositionX;
+        rigid.velocity = new Vector2(0f, 0f);
+        rigid.constraints = RigidbodyConstraints2D.FreezePositionX;
 
         yield return new WaitForSeconds(_delay * 6f);
 
         playerData.canMove = true;
-        m_rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rigid.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
 
     private void PlayerDataUpdate()
@@ -79,49 +144,70 @@ public class PlayerController : Singleton<PlayerController>
 
         if (isGrounded && !playerData.m_isGrounded) // 지상에 있고, 이전에 지상이 아니었을 경우
         {
-            if (m_rigid.velocity.y >= -playerData.maxFallSpeed)
-            {
-                playerData.jumpAudioSource.PlayOneShot(playerData.playerJumpSoundClips[2]);
-            }
-
             playerData.jumpLeft = playerData.maxJump;
             playerData.isJump = false;
-
             playerData.randingEffect.Play();
+        }
+
+        if (isGrounded)
+        {
+            playerData.canDashDuringJump = true;
         }
 
         playerData.m_isGrounded = isGrounded;
 
         GroundAnimationChange(playerData.m_isGrounded); // 애니메이션 제어
+
+        isTouchingWall = CheckWallCollision();
+        VelocityY_Check();
     }
 
     private void Move()
     {
-        float dir = Input.GetAxisRaw("Horizontal"); // 수평 방향 입력 받기
+        float dir = Input.GetAxisRaw("Debug Horizontal"); // 수평 방향 입력 받기
 
         if (!hP_System.m_isHit && !SaveSystem.Instance.playerState.playerDead) // 플레이어가 피격되지 않았고, 사망하지 않았다면
         {
             if (dir > 0)
             {
-                // 오른쪽으로 이동
-                m_rigid.velocity = new Vector2(dir * playerData.playerSpeed, m_rigid.velocity.y);
-                transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
-                m_animator.SetBool("IsMove", true);
-                m_animator.SetTrigger("Recorver");
+                if (!isTouchingRightWall)
+                {
+                    // 오른쪽으로 이동
+                    rigid.velocity = new Vector2(dir * playerData.playerSpeed, rigid.velocity.y);
+                    transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                    animator.SetBool("IsMove", true);
+                    animator.SetTrigger("Recorver");
+                }
+                else
+                {
+                    transform.rotation = new Quaternion(0f, 0f, 0f, 0f);
+                    animator.SetBool("IsMove", true);
+                    animator.SetTrigger("Recorver");
+                }
+
             }
             else if (dir < 0)
             {
-                // 왼쪽으로 이동
-                m_rigid.velocity = new Vector2(dir * playerData.playerSpeed, m_rigid.velocity.y);
-                transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
-                m_animator.SetBool("IsMove", true);
-                m_animator.SetTrigger("Recorver");
+                if (!isTouchingLeftWall)
+                {
+                    // 왼쪽으로 이동
+                    rigid.velocity = new Vector2(dir * playerData.playerSpeed, rigid.velocity.y);
+                    transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                    animator.SetBool("IsMove", true);
+                    animator.SetTrigger("Recorver");
+                }
+                else
+                {
+                    transform.rotation = new Quaternion(0f, 180f, 0f, 0f);
+                    animator.SetBool("IsMove", true);
+                    animator.SetTrigger("Recorver");
+                }
             }
             else
             {
                 // 멈춤
-                m_rigid.velocity = new Vector2(0, m_rigid.velocity.y);
-                m_animator.SetBool("IsMove", false);
+                rigid.velocity = new Vector2(0, rigid.velocity.y);
+                animator.SetBool("IsMove", false);
                 playerData.walkAudioSource.Stop();
             }
         }
@@ -143,29 +229,98 @@ public class PlayerController : Singleton<PlayerController>
 
     private void JumpController()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && !SaveSystem.Instance.playerState.playerDead && !playerData.isJump && playerData.m_isGrounded)
+        if (Input.GetKeyDown(KeyCode.Z) && !SaveSystem.Instance.playerState.playerDead && !playerData.isJump && playerData.m_isGrounded)
         {
-            m_animator.SetTrigger("IsJump");  // 점프 애니메이션 트리거
-            isPressingJump = true; // 점프키 누름
-            m_rigid.velocity = new Vector2(m_rigid.velocity.x, playerData.minJumpSpeed); // 초기 점프 속도 적용
-            playerData.isJump = true; // 점프 상태로 변경
+            playerData.canDashDuringJump = true;  // 점프 시작 시 canDashDuringJump를 true로 설정
+            isPressingJump = true;
+            rigid.velocity = new Vector2(rigid.velocity.x, playerData.minJumpSpeed);
+            playerData.isJump = true;
+            animator.SetBool("IsJump", true);
+            animator.SetBool("IsDown", false);
         }
 
         if (isPressingJump)
         {
-            jumpPressTime += Time.deltaTime; // 점프키를 누르고 있는 시간 증가
+            jumpPressTime += Time.deltaTime;
 
-            // 시간에 따라 점프 속도를 조절 (minJumpSpeed부터 maxJumpSpeed까지)
-            float additionalSpeed = Mathf.Lerp(0, playerData.maxJumpSpeed - playerData.minJumpSpeed, jumpPressTime / playerData.timeToReachMaxSpeed);
+            float additionalSpeed = Mathf.Lerp(playerData.minJumpSpeed, 0, jumpPressTime / playerData.timeToReachMaxSpeed);
 
-            m_rigid.velocity = new Vector2(m_rigid.velocity.x, playerData.minJumpSpeed + additionalSpeed); // 점프 속도 적용
+            rigid.velocity = new Vector2(rigid.velocity.x, additionalSpeed);
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) || jumpPressTime >= playerData.timeToReachMaxSpeed) // 점프키를 뗐거나 최대 점프 시간 도달
+        if (jumpPressTime >= playerData.timeToReachMaxSpeed && !jumpEnded)
         {
-            isPressingJump = false; // 점프키 뗌
-            jumpPressTime = 0f; // 시간 초기화
-            FastFall(); // 빠른 추락 시작
+            isPressingJump = false;
+            jumpPressTime = 0f;
+            jumpEnded = true;
+            animator.SetBool("IsDown", true);
+        }
+        else if (Input.GetKeyUp(KeyCode.Z) && !jumpEnded)
+        {
+            isPressingJump = false;
+            jumpPressTime = 0f;
+            rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+            jumpEnded = true;
+            animator.SetBool("IsDown", true);
+        }
+        else if (playerData.m_isGrounded && jumpEnded)
+        {
+            playerData.canDashDuringJump = true; // 지면에 닿으면 다시 대쉬 가능
+            animator.SetBool("IsJump", false);
+            jumpEnded = false;
+        }
+    }
+
+    void Dash()
+    {
+        if (playerData.canDash && playerData.canDashDuringJump)
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                playerData.dashDirection = Input.GetAxisRaw("Debug Horizontal");
+
+                if (playerData.dashDirection != 0)
+                {
+                    playerData.isDash = true;
+                    playerData.canDash = false;
+                    playerData.canDashDuringJump = false;  // 대쉬를 사용하면 다시 사용 못하게 함
+                }
+            }
+
+            playerData.dashCurrentDelay = playerData.dashDelay;
+        }
+        else
+        {
+            if (playerData.dashCurrentDelay >= 0f)
+            {
+                playerData.dashCurrentDelay -= Time.deltaTime;
+            }
+            else
+            {
+                playerData.canDash = true;
+            }
+        }
+
+        if (playerData.isDash)
+        {
+            if (playerData.dashCurrentTime <= 0)
+            {
+                playerData.dashCurrentTime = playerData.dashTime;
+                playerData.isDash = false;
+            }
+            else
+            {
+                rigid.velocity = new Vector2(playerData.dashSpeed * playerData.dashDirection, 0f);
+                playerData.dashCurrentTime -= Time.deltaTime;
+            }
+        }
+    }
+
+    void VelocityY_Check()
+    {
+        if (rigid.velocity.y < 0f)
+        {
+            animator.SetBool("IsDown", true);  // 점프 애니메이션 트리거
         }
     }
 
@@ -173,10 +328,10 @@ public class PlayerController : Singleton<PlayerController>
     private bool GroundCheck()
     {
         // 상자 캐스트로 땅과의 충돌 검사
-        RaycastHit2D hitInfo = Physics2D.BoxCast(m_collider.bounds.center, m_collider.bounds.size, 0f, Vector2.down, playerData.castDistance, playerData.platform);
+        RaycastHit2D hitInfo = Physics2D.BoxCast(m_collider.bounds.center, m_collider.bounds.size, 0f, Vector2.down, playerData.platformCastDistance, playerData.platform);
 
         // 레이캐스트 시각화
-        Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.castDistance, Color.green);
+        Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.platformCastDistance, Color.green);
 
         if (hitInfo.collider != null)
         {
@@ -185,10 +340,10 @@ public class PlayerController : Singleton<PlayerController>
         else
         {
             // 레이캐스트로 땅과의 충돌 검사
-            RaycastHit2D hitInfo2 = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, playerData.castDistance, playerData.platform);
+            RaycastHit2D hitInfo2 = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, playerData.platformCastDistance, playerData.platform);
 
             // 레이캐스트 시각화
-            Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.castDistance, Color.red);
+            Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.platformCastDistance, Color.red);
 
             if (hitInfo2.collider != null)
             {
@@ -199,15 +354,35 @@ public class PlayerController : Singleton<PlayerController>
         return false; // 땅과 충돌하지 않았으면 false 반환
     }
 
-
-    private void FastFall()
-    {
-        // 더 빠른 낙하 힘 적용
-        m_rigid.velocity += Vector2.up * Physics.gravity.y * playerData.fallForce * Time.deltaTime;
-    }
-
     private void GroundAnimationChange(bool _TF)
     {
-        m_animator.SetBool("IsGround", _TF); // 지상 여부 애니메이션 파라미터 설정
+        animator.SetBool("IsGround", _TF); // 지상 여부 애니메이션 파라미터 설정
+    }
+
+    private bool CheckWallCollision()
+    {
+        RaycastHit2D hitInfoRight = new();
+        RaycastHit2D hitInfoLeft = new();
+
+        if (transform.rotation.y == 0f)
+            hitInfoRight = Physics2D.Raycast(playerData.wallCastTransform.position, Vector2.right, playerData.wallCastDistance, playerData.platform);
+        else
+            hitInfoLeft = Physics2D.Raycast(playerData.wallCastTransform.position, Vector2.left, playerData.wallCastDistance, playerData.platform);
+
+        if (hitInfoRight.collider != null)
+            isTouchingRightWall = true;
+        else
+            isTouchingRightWall = false;
+
+        if (hitInfoLeft.collider != null)
+            isTouchingLeftWall = true;
+        else
+            isTouchingLeftWall = false;
+
+        // 오른쪽 또는 왼쪽으로 Ray가 어떤 오브젝트에 충돌했다면, 그 오브젝트는 벽일 가능성이 높습니다.
+        if (hitInfoRight.collider != null || hitInfoLeft.collider != null)
+            return true; // 벽과 충돌
+
+        return false; // 벽과 미충돌
     }
 }

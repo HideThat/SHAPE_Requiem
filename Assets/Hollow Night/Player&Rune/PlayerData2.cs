@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public class PlayerData2
@@ -24,19 +26,23 @@ public class PlayerData2
 
 
     [Header("Player Sound")]
-    [SerializeField] public AudioSource BGM_AudioSource;
-    [SerializeField] public AudioSource walkAudioSource;
-    [SerializeField] public AudioSource jumpAudioSource;
-    [SerializeField] public AudioClip playerMoveSoundClip;
-    [SerializeField] public AudioClip[] playerJumpSoundClips;
+    public AudioSource BGM_AudioSource;
+    public AudioSource walkAudioSource;
+    public AudioSource jumpAudioSource;
+    public AudioClip playerMoveSoundClip;
+    public AudioClip[] playerJumpSoundClips;
 
 
     [Header("Attack")]
-    [SerializeField] public PlayerAttack playerAttack;
-    [SerializeField] public PlayerAttack playerUpAttack;
-    [SerializeField] public int damage;
-    [SerializeField] public int attackStartFrames;
-    [SerializeField] public int attackEndFrames;
+    public int damage;
+    public float attackSizeX;
+    public float attackSizeY;
+    public float upAttackSizeX;
+    public float upAttackSizeY;
+    public int attackStartFrames;
+    public int attackEndFrames;
+    public int getSoul;
+    public LayerMask enemy;
 
     [Header("Dash")]
     public bool isDash = false;
@@ -48,4 +54,29 @@ public class PlayerData2
     public float dashDelay;
     public float dashCurrentDelay;
     public float dashDirection;
+
+    [Header("HP")]
+    public int HP;
+    public int maxHP; // 최대 체력
+    public bool isHit = false; // 맞음 판정
+    public float hitTime;
+    public float verticalDistance; // 세로 충돌 체크 거리
+    public float horizontalDistance; // 가로 충돌 체크 거리
+    public float fadeSpeed = 0.5f; // 투명도가 변경되는 속도
+    public float minAlpha = 0.2f; // 최소 투명도
+    public float maxAlpha = 1f;  // 최대 투명도
+    public float cycleTime = 2f; // 투명도가 완전히 사라졌다가 나타나는 전체 주기
+    public bool loseControl = false;
+    public float recorverDelay;
+    public Coroutine hitCoroutine;
+
+    [Header("Skill")]
+    public int currentSoul;
+    public int maxSoul;
+    public Image soul;
+
+    [Header("UI")]
+    public Canvas uiCanvas;
+    public GridLayoutGroup HP_Panel;
+    public List<GameObject> heart;
 }

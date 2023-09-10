@@ -1,23 +1,21 @@
-// 1차 리펙토링
-
+using System.Linq;
+using Cinemachine;
+using DG.Tweening;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using UnityEngine.UIElements;
-using System;
-using UnityEngine.SceneManagement; //이걸 써야지 씬에 관한 시스템을 적용시킬수있다.
 using Unity.VisualScripting;
-using Unity.Mathematics;
+using UnityEditorInternal.VersionControl;
+using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : Singleton<PlayerController>
 {
     public PlayerData2 playerData = new();
 
     // 플레이어의 컴포넌트
-    [SerializeField] HP_System hP_System;
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] Animator animator;
     [SerializeField] Collider2D m_collider;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     private float jumpPressTime = 0f;  // 점프키를 누르고 있는 시간
     private bool isPressingJump = false; // 점프키를 누르고 있는지 확인
@@ -29,12 +27,6 @@ public class PlayerController : Singleton<PlayerController>
     private void Start()
     {
         playerData.canMove = true;
-
-        if (playerData.walkAudioSource == null) Debug.Log("m_PlayerMoveSound == null");
-        if (rigid == null) Debug.Log("m_rigid == null");
-        if (animator == null) Debug.Log("m_animator == null");
-        if (m_collider == null) Debug.Log("m_collider == null");
-        if (playerData.randingEffect == null) Debug.Log("m_randingEffect == null");
 
         // 변수 초기값 설정
         playerData.isJump = true;
@@ -66,6 +58,25 @@ public class PlayerController : Singleton<PlayerController>
         Dash();
     }
 
+    void OnDrawGizmos()
+    {
+        // UpArrow Attack Box
+        Vector2 boxPos = new(transform.position.x, transform.position.y + playerData.attackSizeY / 2);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(boxPos, new(playerData.upAttackSizeX, playerData.upAttackSizeY));
+
+        // Regular Attack Box
+        float epsilon = 0.0001f;  // 작은 오차 범위
+        Vector2 regularBoxPos = new();
+        if (Mathf.Abs(transform.rotation.y) < epsilon)
+            regularBoxPos = new(transform.position.x + playerData.attackSizeX / 2, transform.position.y);
+        else
+            regularBoxPos = new(transform.position.x - playerData.attackSizeX / 2, transform.position.y);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(regularBoxPos, new(playerData.attackSizeX, playerData.attackSizeY));
+    }
+
     public IEnumerator Attack()
     {
         while (true)
@@ -76,33 +87,61 @@ public class PlayerController : Singleton<PlayerController>
                 {
                     animator.Play("UpAttack");
 
-                    PlayerAttack temp = GameObject.Instantiate(playerData.playerUpAttack);
-                    temp.damage = playerData.damage;
-                    temp.transform.position = transform.position;
+                    Vector2 boxPos = new Vector2();
+                    boxPos = new Vector2(transform.position.x, transform.position.y + playerData.attackSizeY / 2);
+
+                    RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos,
+                        new Vector2(playerData.upAttackSizeX, playerData.upAttackSizeY),
+                        0f,
+                        Vector2.up,
+                        0f,
+                        playerData.enemy);
+
+                    for (int i = 0; i < hit2D.Length; i++)
+                    {
+                        if (hit2D[i])
+                        {
+                            // 에너미의 맞는 판정
+                            GetSoul();
+                        }
+                    }
                 }
                 else
                 {
                     if (animator.GetBool("IsJump"))
-                    {
                         animator.Play("JumpAttack");
-                    }
                     else
-                    {
                         animator.Play("Attack");
-                    }
 
-                    PlayerAttack temp = GameObject.Instantiate(playerData.playerAttack);
-                    temp.damage = playerData.damage;
-                    temp.transform.position = transform.position;
-                    temp.transform.rotation = transform.rotation;
+
+                    float epsilon = 0.0001f;  // 작은 오차 범위
+                    Vector2 boxPos = new Vector2();
+                    if (Mathf.Abs(transform.rotation.y) < epsilon)
+                        boxPos = new Vector2(transform.position.x + playerData.attackSizeX / 2, transform.position.y);
+                    else
+                        boxPos = new Vector2(transform.position.x - playerData.attackSizeX / 2, transform.position.y);
+
+                    RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos,
+                        new Vector2(playerData.attackSizeX, playerData.attackSizeY),
+                        0f,
+                        Vector2.right,
+                        0f,
+                        playerData.enemy);
+
+                    for (int i = 0; i < hit2D.Length; i++)
+                    {
+                        if (hit2D[i])
+                        {
+                            // 에너미의 맞는 판정
+                            GetSoul();
+                        }
+                    }
                 }
 
                 yield return WaitForFrames(playerData.attackEndFrames);
             }
             else
-            {
                 yield return null;
-            }
         }
     }
 
@@ -115,7 +154,22 @@ public class PlayerController : Singleton<PlayerController>
         }
 
         // 60 프레임 후 실행할 코드
-        Debug.Log("60 프레임이 지났습니다.");
+        Debug.Log($"{frameCount} 프레임이 지났습니다.");
+    }
+
+    void GetSoul()
+    {
+        playerData.currentSoul += playerData.getSoul;
+
+        if (playerData.currentSoul > playerData.maxSoul)
+            playerData.currentSoul = playerData.maxSoul;
+
+        SoulUpdate();
+    }
+
+    void SoulUpdate()
+    {
+        playerData.soul.fillAmount = (float)playerData.currentSoul / (float)playerData.maxSoul;
     }
 
     public void CorutineLoseControl(float _delay)
@@ -150,9 +204,7 @@ public class PlayerController : Singleton<PlayerController>
         }
 
         if (isGrounded)
-        {
             playerData.canDashDuringJump = true;
-        }
 
         playerData.m_isGrounded = isGrounded;
 
@@ -160,13 +212,16 @@ public class PlayerController : Singleton<PlayerController>
 
         isTouchingWall = CheckWallCollision();
         VelocityY_Check();
+
+        PlayerCanvasUpdate();
+        SoulUpdate();
     }
 
     private void Move()
     {
         float dir = Input.GetAxisRaw("Debug Horizontal"); // 수평 방향 입력 받기
 
-        if (!hP_System.m_isHit && !SaveSystem.Instance.playerState.playerDead) // 플레이어가 피격되지 않았고, 사망하지 않았다면
+        if (!SaveSystem.Instance.playerState.playerDead) // 플레이어가 피격되지 않았고, 사망하지 않았다면
         {
             if (dir > 0)
             {
@@ -210,20 +265,6 @@ public class PlayerController : Singleton<PlayerController>
                 animator.SetBool("IsMove", false);
                 playerData.walkAudioSource.Stop();
             }
-        }
-    }
-
-    public void FootStepSound()
-    {
-        // 아직 걷는 소리가 재생되고 있지 않은 경우
-        if (!playerData.walkAudioSource.isPlaying)
-        {
-            playerData.walkAudioSource.PlayOneShot(playerData.playerMoveSoundClip);
-        }
-        else
-        {
-            // 그 외의 경우는 걷는 소리를 정지
-            playerData.walkAudioSource.Stop();
         }
     }
 
@@ -284,6 +325,14 @@ public class PlayerController : Singleton<PlayerController>
                     playerData.isDash = true;
                     playerData.canDash = false;
                     playerData.canDashDuringJump = false;  // 대쉬를 사용하면 다시 사용 못하게 함
+
+                    isPressingJump = false;
+                    jumpPressTime = 0f;
+                    rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+                    jumpEnded = true;
+                    animator.SetBool("IsDown", true);
+                    animator.SetBool("IsDash", true);
+                    animator.SetTrigger("DashTrigger");
                 }
             }
 
@@ -292,13 +341,9 @@ public class PlayerController : Singleton<PlayerController>
         else
         {
             if (playerData.dashCurrentDelay >= 0f)
-            {
                 playerData.dashCurrentDelay -= Time.deltaTime;
-            }
             else
-            {
                 playerData.canDash = true;
-            }
         }
 
         if (playerData.isDash)
@@ -307,6 +352,7 @@ public class PlayerController : Singleton<PlayerController>
             {
                 playerData.dashCurrentTime = playerData.dashTime;
                 playerData.isDash = false;
+                animator.SetBool("IsDash", false);
             }
             else
             {
@@ -319,24 +365,18 @@ public class PlayerController : Singleton<PlayerController>
     void VelocityY_Check()
     {
         if (rigid.velocity.y < 0f)
-        {
             animator.SetBool("IsDown", true);  // 점프 애니메이션 트리거
-        }
     }
 
 
     private bool GroundCheck()
     {
-        // 상자 캐스트로 땅과의 충돌 검사
         RaycastHit2D hitInfo = Physics2D.BoxCast(m_collider.bounds.center, m_collider.bounds.size, 0f, Vector2.down, playerData.platformCastDistance, playerData.platform);
 
-        // 레이캐스트 시각화
         Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.platformCastDistance, Color.green);
 
         if (hitInfo.collider != null)
-        {
             return true; // 땅과 충돌했으면 true 반환
-        }
         else
         {
             // 레이캐스트로 땅과의 충돌 검사
@@ -346,11 +386,8 @@ public class PlayerController : Singleton<PlayerController>
             Debug.DrawRay(m_collider.bounds.center, Vector2.down * playerData.platformCastDistance, Color.red);
 
             if (hitInfo2.collider != null)
-            {
                 return true; // 땅과 충돌했으면 true 반환
-            }
         }
-
         return false; // 땅과 충돌하지 않았으면 false 반환
     }
 
@@ -384,5 +421,104 @@ public class PlayerController : Singleton<PlayerController>
             return true; // 벽과 충돌
 
         return false; // 벽과 미충돌
+    }
+
+    public void Hit(int _damage) // 적과 충돌 시 처리하는 메소드
+    {
+        if (!playerData.isHit)
+        {
+            playerData.HP -= _damage; // 플레이어 체력을 적의 데미지만큼 감소
+
+            if (playerData.HP > 0) // 체력이 남아있을 경우
+            {
+                playerData.isHit = true; // 플레이어가 피격되었음
+                playerData.hitCoroutine = StartCoroutine(HitEffet());
+                StartCoroutine(FinishHitEffect());
+
+            }
+            else // 체력이 0일 경우 죽음
+            {
+                Dead();
+            }
+        }
+    }
+
+    void Dead() // 죽음 처리하는 메소드
+    {
+        playerData.HP = playerData.maxHP;
+        animator.SetTrigger("IsDead");
+        SaveSystem.Instance.playerState.playerDead = true;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        playerData.walkAudioSource.Stop();
+        playerData.loseControl = true;
+        Invoke("PlayerMoveSavePoint", playerData.recorverDelay - 2f);
+    }
+
+    IEnumerator HitEffet()
+    {
+        while (true)
+        {
+            // 투명하게
+            for (float t = 0; t <= playerData.cycleTime; t += Time.deltaTime)
+            {
+                float normalizedTime = t / playerData.cycleTime; // 0 ~ 1 사이의 값
+                float curve = Mathf.Sin(normalizedTime * Mathf.PI); // Sin 함수로 인한 곡선 효과
+                float alpha = Mathf.Lerp(playerData.minAlpha, playerData.maxAlpha, curve); // 실제 알파 값 계산
+                SetAlpha(alpha);
+                yield return null;
+            }
+            // 불투명하게
+            for (float t = 0; t <= playerData.cycleTime; t += Time.deltaTime)
+            {
+                float normalizedTime = t / playerData.cycleTime; // 0 ~ 1 사이의 값
+                float curve = Mathf.Sin(normalizedTime * Mathf.PI); // Sin 함수로 인한 곡선 효과
+                float alpha = Mathf.Lerp(playerData.maxAlpha, playerData.minAlpha, curve); // 실제 알파 값 계산
+                SetAlpha(alpha);
+                yield return null;
+            }
+        }
+    }
+
+    void SetAlpha(float alpha)
+    {
+        Color color = spriteRenderer.color;
+        color.a = alpha;
+        spriteRenderer.color = color;
+    }
+
+    IEnumerator FinishHitEffect()
+    {
+        yield return new WaitForSeconds(playerData.hitTime);
+
+        playerData.isHit = false; // 플레이어가 피격되었음
+        StopCoroutine(playerData.hitCoroutine);
+        spriteRenderer.color = Color.white;
+    }
+
+    void PlayerCanvasUpdate()
+    {
+        int count = playerData.heart.Count(go => go.activeInHierarchy);
+
+        if (count == playerData.HP) return;
+
+        if (count > playerData.HP)
+        {
+            int i = count - 1;
+            while (count != playerData.HP)
+            {
+                playerData.heart[i--].SetActive(false);
+                count = playerData.heart.Count(go => go.activeInHierarchy);
+            }
+            
+        }
+        else
+        {
+            int i = count - 1;
+            while (count != playerData.HP)
+            {
+                playerData.heart[i++].SetActive(true);
+                count = playerData.heart.Count(go => go.activeInHierarchy);
+            }
+        }
     }
 }

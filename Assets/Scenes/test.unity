@@ -6035,6 +6035,12 @@ MonoBehaviour:
   delayAfterHulaufRush: 0
   hulaufShootSpeed: 10
   hulaufShootForce: 5
+  downstrokePositionY: 9
+  downstrokeMoveDistance: 9
+  downstrokeMoveSpeed: 30
+  waitDownstroke: 1
+  delayBeforeDownstroke: 0.4
+  delayAfterDownstroke: 1
 --- !u!4 &957027525
 Transform:
   m_ObjectHideFlags: 0
@@ -6043,7 +6049,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 957027522}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -17.08, y: 6.82, z: 0}
+  m_LocalPosition: {x: -17.08, y: 6.83, z: 0}
   m_LocalScale: {x: 3, y: 3, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:

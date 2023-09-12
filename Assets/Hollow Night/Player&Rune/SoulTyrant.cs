@@ -29,6 +29,12 @@ public class SoulTyrant : MonoBehaviour
     public float delayAfterHulaufRush = 1f;
     public float hulaufShootSpeed = 1f;
     public float hulaufShootForce = 1f;
+    public float downstrokePositionY = 1f;
+    public float downstrokeMoveDistance = 1f;
+    public float downstrokeMoveSpeed = 1f;
+    public float waitDownstroke = 1f;
+    public float delayBeforeDownstroke = 1f;
+    public float delayAfterDownstroke = 1f;
 
     GameObject targetObject;
 
@@ -59,9 +65,14 @@ public class SoulTyrant : MonoBehaviour
         {
             StartCoroutine(SphereHulaufRushPattern());
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            StartCoroutine(DownstrokePattern(targetObject.transform));
+        }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
@@ -210,5 +221,55 @@ public class SoulTyrant : MonoBehaviour
     {
         spriteRenderer.color = Color.white;
         myCollider.enabled = true;
+    }
+
+    IEnumerator DownstrokePattern(Transform _target)
+    {
+        GameObject target = new();
+        Vector2 pos = _target.position;
+        pos.y = downstrokePositionY;
+
+        target.transform.position = pos;
+        PerformTeleport(target.transform);
+
+        // 2. 플레이어의 x값과 downstrokePositionY로 계속 이동
+        // 3. 대기
+        yield return StartCoroutine(DownstrokeWait(_target));
+
+        // 4. 위치 고정
+        animator.Play("Soul_Tyrant_DownStroke_Active");
+        yield return new WaitForSeconds(delayBeforeDownstroke);
+        // 5. 내려찍기 선딜 후 내려찍기
+        Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
+        yield return StartCoroutine(MoveToPosition(transform.position, endPosition, downstrokeMoveSpeed));
+        // 6. 땅과 닿으면 충격파 발사
+
+
+    }
+
+    IEnumerator DownstrokeWait(Transform _target)
+    {
+        Vector2 pos = new();
+        float waitTime = waitDownstroke;
+        animator.Play("Soul_Tyrant_DownStroke_Wait");
+
+        while (waitTime > 0)
+        {
+            pos = _target.position;
+            pos.y = downstrokePositionY;
+            transform.position = pos;
+            waitTime -= Time.deltaTime;
+            yield return null;
+        }
+    }
+
+    IEnumerator MoveToPosition(Vector3 start, Vector3 end, float speed)
+    {
+        float step = speed * Time.deltaTime;
+        while (Vector3.Distance(transform.position, end) > step)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, end, step);
+            yield return null;
+        }
     }
 }

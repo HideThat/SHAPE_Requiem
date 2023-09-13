@@ -13,7 +13,7 @@ public class PlayerController : Singleton<PlayerController>
 
     // 플레이어의 컴포넌트
     [SerializeField] Rigidbody2D rigid;
-    [SerializeField] Animator animator;
+    [SerializeField] public Animator animator;
     [SerializeField] Collider2D m_collider;
     [SerializeField] SpriteRenderer spriteRenderer;
 
@@ -520,5 +520,14 @@ public class PlayerController : Singleton<PlayerController>
                 count = playerData.heart.Count(go => go.activeInHierarchy);
             }
         }
+    }
+
+    public void InitAnimatorValue()
+    {
+        animator.SetBool("IsMove", false);
+        animator.SetBool("IsGround", true);
+        animator.SetBool("IsJump", false);
+        animator.SetBool("IsDown", true);
+        animator.SetBool("IsDash", false);
     }
 }

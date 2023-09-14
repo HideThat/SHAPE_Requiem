@@ -6,14 +6,15 @@ using Unity.VisualScripting;
 using UnityEditorInternal.VersionControl;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : Singleton<PlayerController>
 {
     public PlayerData2 playerData = new();
 
     // 플레이어의 컴포넌트
+    public Animator animator;
     [SerializeField] Rigidbody2D rigid;
-    [SerializeField] public Animator animator;
     [SerializeField] Collider2D m_collider;
     [SerializeField] SpriteRenderer spriteRenderer;
 
@@ -67,7 +68,7 @@ public class PlayerController : Singleton<PlayerController>
 
         // Regular Attack Box
         float epsilon = 0.0001f;  // 작은 오차 범위
-        Vector2 regularBoxPos = new();
+        Vector2 regularBoxPos;
         if (Mathf.Abs(transform.rotation.y) < epsilon)
             regularBoxPos = new(transform.position.x + playerData.attackSizeX / 2, transform.position.y);
         else
@@ -87,9 +88,7 @@ public class PlayerController : Singleton<PlayerController>
                 {
                     animator.Play("UpAttack");
 
-                    Vector2 boxPos = new Vector2();
-                    boxPos = new Vector2(transform.position.x, transform.position.y + playerData.attackSizeY / 2);
-
+                    Vector2 boxPos = new(transform.position.x, transform.position.y + playerData.attackSizeY / 2);
                     RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos,
                         new Vector2(playerData.upAttackSizeX, playerData.upAttackSizeY),
                         0f,
@@ -115,7 +114,7 @@ public class PlayerController : Singleton<PlayerController>
 
 
                     float epsilon = 0.0001f;  // 작은 오차 범위
-                    Vector2 boxPos = new Vector2();
+                    Vector2 boxPos;
                     if (Mathf.Abs(transform.rotation.y) < epsilon)
                         boxPos = new Vector2(transform.position.x + playerData.attackSizeX / 2, transform.position.y);
                     else
@@ -438,12 +437,13 @@ public class PlayerController : Singleton<PlayerController>
             }
             else // 체력이 0일 경우 죽음
             {
-                Dead();
+                StartCoroutine(Dead());
+                
             }
         }
     }
 
-    void Dead() // 죽음 처리하는 메소드
+    IEnumerator Dead() // 죽음 처리하는 메소드
     {
         playerData.HP = playerData.maxHP;
         animator.SetTrigger("IsDead");
@@ -451,7 +451,10 @@ public class PlayerController : Singleton<PlayerController>
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
         playerData.walkAudioSource.Stop();
         playerData.loseControl = true;
-        Invoke("PlayerMoveSavePoint", playerData.recorverDelay - 2f);
+
+        yield return null;
+
+        SceneManager.LoadScene("SoulTyrant");
     }
 
     IEnumerator HitEffet()

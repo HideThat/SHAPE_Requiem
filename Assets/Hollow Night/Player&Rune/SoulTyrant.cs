@@ -18,6 +18,8 @@ public class SoulTyrant : MonoBehaviour
     [SerializeField] int bodyDamage;
     [SerializeField] LayerMask player;
     [SerializeField] Animator animator;
+    [SerializeField] Animator downStroke_Wait;
+    [SerializeField] EffectDestroy downStroke_Active;
     [SerializeField] SpriteRenderer spriteRenderer;
     [SerializeField] Collider2D myCollider;
     public float appearDelay = 1f;
@@ -29,6 +31,7 @@ public class SoulTyrant : MonoBehaviour
     public List<Transform> teleportPointList;
     public List<Transform> rushPointList;
     public List<Transform> hulaufRushList;
+    public float randomTeleportDelay = 1f;
     public float preFireDelay = 1f;  // 미사일 발사 전 딜레이
     public float postFireDelay = 1f; // 미사일 발사 후 딜레이
     public float rushSpeed = 5f;
@@ -43,8 +46,11 @@ public class SoulTyrant : MonoBehaviour
     public float downstrokeMoveSpeed = 1f;
     public float waitDownstroke = 1f;
     public float delayBeforeDownstroke = 1f;
+    public float delayDownstrokeActive = 1f;
+    public float delayDownstrokeFake = 1f;
     public float delayAfterDownstroke = 1f;
     public float wavePositionY;
+    public float waveCorrectionX;
 
     GameObject targetObject;
     float scaleX;
@@ -119,28 +125,55 @@ public class SoulTyrant : MonoBehaviour
     {
         while (true)
         {
-            int i = Random.Range(0, 10);
+            int i = Random.Range(0, 7);
             switch (i)
             {
                 case 0:
+                    Debug.Log("랜덤 텔포");
+                    yield return StartCoroutine(RandomTeleport());
                     break;
-
+                case 1:
+                    Debug.Log("랜덤 텔포 후 미사일 1회");
+                    yield return StartCoroutine(TeleportAndFireMisilePattern());
+                    break;
+                case 2:
+                    Debug.Log("랜덤 텔포 후 미사일 3회");
+                    yield return StartCoroutine(TeleportAndFireMisilePattern());
+                    yield return StartCoroutine(TeleportAndFireMisilePattern());
+                    yield return StartCoroutine(TeleportAndFireMisilePattern());
+                    break;
+                case 3:
+                    Debug.Log("돌진");
+                    yield return StartCoroutine(RushPattern());
+                    break;
+                case 4:
+                    Debug.Log("구체 훌라우프");
+                    yield return StartCoroutine(SphereHulaufRushPattern());
+                    break;
+                case 5:
+                    Debug.Log("내려찍기");
+                    yield return StartCoroutine(DownstrokePattern(targetObject.transform));
+                    break;
+                case 6:
+                    Debug.Log("내려찍기 페이크");
+                    yield return StartCoroutine(FakeDownstrokePattern(targetObject.transform));
+                    break;
                 default:
                     break;
             }
-
             yield return null;
         }
     }
 
-    void RandomTeleport()
+    IEnumerator RandomTeleport()
     {
         PerformTeleport(GetRandomTeleportPoint());
+        yield return new WaitForSeconds(randomTeleportDelay);
     }
 
     IEnumerator TeleportAndFireMisilePattern()
     {
-        RandomTeleport();
+        StartCoroutine(RandomTeleport());
 
         yield return new WaitForSeconds(preFireDelay);
 
@@ -205,7 +238,7 @@ public class SoulTyrant : MonoBehaviour
         yield return StartCoroutine(RushStart(rushStart, rushEnd));
 
         // 4. 랜덤한 위치로 텔레포트
-        RandomTeleport();
+        StartCoroutine(RandomTeleport());
 
         yield return new WaitForSeconds(delayAfterRush);
     }
@@ -246,7 +279,7 @@ public class SoulTyrant : MonoBehaviour
         DisAppearBoss();
         yield return StartCoroutine(hulauf.ShootHulaufCoroutine(rushStart, hulaufShootSpeed, hulaufShootForce));
 
-        RandomTeleport();
+        StartCoroutine(RandomTeleport());
 
         yield return new WaitForSeconds(delayAfterHulaufRush);
     }
@@ -271,19 +304,25 @@ public class SoulTyrant : MonoBehaviour
 
         target.transform.position = pos;
         PerformTeleport(target.transform);
+        downStroke_Wait.gameObject.SetActive(true);
 
         // 2. 플레이어의 x값과 downstrokePositionY로 계속 이동
         // 3. 대기
         yield return StartCoroutine(DownstrokeWait(_target));
 
         // 4. 위치 고정
-        animator.Play("Soul_Tyrant_DownStroke_Active");
+        animator.Play("Soul_Tyrant_Meditation");
         yield return new WaitForSeconds(delayBeforeDownstroke);
         // 5. 내려찍기 선딜 후 내려찍기
+        EffectDestroy effect = Instantiate(downStroke_Active);
+        effect.transform.position = downStroke_Wait.transform.position;
+        effect.SetDestroy(delayDownstrokeActive);
+        downStroke_Wait.gameObject.SetActive(false);
         Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
-        yield return StartCoroutine(MoveToPosition(transform.position, endPosition, downstrokeMoveSpeed));
+        yield return new WaitForSeconds(delayDownstrokeActive / 2);
         // 6. 땅과 닿으면 충격파 발사
         SummonWave();
+        yield return new WaitForSeconds(delayDownstrokeActive / 2);
         DisAppearBoss();
     }
 
@@ -295,28 +334,33 @@ public class SoulTyrant : MonoBehaviour
 
         target.transform.position = pos;
         PerformTeleport(target.transform);
+        downStroke_Wait.gameObject.SetActive(true);
 
         // 2. 플레이어의 x값과 downstrokePositionY로 계속 이동
         // 3. 대기
         yield return StartCoroutine(DownstrokeWait(_target));
 
         // 4. 위치 고정
-        animator.Play("Soul_Tyrant_DownStroke_Active");
+        animator.Play("Soul_Tyrant_Meditation");
         yield return new WaitForSeconds(delayBeforeDownstroke);
         // 5. 내려찍기 선딜 후 내려찍기
-        Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance / 2, 0);
-        yield return StartCoroutine(MoveToPosition(transform.position, endPosition, downstrokeMoveSpeed));
+        EffectDestroy effect = Instantiate(downStroke_Active);
+        effect.transform.position = downStroke_Wait.transform.position;
+        effect.SetDestroy(delayDownstrokeActive);
+        downStroke_Wait.gameObject.SetActive(false);
+        Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
         // 6. 페이크 후 순간이동
-        DisAppearBoss();
+        downStroke_Wait.Play("DownStroke_Fake");
+        yield return new WaitForSeconds(delayDownstrokeFake);
 
-        StartCoroutine(DownstrokePattern(_target));
+        yield return StartCoroutine(DownstrokePattern(_target));
     }
 
     IEnumerator DownstrokeWait(Transform _target)
     {
         Vector2 pos = new();
         float waitTime = waitDownstroke;
-        animator.Play("Soul_Tyrant_DownStroke_Wait");
+        animator.Play("Soul_Tyrant_Idle");
 
         while (waitTime > 0)
         {
@@ -324,16 +368,6 @@ public class SoulTyrant : MonoBehaviour
             pos.y = downstrokePositionY;
             transform.position = pos;
             waitTime -= Time.deltaTime;
-            yield return null;
-        }
-    }
-
-    IEnumerator MoveToPosition(Vector3 start, Vector3 end, float speed)
-    {
-        float step = speed * Time.deltaTime;
-        while (Vector3.Distance(transform.position, end) > step)
-        {
-            transform.position = Vector3.MoveTowards(transform.position, end, step);
             yield return null;
         }
     }

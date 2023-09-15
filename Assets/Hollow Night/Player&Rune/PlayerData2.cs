@@ -42,7 +42,10 @@ public class PlayerData2
     public int attackStartFrames;
     public int attackEndFrames;
     public int getSoul;
-    public LayerMask enemy;
+    public float pushForce = 5.0f; // 뒤로 밀리는 힘의 크기
+    public LayerMask enemyAndPlatform;
+    public EffectDestroy attackEffect;
+    public float attackEffectDestroyTime = 0.2f;
 
     [Header("Dash")]
     public bool isDash = false;

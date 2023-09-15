@@ -214,6 +214,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5082364522794502435}
   - component: {fileID: 5082364522794502462}
+  - component: {fileID: 6337703496446039475}
   - component: {fileID: 5082364522794502434}
   - component: {fileID: 5082364522794502461}
   - component: {fileID: 5082364522794502460}
@@ -255,7 +256,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5082364522794502456}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8416ea81f62c8c847b395a20afdc7769, type: 3}
   m_Name: 
@@ -265,10 +266,10 @@ MonoBehaviour:
     canMove: 1
     jumpLeft: 0
     maxJump: 2
-    minJumpSpeed: 15
+    minJumpSpeed: 20
     timeToReachMaxSpeed: 0.5
     platformCastDistance: 0.5
-    wallCastDistance: 0.28
+    wallCastDistance: 0.4
     wallCastTransform: {fileID: 5082364523919442253}
     wallBoxCastSize: {x: 1, y: 1}
     isJump: 0
@@ -293,9 +294,12 @@ MonoBehaviour:
     attackStartFrames: 0
     attackEndFrames: 60
     getSoul: 10
-    enemy:
+    pushForce: 5
+    enemyAndPlatform:
       serializedVersion: 2
-      m_Bits: 1024
+      m_Bits: 1280
+    attackEffect: {fileID: 5556696277480367301, guid: 54289f7bae659e84d983a1fa2dd54a15, type: 3}
+    attackEffectDestroyTime: 0.2
     isDash: 0
     canDash: 1
     canDashDuringJump: 1
@@ -337,6 +341,31 @@ MonoBehaviour:
   rigid: {fileID: 5082364522794502460}
   m_collider: {fileID: 5082364522794502461}
   spriteRenderer: {fileID: 5082364522794502434}
+  isTouchingWall: 0
+  isTouchingRightWall: 0
+  isTouchingLeftWall: 0
+--- !u!114 &6337703496446039475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5082364522794502456}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0b3c1b45908dc74fafd28767fa3a85d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  animator: {fileID: 5082364522794502463}
+  rigid: {fileID: 5082364522794502460}
+  m_collider: {fileID: 5082364522794502461}
+  spriteRenderer: {fileID: 5082364522794502434}
+  playerSpeed: 6
+  wallCastTransform: {fileID: 0}
+  wallCastDistance: 0.4
+  platformLayer:
+    serializedVersion: 2
+    m_Bits: 256
   isTouchingWall: 0
   isTouchingRightWall: 0
   isTouchingLeftWall: 0
@@ -401,7 +430,7 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 5082364522794502456}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 01cbd794d353f284caa29043eebd9c6c, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -424,7 +453,7 @@ Rigidbody2D:
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 3
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 01cbd794d353f284caa29043eebd9c6c, type: 2}
   m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 1

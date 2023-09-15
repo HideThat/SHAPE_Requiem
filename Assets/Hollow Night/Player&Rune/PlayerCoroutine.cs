@@ -1,5 +1,7 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerCoroutine : MonoBehaviour
 {
@@ -24,7 +26,30 @@ public class PlayerCoroutine : MonoBehaviour
     public float jumpPressTime = 0f;
     public bool jumpEnded = false;
 
+    [Header("Attack")]
+    public int damage;
+    public float attackSizeX;
+    public float attackSizeY;
+    public float upAttackSizeX;
+    public float upAttackSizeY;
+    public int attackStartFrames;
+    public int attackEndFrames;
+    public int getSoul;
+    public float pushForce = 5.0f; // 뒤로 밀리는 힘의 크기
+    public LayerMask enemyAndPlatform;
+    public EffectDestroy attackEffect;
+    public float attackEffectDestroyTime = 0.2f;
+    public bool canAttack = true;
 
+    [Header("Skill")]
+    public int currentSoul;
+    public int maxSoul;
+    public Image soul;
+
+    [Header("UI")]
+    public Canvas uiCanvas;
+    public GridLayoutGroup HP_Panel;
+    public List<GameObject> heart;
 
     void Start()
     {
@@ -38,8 +63,31 @@ public class PlayerCoroutine : MonoBehaviour
             GroundCheck();
             Move();
             JumpController();
+
+            if (Input.GetKeyDown(KeyCode.X) && canAttack)
+                StartCoroutine(Attack());
+
             yield return null;
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        // UpArrow Attack Box
+        Vector2 boxPos = new(transform.position.x, transform.position.y + attackSizeY / 2);
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireCube(boxPos, new(upAttackSizeX, upAttackSizeY));
+
+        // Regular Attack Box
+        float epsilon = 0.0001f;
+        Vector2 regularBoxPos;
+        if (Mathf.Abs(transform.rotation.y) < epsilon)
+            regularBoxPos = new(transform.position.x + attackSizeX / 2, transform.position.y);
+        else
+            regularBoxPos = new(transform.position.x - attackSizeX / 2, transform.position.y);
+
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireCube(regularBoxPos, new(attackSizeX, attackSizeY));
     }
 
     #region Move_System
@@ -52,14 +100,26 @@ public class PlayerCoroutine : MonoBehaviour
         {
             rigid.velocity = new Vector2((!isTouchingWall ? dir : 0) * playerSpeed, rigid.velocity.y);
             transform.rotation = dir > 0 ? Quaternion.identity : new Quaternion(0f, 180f, 0f, 0f);
-            animator.SetBool("IsMove", true);
-            animator.SetTrigger("Recorver");
+            if (!animator.GetBool("IsMove"))
+            {
+                StartCoroutine(MoveAniControl());
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow))
+    }
+
+    IEnumerator MoveAniControl()
+    {
+        bool off = false;
+        animator.SetBool("IsMove", true);
+
+        while (!off)
         {
-            rigid.velocity = new Vector2(0, rigid.velocity.y);
-            animator.SetBool("IsMove", false);
+            off = Input.GetKeyUp(KeyCode.LeftArrow) || Input.GetKeyUp(KeyCode.RightArrow);
+            yield return null;
         }
+        rigid.velocity = new Vector2(0, rigid.velocity.y);
+        animator.SetBool("IsMove", false);
+        yield return null;
     }
 
     private void CheckWallCollision()
@@ -70,7 +130,7 @@ public class PlayerCoroutine : MonoBehaviour
         rigid.drag = isTouchingWall ? 0f : 1f;
     }
     #endregion
-    #region JumpSystem
+    #region Jump_System
     private void JumpController()
     {
         if (Input.GetKeyDown(KeyCode.Z) && !isJump && m_isGrounded)
@@ -143,6 +203,143 @@ public class PlayerCoroutine : MonoBehaviour
     {
         m_isGrounded = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, platformCastDistance, platform).collider != null;
         animator.SetBool("IsGround", m_isGrounded);
+    }
+    #endregion
+    #region Attack_System
+    public IEnumerator Attack()
+    {
+        canAttack = false;
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            yield return StartCoroutine(UpAttack());
+        }
+        else
+        {
+            if (animator.GetBool("IsJump"))
+                yield return StartCoroutine(JumpAttack());
+            else
+                yield return StartCoroutine(NormalAttack());
+        }
+        yield return WaitForFrames(attackEndFrames);
+
+        canAttack = true;
+    }
+
+    IEnumerator UpAttack()
+    {
+        animator.Play("UpAttack");
+        Vector2 boxPos = new(transform.position.x, transform.position.y + attackSizeY / 2);
+        bool hitSomething = PerformAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
+        ApplyPushForce(hitSomething, Vector2.down);
+
+        yield return null;
+    }
+
+    IEnumerator JumpAttack()
+    {
+        animator.Play("JumpAttack");
+        Vector2 boxPos = DetermineBoxPosition();
+        bool hitSomething = PerformAttack(boxPos, new Vector2(attackSizeX, attackSizeY), Vector2.right);
+        ApplyPushForce(hitSomething, DeterminePushDirection());
+
+        yield return null;
+    }
+
+    IEnumerator NormalAttack()
+    {
+        animator.Play("Attack");
+        Vector2 boxPos = DetermineBoxPosition();
+        bool hitSomething = PerformAttack(boxPos, new Vector2(attackSizeX, attackSizeY), Vector2.right);
+        ApplyPushForce(hitSomething, DeterminePushDirection());
+
+        yield return null;
+    }
+
+    Vector2 DeterminePushDirection()
+    {
+        float epsilon = 0.0001f;
+
+        if (Mathf.Abs(transform.rotation.y) < epsilon)
+        {
+            return new Vector2(-1, 0);
+        }
+        else
+        {
+            return new Vector2(1, 0);
+        }
+    }
+
+    void ApplyPushForce(bool hitSomething, Vector2 direction)
+    {
+        if (hitSomething)
+        {
+            rigid.AddForce(direction * pushForce, ForceMode2D.Impulse);
+        }
+    }
+
+    Vector2 DetermineBoxPosition()
+    {
+        float epsilon = 0.0001f;
+        if (Mathf.Abs(transform.rotation.y) < epsilon)
+            return new Vector2(transform.position.x + attackSizeX / 2, transform.position.y);
+        else
+            return new Vector2(transform.position.x - attackSizeX / 2, transform.position.y);
+    }
+
+    bool PerformAttack(Vector2 boxPos, Vector2 boxSize, Vector2 direction)
+    {
+        bool hitSomething = false;
+        RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos, boxSize, 0f, direction, 0f, enemyAndPlatform);
+        for (int i = 0; i < hit2D.Length; i++)
+        {
+            if (hit2D[i].collider.CompareTag("Enemy"))
+            {
+                GetSoul();
+                hitSomething = true;
+                EffectDestroy effect = Instantiate(attackEffect);
+                effect.transform.position = hit2D[i].point;
+                effect.SetDestroy(attackEffectDestroyTime);
+                float epsilon = 0.0001f;
+                if (Mathf.Abs(transform.rotation.y) < epsilon)
+                    effect.transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+            else if (hit2D[i].collider.CompareTag("Platform"))
+            {
+                hitSomething = true;
+                EffectDestroy effect = Instantiate(attackEffect);
+                effect.transform.position = hit2D[i].point;
+                effect.SetDestroy(attackEffectDestroyTime);
+                float epsilon = 0.0001f;
+                if (Mathf.Abs(transform.rotation.y) < epsilon)
+                    effect.transform.localScale = new Vector3(-1f, 1f, 1f);
+            }
+        }
+
+        return hitSomething;
+    }
+
+    IEnumerator WaitForFrames(int frameCount)
+    {
+        while (frameCount > 0)
+        {
+            frameCount--;
+            yield return null;
+        }
+    }
+
+    void GetSoul()
+    {
+        currentSoul += getSoul;
+
+        if (currentSoul > maxSoul)
+            currentSoul = maxSoul;
+
+        SoulUpdate();
+    }
+
+    void SoulUpdate()
+    {
+        soul.fillAmount = (float)currentSoul / (float)maxSoul;
     }
     #endregion
 }

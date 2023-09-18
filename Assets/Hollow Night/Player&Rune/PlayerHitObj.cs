@@ -9,7 +9,11 @@ public class PlayerHitObj : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<PlayerController>().Hit(damage);
+            Vector2 hitDirection = collision.transform.position - transform.position;
+            hitDirection = hitDirection.normalized;
+            Vector2 force = hitDirection;
+
+            collision.GetComponent<PlayerCoroutine>().Hit(damage, force);
         }
     }
 }

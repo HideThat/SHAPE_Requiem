@@ -1,6 +1,9 @@
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class PlayerCoroutine : MonoBehaviour
@@ -8,12 +11,15 @@ public class PlayerCoroutine : MonoBehaviour
     public Animator animator;
     [SerializeField] Collider2D m_collider;
     [SerializeField] Rigidbody2D rigid;
+    [SerializeField] bool canControl = true;
     [Header("Move")]
     public float playerSpeed;
     public Transform wallCastTransform;
     public float wallCastDistance;
     public LayerMask platformLayer;
     private bool isTouchingWall = false;
+    Coroutine moveCoroutine;
+    public bool canMove = true;
 
     [Header("Jump")]
     public float minJumpSpeed = 2f; // 최대 점프 속도
@@ -41,6 +47,25 @@ public class PlayerCoroutine : MonoBehaviour
     public float attackEffectDestroyTime = 0.2f;
     public bool canAttack = true;
 
+    [Header("HP")]
+    public SpriteRenderer spriteRenderer;
+    public int HP;
+    public int maxHP; // 최대 체력
+    public bool isHit = false; // 맞음 판정
+    public float hitTime;
+    public float verticalDistance; // 세로 충돌 체크 거리
+    public float horizontalDistance; // 가로 충돌 체크 거리
+    public float fadeSpeed = 0.5f; // 투명도가 변경되는 속도
+    public float minAlpha = 0.2f; // 최소 투명도
+    public float maxAlpha = 1f;  // 최대 투명도
+    public float cycleTime = 2f; // 투명도가 완전히 사라졌다가 나타나는 전체 주기
+    public bool loseControl = false;
+    public float recorverDelay = 1f;
+    public Coroutine hitCoroutine;
+    public EffectDestroy hitEffect;
+    public float invincibleTime = 2.0f; // 무적 시간
+    public float knockbackForce = 10.0f; // 뒤로 밀리는 힘
+
     [Header("Skill")]
     public int currentSoul;
     public int maxSoul;
@@ -55,18 +80,22 @@ public class PlayerCoroutine : MonoBehaviour
     {
         StartCoroutine(PlayerControl());
     }
-
     IEnumerator PlayerControl()
     {
         while (true)
         {
-            GroundCheck();
-            Move();
-            JumpController();
+            if (canControl)
+            {
+                GroundCheck();
+                Move();
+                JumpController();
 
-            if (Input.GetKeyDown(KeyCode.X) && canAttack)
-                StartCoroutine(Attack());
+                if (Input.GetKeyDown(KeyCode.X) && canAttack)
+                    StartCoroutine(Attack());
+            }
 
+            PlayerCanvasUpdate();
+            SoulUpdate();
             yield return null;
         }
     }
@@ -90,21 +119,37 @@ public class PlayerCoroutine : MonoBehaviour
         Gizmos.DrawWireCube(regularBoxPos, new(attackSizeX, attackSizeY));
     }
 
+
+
     #region Move_System
-    private void Move()
+    void Move()
     {
         CheckWallCollision();
 
         float dir = Input.GetAxisRaw("Debug Horizontal");
         if (dir != 0)
+            moveCoroutine = StartCoroutine(MoveCouroutine(dir));
+    }
+
+    IEnumerator MoveCouroutine(float _dir)
+    {
+        rigid.velocity = new Vector2((!isTouchingWall ? _dir : 0) * playerSpeed, rigid.velocity.y);
+        if (canMove)
         {
-            rigid.velocity = new Vector2((!isTouchingWall ? dir : 0) * playerSpeed, rigid.velocity.y);
-            transform.rotation = dir > 0 ? Quaternion.identity : new Quaternion(0f, 180f, 0f, 0f);
-            if (!animator.GetBool("IsMove"))
-            {
-                StartCoroutine(MoveAniControl());
-            }
+            transform.rotation = _dir > 0 ? Quaternion.identity : new Quaternion(0f, 180f, 0f, 0f);
         }
+        if (!animator.GetBool("IsMove"))
+            StartCoroutine(MoveAniControl());
+
+        yield return null;
+    }
+
+    IEnumerator StopMove()
+    {
+        canMove = false;
+        StopCoroutine(moveCoroutine);
+        yield return new WaitForSeconds(0.4f);
+        canMove = true;
     }
 
     IEnumerator MoveAniControl()
@@ -221,7 +266,6 @@ public class PlayerCoroutine : MonoBehaviour
                 yield return StartCoroutine(NormalAttack());
         }
         yield return WaitForFrames(attackEndFrames);
-
         canAttack = true;
     }
 
@@ -230,7 +274,7 @@ public class PlayerCoroutine : MonoBehaviour
         animator.Play("UpAttack");
         Vector2 boxPos = new(transform.position.x, transform.position.y + attackSizeY / 2);
         bool hitSomething = PerformAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
-        ApplyPushForce(hitSomething, Vector2.down);
+        StartCoroutine(ApplyPushForce(hitSomething, Vector2.down, pushForce));
 
         yield return null;
     }
@@ -240,8 +284,13 @@ public class PlayerCoroutine : MonoBehaviour
         animator.Play("JumpAttack");
         Vector2 boxPos = DetermineBoxPosition();
         bool hitSomething = PerformAttack(boxPos, new Vector2(attackSizeX, attackSizeY), Vector2.right);
-        ApplyPushForce(hitSomething, DeterminePushDirection());
-
+        if (hitSomething)
+        {
+            if (animator.GetBool("IsMove"))
+                StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce * 3));
+            else
+                StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
+        }
         yield return null;
     }
 
@@ -250,8 +299,13 @@ public class PlayerCoroutine : MonoBehaviour
         animator.Play("Attack");
         Vector2 boxPos = DetermineBoxPosition();
         bool hitSomething = PerformAttack(boxPos, new Vector2(attackSizeX, attackSizeY), Vector2.right);
-        ApplyPushForce(hitSomething, DeterminePushDirection());
-
+        if (hitSomething)
+        {
+            if (animator.GetBool("IsMove"))
+                StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce * 3));
+            else
+                StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
+        }
         yield return null;
     }
 
@@ -269,13 +323,24 @@ public class PlayerCoroutine : MonoBehaviour
         }
     }
 
-    void ApplyPushForce(bool hitSomething, Vector2 direction)
+    IEnumerator ApplyPushForce(bool hitSomething, Vector2 direction, float _pushForce)
     {
-        if (hitSomething)
+        float delay = 0.4f;
+        StartCoroutine(StopMove());
+        while (hitSomething)
         {
-            rigid.AddForce(direction * pushForce, ForceMode2D.Impulse);
+            if (delay > 0f)
+            {
+                rigid.velocity = direction * _pushForce;
+                delay -= Time.deltaTime;
+            }
+            else
+                break;
         }
+        canMove = true;
+        yield return null;
     }
+
 
     Vector2 DetermineBoxPosition()
     {
@@ -340,6 +405,130 @@ public class PlayerCoroutine : MonoBehaviour
     void SoulUpdate()
     {
         soul.fillAmount = (float)currentSoul / (float)maxSoul;
+    }
+    #endregion
+    #region Hit_Sysytem
+    public void Hit(int _damage, Vector2 _force)
+    {
+        if (!isHit)
+        {
+            StartCoroutine(HitCoroutine(_damage, _force));
+        }
+    }
+
+    IEnumerator HitCoroutine(int _damage, Vector2 _force)
+    {
+        // 1. HP 감소
+        HP -= _damage;
+        canControl = false;
+        animator.SetTrigger("IsHit");
+        float originalTimeScale = Time.timeScale;
+        // 2. 히트 이펙트 소환
+        EffectDestroy effect = Instantiate(hitEffect);
+        effect.transform.position = transform.position;
+        effect.SetDestroy(1f);
+        // 3. 게임 시간 일시 정지
+        Time.timeScale = 0;
+        yield return new WaitForSecondsRealtime(0.3f);
+        Time.timeScale = originalTimeScale;
+
+        // 4. 반대 방향으로 밀리는 힘
+        rigid.AddForce(_force.normalized * knockbackForce, ForceMode2D.Impulse);
+        yield return new WaitForSeconds(recorverDelay);
+        canControl = true;
+
+        // 5. 다른 코루틴 실행
+        if (HP > 0)
+        {
+            isHit = true;
+            hitCoroutine = StartCoroutine(HitEffet());
+            StartCoroutine(FinishHitEffect());
+        }
+        else
+            StartCoroutine(Dead());
+
+        yield return null;
+    }
+
+
+
+    IEnumerator Dead()
+    {
+        HP = maxHP;
+        animator.SetTrigger("IsDead");
+        SaveSystem.Instance.playerState.playerDead = true;
+        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        loseControl = true;
+
+        yield return new WaitForSeconds(2f);
+
+        SceneManager.LoadScene("SoulTyrant");
+    }
+
+    IEnumerator HitEffet()
+    {
+        while (true)
+        {
+            for (float t = 0; t <= cycleTime; t += Time.deltaTime)
+            {
+                float normalizedTime = t / cycleTime;
+                float curve = Mathf.Sin(normalizedTime * Mathf.PI);
+                float alpha = Mathf.Lerp(minAlpha, maxAlpha, curve);
+                SetAlpha(alpha);
+                yield return null;
+            }
+            for (float t = 0; t <= cycleTime; t += Time.deltaTime)
+            {
+                float normalizedTime = t / cycleTime;
+                float curve = Mathf.Sin(normalizedTime * Mathf.PI);
+                float alpha = Mathf.Lerp(maxAlpha, minAlpha, curve);
+                SetAlpha(alpha);
+                yield return null;
+            }
+        }
+    }
+
+    void SetAlpha(float alpha)
+    {
+        Color color = spriteRenderer.color;
+        color.a = alpha;
+        spriteRenderer.color = color;
+    }
+
+    IEnumerator FinishHitEffect()
+    {
+        yield return new WaitForSeconds(hitTime);
+
+        isHit = false;
+        StopCoroutine(hitCoroutine);
+        spriteRenderer.color = Color.white;
+    }
+
+    void PlayerCanvasUpdate()
+    {
+        int count = heart.Count(go => go.activeInHierarchy);
+
+        if (count == HP) return;
+
+        if (count > HP)
+        {
+            int i = count - 1;
+            while (count != HP)
+            {
+                heart[i--].SetActive(false);
+                count = heart.Count(go => go.activeInHierarchy);
+            }
+
+        }
+        else
+        {
+            int i = count - 1;
+            while (count != HP)
+            {
+                heart[i++].SetActive(true);
+                count = heart.Count(go => go.activeInHierarchy);
+            }
+        }
     }
     #endregion
 }

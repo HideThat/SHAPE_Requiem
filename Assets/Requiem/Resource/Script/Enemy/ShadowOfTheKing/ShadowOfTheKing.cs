@@ -23,7 +23,6 @@ public class ShadowOfTheKing : Enemy_Dynamic
     public float idle_Delay;
     public float pattern_Delay;
 
-    public SpriteRenderer spriteRenderer;
     public ShadowSphere Shadow_Sphere;
     public Vacuum_Cleaner Vacuum_Cleaner_R;
     public Vacuum_Cleaner Vacuum_Cleaner_L;
@@ -35,10 +34,6 @@ public class ShadowOfTheKing : Enemy_Dynamic
     public Transform[] ShadowSphere_Target;
 
     public bool isPattern = false;
-
-    private ShadowState lastState = ShadowState.Idle;
-
-
 
     private void Start()
     {

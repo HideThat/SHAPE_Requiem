@@ -13,8 +13,6 @@ public class Hand_Sweep : Enemy_Dynamic
     public float DisappearDelay;
     private Vector2 origin;
 
-    public SpriteRenderer spriteRenderer;
-
     Tween myTween;
 
     private void Start()

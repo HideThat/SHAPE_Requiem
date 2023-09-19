@@ -318,7 +318,7 @@ MonoBehaviour:
   maxAlpha: 1
   cycleTime: 2
   loseControl: 0
-  recorverDelay: 1.5
+  recorverDelay: 0.5
   hitEffect: {fileID: 4855738749349605096, guid: 71c1e16e84136a3409d62cafd6344e21, type: 3}
   invincibleTime: 2
   knockbackForce: 10
@@ -403,8 +403,8 @@ CapsuleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.58}
-  m_Size: {x: 0.54, y: 1.58}
+  m_Offset: {x: 0, y: -0.65}
+  m_Size: {x: 0.54, y: 1.31}
   m_Direction: 0
 --- !u!50 &5082364522794502460
 Rigidbody2D:

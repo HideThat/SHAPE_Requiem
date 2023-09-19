@@ -6,7 +6,6 @@ using DG.Tweening;
 public class Vacuum_Cleaner : Enemy_Dynamic
 {
     public ShadowOfTheKing originShadow;
-    public SpriteRenderer spriteRenderer;
     public GameObject Area;
     public float attractSpeed = 5.0f;
     public float attractRadius = 3.0f;

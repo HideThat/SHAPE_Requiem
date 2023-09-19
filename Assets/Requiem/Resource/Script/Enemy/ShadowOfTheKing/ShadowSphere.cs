@@ -11,7 +11,6 @@ public class ShadowSphere : Enemy_Dynamic
     public float otherHandSweepDelay;
 
     public ShadowOfTheKing originShadow;
-    public SpriteRenderer spriteRenderer;
     public Vacuum_Cleaner Vacuum_Cleaner_R;
     public Vacuum_Cleaner Vacuum_Cleaner_L;
     public Hand_Sweep Hand_Sweep_R;

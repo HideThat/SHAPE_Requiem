@@ -57,7 +57,6 @@ public class SoulTyrant : Enemy
 
     public Coroutine currentPatern;
 
-
     void Start()
     {
         scaleX = transform.localScale.x;

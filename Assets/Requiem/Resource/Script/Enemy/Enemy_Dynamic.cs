@@ -22,7 +22,7 @@ public class Enemy_Dynamic : Enemy
         get { return damage; }
     }
 
-    public virtual void Dead()
+    public override void Dead()
     {
         for (int i = 0; i < souls; i++)
         {

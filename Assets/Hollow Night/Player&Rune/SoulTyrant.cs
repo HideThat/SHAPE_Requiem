@@ -12,16 +12,14 @@ using UnityEngine.UIElements;
 // 4. 구체 대쉬
 // 5. 내려찍기
 // 6. 내려찍기 페이크
-public class SoulTyrant : MonoBehaviour
+public class SoulTyrant : Enemy
 {
-    [SerializeField] int HP;
-    [SerializeField] int bodyDamage;
     [SerializeField] LayerMask player;
     [SerializeField] Animator animator;
     [SerializeField] Animator downStroke_Wait;
     [SerializeField] EffectDestroy downStroke_Active;
-    [SerializeField] SpriteRenderer spriteRenderer;
-    [SerializeField] Collider2D myCollider;
+    [SerializeField] EffectDestroy teleportEffect;
+    [SerializeField] TrailRenderer trail;
     public float appearDelay = 1f;
     [SerializeField] GameObject misilePrefab;
     [SerializeField] Hulauf hulaufPrefab;
@@ -64,7 +62,7 @@ public class SoulTyrant : MonoBehaviour
     {
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
-        targetObject = PlayerController.Instance.gameObject;
+        targetObject = PlayerCoroutine.Instance.gameObject;
         StartCoroutine(StartAppear());
     }
 
@@ -92,21 +90,20 @@ public class SoulTyrant : MonoBehaviour
             hitDirection = hitDirection.normalized;
             Vector2 force = hitDirection;
 
-            collision.GetComponent<PlayerCoroutine>().Hit(bodyDamage, force);
+            collision.GetComponent<PlayerCoroutine>().Hit(damage, force);
         }    
     }
 
     IEnumerator StartAppear()
     {
         animator.Play("Soul_Tyrant_Meditation");
-        PlayerController.Instance.InitAnimatorValue();
-        PlayerController.Instance.animator.Play("Idle");
-        PlayerController.Instance.enabled = false;
+        PlayerCoroutine.Instance.animator.Play("Idle");
+        PlayerCoroutine.Instance.enabled = false;
         targetObject.GetComponent<Animator>().Play("Idle");
         targetObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
         yield return new WaitForSeconds(appearDelay);
         animator.Play("Soul_Tyrant_Idle");
-        PlayerController.Instance.enabled = true;
+        PlayerCoroutine.Instance.enabled = true;
         StartCoroutine(FSM());
     }
 
@@ -182,10 +179,24 @@ public class SoulTyrant : MonoBehaviour
 
     public void PerformTeleport(Transform teleportPoint)
     {
+        TrailRenderer _trail = Instantiate(trail, transform);
+        _trail.transform.position = transform.position;
+        DOTween.To(() => _trail.startWidth, x => _trail.startWidth = x, 0f, 0.5f);
+        DOTween.To(() => _trail.endWidth, x => _trail.endWidth = x, 0f, 0.5f).OnComplete(()=> 
+        {
+            Destroy(_trail.gameObject);
+        });
+        EffectDestroy effect = Instantiate(teleportEffect);
+        effect.transform.position = transform.position;
+        effect.SetDestroy(0.4f);
         animator.Play("Soul_Tyrant_Idle");
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
+        effect = Instantiate(teleportEffect);
+        effect.transform.position = transform.position;
+        effect.SetDestroy(0.4f);
+        _trail.transform.parent = null;
     }
 
     void FireMisile()
@@ -248,13 +259,13 @@ public class SoulTyrant : MonoBehaviour
     void DisAppearBoss()
     {
         spriteRenderer.color = Color.clear;
-        myCollider.enabled = false;
+        m_collider2D.enabled = false;
     }
 
     void AppearBoss()
     {
         spriteRenderer.color = Color.white;
-        myCollider.enabled = true;
+        m_collider2D.enabled = true;
     }
 
     IEnumerator DownstrokePattern(Transform _target)
@@ -336,5 +347,12 @@ public class SoulTyrant : MonoBehaviour
         else
             scale = new Vector2(-scaleX, scaleY);
         transform.localScale = scale;
+    }
+
+    public override void Dead()
+    {
+        base.Dead();
+
+        Destroy(gameObject);
     }
 }

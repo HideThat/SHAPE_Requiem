@@ -19,7 +19,7 @@ public class HomingMisile : MonoBehaviour
 
     void Start()
     {
-        target = PlayerController.Instance.gameObject;
+        target = PlayerCoroutine.Instance.gameObject;
         rb = GetComponent<Rigidbody2D>();
         Invoke("LaunchProjectile", waitTime);  // 일정 시간 후에 LaunchProjectile 함수 호출
         StartCoroutine(Disappear());

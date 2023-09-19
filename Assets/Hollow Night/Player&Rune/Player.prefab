@@ -213,7 +213,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5082364522794502435}
-  - component: {fileID: 5082364522794502462}
   - component: {fileID: 6337703496446039475}
   - component: {fileID: 5082364522794502434}
   - component: {fileID: 5082364522794502461}
@@ -249,101 +248,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
---- !u!114 &5082364522794502462
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5082364522794502456}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8416ea81f62c8c847b395a20afdc7769, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerData:
-    playerSpeed: 6
-    canMove: 1
-    jumpLeft: 0
-    maxJump: 2
-    minJumpSpeed: 20
-    timeToReachMaxSpeed: 0.5
-    platformCastDistance: 0.5
-    wallCastDistance: 0.4
-    wallCastTransform: {fileID: 5082364523919442253}
-    wallBoxCastSize: {x: 1, y: 1}
-    isJump: 0
-    m_isGrounded: 0
-    platform:
-      serializedVersion: 2
-      m_Bits: 256
-    randingEffect: {fileID: 5082364524337825473}
-    BGM_AudioSource: {fileID: 5082364523333129712}
-    walkAudioSource: {fileID: 5082364523278098782}
-    jumpAudioSource: {fileID: 5082364522909882933}
-    playerMoveSoundClip: {fileID: 8300000, guid: c9625bb8522c76a4c8a2fccb3c045322, type: 3}
-    playerJumpSoundClips:
-    - {fileID: 8300000, guid: f9cd5a4e35acdd541921c5729b384a46, type: 3}
-    - {fileID: 8300000, guid: 14875209844808c4fb4df157757a5cca, type: 3}
-    - {fileID: 8300000, guid: 7aba7f243115b6840a55c7f7f23851bd, type: 3}
-    damage: 10
-    attackSizeX: 2.5
-    attackSizeY: 1
-    upAttackSizeX: 3
-    upAttackSizeY: 1
-    attackStartFrames: 0
-    attackEndFrames: 60
-    getSoul: 10
-    pushForce: 5
-    enemyAndPlatform:
-      serializedVersion: 2
-      m_Bits: 1280
-    attackEffect: {fileID: 5556696277480367301, guid: 54289f7bae659e84d983a1fa2dd54a15, type: 3}
-    attackEffectDestroyTime: 0.2
-    isDash: 0
-    canDash: 1
-    canDashDuringJump: 1
-    dashTime: 0.15
-    dashCurrentTime: 0
-    dashSpeed: 25
-    dashDelay: 0.4
-    dashCurrentDelay: 0
-    dashDirection: 0
-    HP: 5
-    maxHP: 5
-    isHit: 0
-    hitTime: 3
-    verticalDistance: 0.3
-    horizontalDistance: 0.1
-    fadeSpeed: 0.5
-    minAlpha: 0.2
-    maxAlpha: 1
-    cycleTime: 2
-    loseControl: 0
-    recorverDelay: 6
-    currentSoul: 50
-    maxSoul: 100
-    soul: {fileID: 5082364523167240441}
-    uiCanvas: {fileID: 5082364523260775492}
-    HP_Panel: {fileID: 5082364523089936625}
-    heart:
-    - {fileID: 5082364524294797668}
-    - {fileID: 5082364524151085254}
-    - {fileID: 5082364522385641471}
-    - {fileID: 5082364523444964922}
-    - {fileID: 5082364522896095923}
-    - {fileID: 5082364524323172149}
-    - {fileID: 5082364523352277050}
-    - {fileID: 5082364522953243813}
-    - {fileID: 5082364523584127847}
-    - {fileID: 5082364524238751953}
-  animator: {fileID: 5082364522794502463}
-  rigid: {fileID: 5082364522794502460}
-  m_collider: {fileID: 5082364522794502461}
-  spriteRenderer: {fileID: 5082364522794502434}
-  isTouchingWall: 0
-  isTouchingRightWall: 0
-  isTouchingLeftWall: 0
 --- !u!114 &6337703496446039475
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -357,18 +261,83 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animator: {fileID: 5082364522794502463}
-  rigid: {fileID: 5082364522794502460}
   m_collider: {fileID: 5082364522794502461}
-  spriteRenderer: {fileID: 5082364522794502434}
+  rigid: {fileID: 5082364522794502460}
+  canControl: 1
   playerSpeed: 6
-  wallCastTransform: {fileID: 0}
+  wallCastTransform: {fileID: 5082364523919442253}
   wallCastDistance: 0.4
   platformLayer:
     serializedVersion: 2
     m_Bits: 256
-  isTouchingWall: 0
-  isTouchingRightWall: 0
-  isTouchingLeftWall: 0
+  canMove: 1
+  minJumpSpeed: 20
+  timeToReachMaxSpeed: 0.5
+  platformCastDistance: 0.9
+  isJump: 0
+  m_isGrounded: 1
+  platform:
+    serializedVersion: 2
+    m_Bits: 256
+  isPressingJump: 0
+  jumpPressTime: 0
+  jumpEnded: 0
+  damage: 10
+  attackSizeX: 2.5
+  attackSizeY: 1
+  upAttackSizeX: 3
+  upAttackSizeY: 1
+  attackStartFrames: 0
+  attackEndFrames: 60
+  getSoul: 10
+  pushForce: 5
+  enemyAndPlatform:
+    serializedVersion: 2
+    m_Bits: 1280
+  attackEffect: {fileID: 5556696277480367301, guid: 54289f7bae659e84d983a1fa2dd54a15, type: 3}
+  attackEffectDestroyTime: 0.2
+  canAttack: 1
+  isDash: 0
+  canDash: 1
+  canDashDuringJump: 1
+  dashTime: 0.15
+  dashCurrentTime: 0
+  dashSpeed: 25
+  dashDelay: 0.7
+  dashCurrentDelay: 0
+  dashDirection: 0
+  spriteRenderer: {fileID: 5082364522794502434}
+  HP: 10
+  maxHP: 10
+  isHit: 0
+  hitTime: 4
+  verticalDistance: 0.3
+  horizontalDistance: 0.1
+  fadeSpeed: 0.5
+  minAlpha: 0.2
+  maxAlpha: 1
+  cycleTime: 2
+  loseControl: 0
+  recorverDelay: 1.5
+  hitEffect: {fileID: 4855738749349605096, guid: 71c1e16e84136a3409d62cafd6344e21, type: 3}
+  invincibleTime: 2
+  knockbackForce: 10
+  currentSoul: 50
+  maxSoul: 100
+  soul: {fileID: 5082364523167240441}
+  uiCanvas: {fileID: 5082364523260775492}
+  HP_Panel: {fileID: 5082364523089936625}
+  heart:
+  - {fileID: 5082364524294797668}
+  - {fileID: 5082364524151085254}
+  - {fileID: 5082364522385641471}
+  - {fileID: 5082364523444964922}
+  - {fileID: 5082364522896095923}
+  - {fileID: 5082364524323172149}
+  - {fileID: 5082364523352277050}
+  - {fileID: 5082364522953243813}
+  - {fileID: 5082364523584127847}
+  - {fileID: 5082364524238751953}
 --- !u!212 &5082364522794502434
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -1083,7 +1052,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0

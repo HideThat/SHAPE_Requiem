@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class PlayerCoroutine : MonoBehaviour
+public class PlayerCoroutine : Singleton<PlayerCoroutine>
 {
     public Animator animator;
     [SerializeField] Collider2D m_collider;
@@ -46,6 +46,17 @@ public class PlayerCoroutine : MonoBehaviour
     public EffectDestroy attackEffect;
     public float attackEffectDestroyTime = 0.2f;
     public bool canAttack = true;
+
+    [Header("Dash")]
+    public bool isDash = false;
+    public bool canDash = true;
+    public bool canDashDuringJump = true;  // 점프 중에 대쉬를 할 수 있는지 나타내는 변수
+    public float dashTime;
+    public float dashCurrentTime;
+    public float dashSpeed;
+    public float dashDelay;
+    public float dashCurrentDelay;
+    public float dashDirection;
 
     [Header("HP")]
     public SpriteRenderer spriteRenderer;
@@ -92,6 +103,9 @@ public class PlayerCoroutine : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.X) && canAttack)
                     StartCoroutine(Attack());
+
+                if (canDash && Input.GetKeyDown(KeyCode.C))
+                    yield return DashCoroutine();
             }
 
             PlayerCanvasUpdate();
@@ -247,7 +261,10 @@ public class PlayerCoroutine : MonoBehaviour
     private void GroundCheck()
     {
         m_isGrounded = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, platformCastDistance, platform).collider != null;
+        if (m_isGrounded) canDashDuringJump = true;
         animator.SetBool("IsGround", m_isGrounded);
+        animator.SetBool("IsJump", !m_isGrounded);
+        isJump = !m_isGrounded;
     }
     #endregion
     #region Attack_System
@@ -359,6 +376,18 @@ public class PlayerCoroutine : MonoBehaviour
         {
             if (hit2D[i].collider.CompareTag("Enemy"))
             {
+                Vector2 enemyPos = hit2D[i].collider.transform.position; // 적의 위치
+                Vector2 myPos = transform.position; // 플레이어(혹은 공격을 실행하는 객체)의 위치
+
+                Vector2 attackDir = (enemyPos - myPos).normalized; // 타격 방향
+
+                Vector2 cardinalDir = Vector2.zero;
+                if (attackDir.x > 0)
+                    cardinalDir = Vector2.right;
+                else
+                    cardinalDir = Vector2.left;
+
+                hit2D[i].transform.GetComponent<Enemy>().Hit(damage, cardinalDir); // Hit 메서드 호출
                 GetSoul();
                 hitSomething = true;
                 EffectDestroy effect = Instantiate(attackEffect);
@@ -428,6 +457,18 @@ public class PlayerCoroutine : MonoBehaviour
         effect.transform.position = transform.position;
         effect.SetDestroy(1f);
         // 3. 게임 시간 일시 정지
+
+        if (HP > 0)
+        {
+            isHit = true;
+            hitCoroutine = StartCoroutine(HitEffet());
+            StartCoroutine(FinishHitEffect());
+        }
+        else
+        {
+            StartCoroutine(Dead());
+            yield break;
+        }
         Time.timeScale = 0;
         yield return new WaitForSecondsRealtime(0.3f);
         Time.timeScale = originalTimeScale;
@@ -436,16 +477,6 @@ public class PlayerCoroutine : MonoBehaviour
         rigid.AddForce(_force.normalized * knockbackForce, ForceMode2D.Impulse);
         yield return new WaitForSeconds(recorverDelay);
         canControl = true;
-
-        // 5. 다른 코루틴 실행
-        if (HP > 0)
-        {
-            isHit = true;
-            hitCoroutine = StartCoroutine(HitEffet());
-            StartCoroutine(FinishHitEffect());
-        }
-        else
-            StartCoroutine(Dead());
 
         yield return null;
     }
@@ -529,6 +560,67 @@ public class PlayerCoroutine : MonoBehaviour
                 count = heart.Count(go => go.activeInHierarchy);
             }
         }
+    }
+    #endregion
+    #region Dash_System
+    IEnumerator DashCoroutine()
+    {
+        if (canDash && canDashDuringJump)
+        {
+            if (Input.GetKeyDown(KeyCode.C))
+            {
+                dashDirection = Input.GetAxisRaw("Debug Horizontal");
+
+                if (dashDirection != 0)
+                {
+                    isDash = true;
+                    canDash = false;
+                    canDashDuringJump = false;
+
+                    isPressingJump = false;
+                    jumpPressTime = 0f;
+                    rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+                    jumpEnded = true;
+                    animator.SetBool("IsDown", true);
+                    animator.SetBool("IsDash", true);
+                    animator.SetTrigger("DashTrigger");
+
+                    // 대시 시간 동안 대시를 실행
+                    float elapsed = 0;
+                    while (elapsed < dashTime)
+                    {
+                        rigid.velocity = new Vector2(dashSpeed * dashDirection, 0f);
+                        elapsed += Time.deltaTime;
+                        yield return null;
+                    }
+
+                    // 대시 종료
+                    isDash = false;
+                    animator.SetBool("IsDash", false);
+                }
+            }
+
+            dashCurrentDelay = dashDelay;
+            StartCoroutine(DashDelay());
+        }
+
+    }
+
+    IEnumerator DashDelay()
+    {
+        while (true)
+        {
+            if (dashCurrentDelay >= 0f)
+                dashCurrentDelay -= Time.deltaTime;
+            else
+            {
+                canDash = true;
+                yield break;
+            }
+
+            yield return null;
+        }
+        
     }
     #endregion
 }

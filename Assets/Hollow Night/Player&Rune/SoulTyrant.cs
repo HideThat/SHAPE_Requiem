@@ -19,7 +19,8 @@ public class SoulTyrant : Enemy
     [SerializeField] Animator downStroke_Wait;
     [SerializeField] EffectDestroy downStroke_Active;
     [SerializeField] EffectDestroy teleportEffect;
-    [SerializeField] TrailRenderer trail;
+    [SerializeField] EffectDestroy teleportTrailPrefab;
+    [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
     [SerializeField] GameObject misilePrefab;
     [SerializeField] Hulauf hulaufPrefab;
@@ -84,13 +85,7 @@ public class SoulTyrant : Enemy
     private void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
-        {
-            Vector2 hitDirection = collision.transform.position - transform.position;
-            hitDirection = hitDirection.normalized;
-            Vector2 force = hitDirection;
-
-            collision.GetComponent<PlayerCoroutine>().Hit(damage, force);
-        }    
+            collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
     }
 
     IEnumerator StartAppear()
@@ -145,7 +140,12 @@ public class SoulTyrant : Enemy
 
     IEnumerator RandomTeleport()
     {
+        SummonTeleportEffect();
+        Vector2 point1 = transform.position;
         PerformTeleport(GetRandomTeleportPoint());
+        Vector2 point2 = transform.position;
+        SummonTeleportEffect();
+        PlaceTeleportTrail(point1, point2);
         yield return new WaitForSeconds(randomTeleportDelay);
     }
 
@@ -178,24 +178,36 @@ public class SoulTyrant : Enemy
 
     public void PerformTeleport(Transform teleportPoint)
     {
-        TrailRenderer _trail = Instantiate(trail, transform);
-        _trail.transform.position = transform.position;
-        DOTween.To(() => _trail.startWidth, x => _trail.startWidth = x, 0f, 0.5f);
-        DOTween.To(() => _trail.endWidth, x => _trail.endWidth = x, 0f, 0.5f).OnComplete(()=> 
-        {
-            Destroy(_trail.gameObject);
-        });
-        EffectDestroy effect = Instantiate(teleportEffect);
-        effect.transform.position = transform.position;
-        effect.SetDestroy(0.4f);
         animator.Play("Soul_Tyrant_Idle");
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
-        effect = Instantiate(teleportEffect);
+    }
+
+    public void PlaceTeleportTrail(Vector2 startPosition, Vector2 endPosition)
+    {
+        // Calculate the direction and distance between the two points
+        Vector2 direction = (endPosition - startPosition).normalized;
+        float distance = Vector2.Distance(startPosition, endPosition);
+
+        // Calculate the number of trail instances needed
+        int numberOfTrails = Mathf.FloorToInt(distance / trailSpacing);
+
+        // Place the trail sprites along the line between the two points
+        for (int i = 0; i <= numberOfTrails; i++)
+        {
+            Vector2 trailPosition = startPosition + i * trailSpacing * direction;
+            EffectDestroy effect = Instantiate(teleportTrailPrefab, trailPosition, Quaternion.identity);
+            effect.SetDisappear(2f);
+            effect.SetDestroy(2.1f);
+        }
+    }
+
+    void SummonTeleportEffect()
+    {
+        EffectDestroy effect = Instantiate(teleportEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(0.4f);
-        _trail.transform.parent = null;
     }
 
     void FireMisile()
@@ -205,12 +217,17 @@ public class SoulTyrant : Enemy
 
     IEnumerator RushPattern()
     {
+        SummonTeleportEffect();
+        Vector2 point1 = transform.position;
         Transform rushStart;
         do
         {
             rushStart = rushPointList[Random.Range(0, rushPointList.Count)];
             PerformTeleport(rushStart);
         } while (!IsOutsideTargetRadius(rushStart));
+        Vector2 point2 = transform.position;
+        SummonTeleportEffect();
+        PlaceTeleportTrail(point1, point2);
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
         RotateBasedOnTargets(rushStart, rushEnd);
         yield return new WaitForSeconds(delayBeforeRush);
@@ -234,12 +251,17 @@ public class SoulTyrant : Enemy
 
     IEnumerator SphereHulaufRushPattern()
     {
+        Vector2 point1 = transform.position;
+        SummonTeleportEffect();
         Transform rushStart;
         do
         {
             rushStart = hulaufRushList[Random.Range(0, hulaufRushList.Count)];
             PerformTeleport(rushStart);
         } while (!IsOutsideTargetRadius(rushStart));
+        Vector2 point2 = transform.position;
+        SummonTeleportEffect();
+        PlaceTeleportTrail(point1, point2);
         Transform rushEnd = hulaufRushList.Find(t => t != rushStart);
         RotateBasedOnTargets(rushStart, rushEnd);
         Hulauf hulauf = Instantiate<Hulauf>(hulaufPrefab, transform);
@@ -257,23 +279,28 @@ public class SoulTyrant : Enemy
 
     void DisAppearBoss()
     {
+        SummonTeleportEffect();
         spriteRenderer.color = Color.clear;
         m_collider2D.enabled = false;
     }
 
     void AppearBoss()
     {
+        SummonTeleportEffect();
         spriteRenderer.color = Color.white;
         m_collider2D.enabled = true;
     }
 
     IEnumerator DownstrokePattern(Transform _target)
     {
+        Vector2 point1 = transform.position;
         GameObject target = new();
         Vector2 pos = _target.position;
         pos.y = downstrokePositionY;
         target.transform.position = pos;
         PerformTeleport(target.transform);
+        Vector2 point2 = transform.position;
+        PlaceTeleportTrail(point1, point2);
         downStroke_Wait.gameObject.SetActive(true);
         yield return StartCoroutine(DownstrokeWait(_target));
         animator.Play("Soul_Tyrant_Meditation");
@@ -291,11 +318,14 @@ public class SoulTyrant : Enemy
 
     IEnumerator FakeDownstrokePattern(Transform _target)
     {
+        Vector2 point1 = transform.position;
         GameObject target = new();
         Vector2 pos = _target.position;
         pos.y = downstrokePositionY;
         target.transform.position = pos;
         PerformTeleport(target.transform);
+        Vector2 point2 = transform.position;
+        PlaceTeleportTrail(point1, point2);
         downStroke_Wait.gameObject.SetActive(true);
         yield return StartCoroutine(DownstrokeWait(_target));
         animator.Play("Soul_Tyrant_Meditation");

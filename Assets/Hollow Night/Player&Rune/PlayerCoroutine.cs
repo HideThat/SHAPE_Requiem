@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using static Unity.VisualScripting.Member;
 
 public class PlayerCoroutine : Singleton<PlayerCoroutine>
 {
@@ -38,8 +39,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public float attackSizeY;
     public float upAttackSizeX;
     public float upAttackSizeY;
-    public int attackStartFrames;
-    public int attackEndFrames;
+    public float downAttackSizeX;
+    public float downAttackSizeY;
+    public float attackDelay;
     public int getSoul;
     public float pushForce = 5.0f; // 뒤로 밀리는 힘의 크기
     public LayerMask enemyAndPlatform;
@@ -117,7 +119,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     void OnDrawGizmos()
     {
         // UpArrow Attack Box
-        Vector2 boxPos = new(transform.position.x, transform.position.y + attackSizeY / 2);
+        Vector2 boxPos = new(transform.position.x, transform.position.y + upAttackSizeY / 2);
         Gizmos.color = Color.red;
         Gizmos.DrawWireCube(boxPos, new(upAttackSizeX, upAttackSizeY));
 
@@ -131,6 +133,11 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
         Gizmos.color = Color.blue;
         Gizmos.DrawWireCube(regularBoxPos, new(attackSizeX, attackSizeY));
+
+        // DownAttack Box
+        Vector2 downBoxPos = new(transform.position.x, transform.position.y - downAttackSizeY / 2);
+        Gizmos.color = Color.green;
+        Gizmos.DrawWireCube(downBoxPos, new(downAttackSizeX, downAttackSizeY));
     }
 
 
@@ -278,22 +285,45 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         else
         {
             if (animator.GetBool("IsJump"))
-                yield return StartCoroutine(JumpAttack());
+            {
+                if (Input.GetKey(KeyCode.DownArrow))
+                {
+                    yield return StartCoroutine(DownAttack());
+                }
+                else
+                {
+                    yield return StartCoroutine(JumpAttack());
+                }
+            }
             else
                 yield return StartCoroutine(NormalAttack());
         }
-        yield return WaitForFrames(attackEndFrames);
+        yield return null;
         canAttack = true;
     }
 
     IEnumerator UpAttack()
     {
         animator.Play("UpAttack");
-        Vector2 boxPos = new(transform.position.x, transform.position.y + attackSizeY / 2);
+        Vector2 boxPos = new(transform.position.x, transform.position.y + upAttackSizeY / 2);
         bool hitSomething = PerformAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
         StartCoroutine(ApplyPushForce(hitSomething, Vector2.down, pushForce));
 
-        yield return null;
+        yield return new WaitForSeconds(attackDelay);
+    }
+
+    IEnumerator DownAttack()
+    {
+        animator.Play("DownAttack");
+        Vector2 boxPos = new(transform.position.x, transform.position.y - downAttackSizeY / 2);
+        bool hitSomething = PerformAttack(boxPos, new Vector2(downAttackSizeX, downAttackSizeY), Vector2.down);
+        if (hitSomething)
+        {
+            rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+            canDashDuringJump = true;
+        }
+        StartCoroutine(ApplyPushForce(hitSomething, Vector2.up, pushForce * 2));
+        yield return new WaitForSeconds(attackDelay);
     }
 
     IEnumerator JumpAttack()
@@ -308,7 +338,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             else
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
         }
-        yield return null;
+        yield return new WaitForSeconds(attackDelay);
     }
 
     IEnumerator NormalAttack()
@@ -323,7 +353,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             else
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
         }
-        yield return null;
+        yield return new WaitForSeconds(attackDelay);
     }
 
     Vector2 DeterminePushDirection()
@@ -374,51 +404,38 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos, boxSize, 0f, direction, 0f, enemyAndPlatform);
         for (int i = 0; i < hit2D.Length; i++)
         {
-            if (hit2D[i].collider.CompareTag("Enemy"))
+            Collider2D collider = hit2D[i].collider;
+            EffectDestroy effect = Instantiate(attackEffect);
+            effect.transform.position = hit2D[i].point;
+            effect.SetDestroy(attackEffectDestroyTime);
+
+            if (Mathf.Abs(transform.rotation.y) < 0.0001f)
+                effect.transform.localScale = new Vector3(-1f, 1f, 1f);
+
+            if (collider.CompareTag("Enemy"))
             {
-                Vector2 enemyPos = hit2D[i].collider.transform.position; // 적의 위치
-                Vector2 myPos = transform.position; // 플레이어(혹은 공격을 실행하는 객체)의 위치
-
-                Vector2 attackDir = (enemyPos - myPos).normalized; // 타격 방향
-
-                Vector2 cardinalDir = Vector2.zero;
-                if (attackDir.x > 0)
-                    cardinalDir = Vector2.right;
-                else
-                    cardinalDir = Vector2.left;
-
-                hit2D[i].transform.GetComponent<Enemy>().Hit(damage, cardinalDir); // Hit 메서드 호출
-                GetSoul();
+                ProcessEnemyHit(collider, effect);
                 hitSomething = true;
-                EffectDestroy effect = Instantiate(attackEffect);
-                effect.transform.position = hit2D[i].point;
-                effect.SetDestroy(attackEffectDestroyTime);
-                float epsilon = 0.0001f;
-                if (Mathf.Abs(transform.rotation.y) < epsilon)
-                    effect.transform.localScale = new Vector3(-1f, 1f, 1f);
             }
-            else if (hit2D[i].collider.CompareTag("Platform"))
+            else if (collider.CompareTag("Platform"))
             {
                 hitSomething = true;
-                EffectDestroy effect = Instantiate(attackEffect);
-                effect.transform.position = hit2D[i].point;
-                effect.SetDestroy(attackEffectDestroyTime);
-                float epsilon = 0.0001f;
-                if (Mathf.Abs(transform.rotation.y) < epsilon)
-                    effect.transform.localScale = new Vector3(-1f, 1f, 1f);
             }
         }
-
         return hitSomething;
     }
 
-    IEnumerator WaitForFrames(int frameCount)
+    void ProcessEnemyHit(Collider2D collider, EffectDestroy effect)
     {
-        while (frameCount > 0)
-        {
-            frameCount--;
-            yield return null;
-        }
+        Vector2 enemyPos = collider.transform.position;
+        Vector2 myPos = transform.position;
+        Vector2 attackDir = (enemyPos - myPos).normalized;
+        Vector2 cardinalDir = attackDir.x > 0 ? Vector2.right : Vector2.left;
+
+        collider.GetComponent<Enemy>().Hit(damage, cardinalDir);
+        currentSoul = Mathf.Min(currentSoul + getSoul, maxSoul);
+        GetSoul();
+        SoulUpdate();
     }
 
     void GetSoul()
@@ -437,10 +454,18 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     }
     #endregion
     #region Hit_Sysytem
-    public void Hit(int _damage, Vector2 _force)
+    public void Hit(Vector2 _player, Vector2 _enemy, int _damage)
     {
         if (!isHit)
         {
+            rigid.velocity = Vector2.zero;
+
+            Vector2 _force;
+            if (_player.x < _enemy.x)
+                _force = new Vector2(-0.5f, 0.5f);
+            else
+                _force = new Vector2(0.5f, 0.5f);
+
             StartCoroutine(HitCoroutine(_damage, _force));
         }
     }
@@ -474,7 +499,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Time.timeScale = originalTimeScale;
 
         // 4. 반대 방향으로 밀리는 힘
-        rigid.AddForce(_force.normalized * knockbackForce, ForceMode2D.Impulse);
+
+        rigid.AddForce(_force * knockbackForce, ForceMode2D.Impulse);
+        Debug.Log($"밀리는 방향 = {_force * knockbackForce}");
         yield return new WaitForSeconds(recorverDelay);
         canControl = true;
 

@@ -56,13 +56,7 @@ public class HomingMisile : MonoBehaviour
         if (collision.CompareTag("Player"))
         {
             Impact();
-
-            // 대략적인 충돌 방향 계산
-            Vector2 hitDirection = collision.transform.position - transform.position;
-            hitDirection = hitDirection.normalized;
-            Vector2 force = hitDirection;
-
-            collision.GetComponent<PlayerCoroutine>().Hit(damage, force);
+            collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
         }
     }
 

@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6875601895093089135}
   m_Layer: 0
   m_Name: HomimgMisile
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -48,6 +48,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efa1f2b856995074a9b706d051601131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 1
   target: {fileID: 0}
   myCollider: {fileID: 3163047783503055650}
   waitTime: 0.2

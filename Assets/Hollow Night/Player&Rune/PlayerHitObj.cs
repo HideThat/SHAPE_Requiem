@@ -8,12 +8,6 @@ public class PlayerHitObj : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
-        {
-            Vector2 hitDirection = collision.transform.position - transform.position;
-            hitDirection = hitDirection.normalized;
-            Vector2 force = hitDirection;
-
-            collision.GetComponent<PlayerCoroutine>().Hit(damage, force);
-        }
+            collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
     }
 }

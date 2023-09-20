@@ -6,6 +6,9 @@ public class ActiveTrigger : MonoBehaviour
 {
     public bool PlayerIn = false;
     public GameObject target;
+    public float shakeDuration;
+    public float shakeMagnitude;
+    public Vector3 cameraPoint;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -13,8 +16,9 @@ public class ActiveTrigger : MonoBehaviour
         {
             PlayerIn = true;
             target.SetActive(true);
+            CameraManager.Instance.CameraShake(shakeDuration, shakeMagnitude, cameraPoint);
 
-            enabled = false;
+            Destroy(gameObject);
         }
     }
 }

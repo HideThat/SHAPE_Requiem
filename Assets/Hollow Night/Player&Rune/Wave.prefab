@@ -10,14 +10,14 @@ GameObject:
   m_Component:
   - component: {fileID: 5086332332767373204}
   - component: {fileID: 5086332332767373210}
+  - component: {fileID: 7732072626728525525}
   - component: {fileID: 1254486732754182249}
   - component: {fileID: 5086332332767373205}
   - component: {fileID: 5271965810731846520}
   - component: {fileID: 2560821419462339704}
-  - component: {fileID: 7732072626728525525}
-  m_Layer: 0
+  m_Layer: 18
   m_Name: Wave
-  m_TagString: Enemy
+  m_TagString: CanHit
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -54,6 +54,19 @@ MonoBehaviour:
   maxSpeed: 20
   acceleration: 0.15
   destroyTime: 4
+--- !u!114 &7732072626728525525
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5086332332767373207}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36b3e88e4db98eb4c933b46f57e438f0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
 --- !u!212 &1254486732754182249
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -173,16 +186,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.76, y: 4.24}
   m_EdgeRadius: 0
---- !u!114 &7732072626728525525
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5086332332767373207}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 36b3e88e4db98eb4c933b46f57e438f0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 1

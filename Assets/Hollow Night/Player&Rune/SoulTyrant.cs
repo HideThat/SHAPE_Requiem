@@ -18,6 +18,7 @@ public class SoulTyrant : Enemy
     [SerializeField] Animator animator;
     [SerializeField] Animator downStroke_Wait;
     [SerializeField] EffectDestroy downStroke_Active;
+    [SerializeField] EffectDestroy downStroke_Fake;
     [SerializeField] EffectDestroy teleportEffect;
     [SerializeField] EffectDestroy teleportTrailPrefab;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
@@ -30,24 +31,25 @@ public class SoulTyrant : Enemy
     public List<Transform> teleportPointList;
     public List<Transform> rushPointList;
     public List<Transform> hulaufRushList;
-    public float randomTeleportDelay = 1f;
+    public float preRandomTeleportDelay = 0f;
+    public float posRandomTeleportDelay = 1f;
     public float preFireDelay = 1f;  // 미사일 발사 전 딜레이
     public float postFireDelay = 1f; // 미사일 발사 후 딜레이
     public float rushSpeed = 5f;
-    public float delayBeforeRush = 1f;
-    public float delayAfterRush = 1f;
-    public float delayBeforeHulaufRush = 1f;
-    public float delayAfterHulaufRush = 1f;
+    public float preRushDelay = 1f;
+    public float posRushDelay = 1f;
+    public float preHulaufRushDelay = 1f;
+    public float posHulaufRushDelay = 1f;
     public float hulaufShootSpeed = 1f;
     public float hulaufShootForce = 1f;
     public float downstrokePositionY = 1f;
     public float downstrokeMoveDistance = 1f;
     public float downstrokeMoveSpeed = 1f;
     public float waitDownstroke = 1f;
-    public float delayBeforeDownstroke = 1f;
-    public float delayDownstrokeActive = 1f;
-    public float delayDownstrokeFake = 1f;
-    public float delayAfterDownstroke = 1f;
+    public float preDownstrokeDelay = 1f;
+    public float posDownstrokeDelay = 1f;
+    public float preDownstrokeFakeDelay = 1f;
+    public float PosDownstrokeFakeDelay = 1f;
     public float wavePositionY;
     public float waveCorrectionX;
     public Vector2 currentPosition;
@@ -69,17 +71,17 @@ public class SoulTyrant : Enemy
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Space))
-            RandomTeleport();
+            RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay);
         if (Input.GetKeyDown(KeyCode.W))
-            StartCoroutine(TeleportAndFireMisilePattern());
+            StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
         if (Input.GetKeyDown(KeyCode.Q))
-            StartCoroutine(RushPattern());
+            StartCoroutine(RushPattern(preRushDelay, posRushDelay));
         if (Input.GetKeyDown(KeyCode.E))
-            StartCoroutine(SphereHulaufRushPattern());
+            StartCoroutine(SphereHulaufRushPattern(preHulaufRushDelay, posHulaufRushDelay));
         if (Input.GetKeyDown(KeyCode.R))
-            StartCoroutine(DownstrokePattern(targetObject.transform));
+            StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
         if (Input.GetKeyDown(KeyCode.T))
-            StartCoroutine(FakeDownstrokePattern(targetObject.transform));
+            StartCoroutine(FakeDownstrokePattern(targetObject.transform, preDownstrokeFakeDelay, PosDownstrokeFakeDelay));
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -109,27 +111,27 @@ public class SoulTyrant : Enemy
             switch (i)
             {
                 case 0:
-                    yield return currentPatern = StartCoroutine(RandomTeleport());
+                    yield return currentPatern = StartCoroutine(RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay));
                     break;
                 case 1:
-                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern());
+                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
                     break;
                 case 2:
-                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern());
-                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern());
-                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern());
+                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
+                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
+                    yield return currentPatern = StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
                     break;
                 case 3:
-                    yield return currentPatern = StartCoroutine(RushPattern());
+                    yield return currentPatern = StartCoroutine(RushPattern(preRushDelay, posRushDelay));
                     break;
                 case 4:
-                    yield return currentPatern = StartCoroutine(SphereHulaufRushPattern());
+                    yield return currentPatern = StartCoroutine(SphereHulaufRushPattern(preHulaufRushDelay, posHulaufRushDelay));
                     break;
                 case 5:
-                    yield return currentPatern = StartCoroutine(DownstrokePattern(targetObject.transform));
+                    yield return currentPatern = StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
                     break;
                 case 6:
-                    yield return currentPatern = StartCoroutine(FakeDownstrokePattern(targetObject.transform));
+                    yield return currentPatern = StartCoroutine(FakeDownstrokePattern(targetObject.transform, preDownstrokeFakeDelay, preDownstrokeFakeDelay));
                     break;
                 default:
                     break;
@@ -138,24 +140,24 @@ public class SoulTyrant : Enemy
         }
     }
 
-    IEnumerator RandomTeleport()
+    IEnumerator RandomTeleport(float _preDelay, float _posDelay)
     {
+        yield return new WaitForSeconds(_preDelay);
         SummonTeleportEffect();
         Vector2 point1 = transform.position;
         PerformTeleport(GetRandomTeleportPoint());
         Vector2 point2 = transform.position;
         SummonTeleportEffect();
         PlaceTeleportTrail(point1, point2);
-        yield return new WaitForSeconds(randomTeleportDelay);
+        yield return new WaitForSeconds(_posDelay);
     }
 
-    IEnumerator TeleportAndFireMisilePattern()
+    IEnumerator TeleportAndFireMisilePattern(float _preDelay, float _posDelay)
     {
-        StartCoroutine(RandomTeleport());
-        yield return new WaitForSeconds(preFireDelay);
+        yield return StartCoroutine(RandomTeleport(0f, _preDelay));
         animator.Play("Soul_Tyrant_Meditation");
         FireMisile();
-        yield return new WaitForSeconds(postFireDelay);
+        yield return new WaitForSeconds(_posDelay);
         animator.Play("Soul_Tyrant_Idle");
     }
 
@@ -180,6 +182,14 @@ public class SoulTyrant : Enemy
     {
         animator.Play("Soul_Tyrant_Idle");
         transform.position = teleportPoint.position;
+        RotateBasedOnTargets(teleportPoint, targetObject.transform);
+        AppearBoss();
+    }
+
+    public void PerformTeleport(Vector2 teleportPoint)
+    {
+        animator.Play("Soul_Tyrant_Idle");
+        transform.position = teleportPoint;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
     }
@@ -215,7 +225,7 @@ public class SoulTyrant : Enemy
         Instantiate(misilePrefab, transform.position, Quaternion.identity).transform.position = launchPoint.position;
     }
 
-    IEnumerator RushPattern()
+    IEnumerator RushPattern(float _preDelay, float _posDelay)
     {
         SummonTeleportEffect();
         Vector2 point1 = transform.position;
@@ -229,11 +239,10 @@ public class SoulTyrant : Enemy
         SummonTeleportEffect();
         PlaceTeleportTrail(point1, point2);
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
-        RotateBasedOnTargets(rushStart, rushEnd);
-        yield return new WaitForSeconds(delayBeforeRush);
+        yield return new WaitForSeconds(_preDelay);
         yield return StartCoroutine(RushStart(rushStart, rushEnd));
-        StartCoroutine(RandomTeleport());
-        yield return new WaitForSeconds(delayAfterRush);
+        
+        yield return StartCoroutine(RandomTeleport(0f, _posDelay));
     }
 
     IEnumerator RushStart(Transform _start, Transform _end)
@@ -249,7 +258,7 @@ public class SoulTyrant : Enemy
         }
     }
 
-    IEnumerator SphereHulaufRushPattern()
+    IEnumerator SphereHulaufRushPattern(float _preDelay, float _posDelay)
     {
         Vector2 point1 = transform.position;
         SummonTeleportEffect();
@@ -268,13 +277,13 @@ public class SoulTyrant : Enemy
         if (rushStart == hulaufRushList[0])
             hulauf.rotationSpeed = -hulauf.rotationSpeed;
         hulauf.transform.position = transform.position;
-        yield return new WaitForSeconds(delayBeforeHulaufRush);
+        yield return new WaitForSeconds(_preDelay);
+
         yield return StartCoroutine(RushStart(rushStart, rushEnd));
         hulauf.transform.parent = null;
         DisAppearBoss();
         yield return StartCoroutine(hulauf.ShootHulaufCoroutine(rushStart, hulaufShootSpeed, hulaufShootForce));
-        StartCoroutine(RandomTeleport());
-        yield return new WaitForSeconds(delayAfterHulaufRush);
+        yield return StartCoroutine(RandomTeleport(0f, _posDelay));
     }
 
     void DisAppearBoss()
@@ -291,68 +300,49 @@ public class SoulTyrant : Enemy
         m_collider2D.enabled = true;
     }
 
-    IEnumerator DownstrokePattern(Transform _target)
+    IEnumerator DownstrokePattern(Transform _target, float _preDelay, float _posDelay)
     {
-        Vector2 point1 = transform.position;
-        GameObject target = new();
         Vector2 pos = _target.position;
         pos.y = downstrokePositionY;
-        target.transform.position = pos;
-        PerformTeleport(target.transform);
+        PerformTeleport(pos);
         Vector2 point2 = transform.position;
-        PlaceTeleportTrail(point1, point2);
         downStroke_Wait.gameObject.SetActive(true);
-        yield return StartCoroutine(DownstrokeWait(_target));
         animator.Play("Soul_Tyrant_Meditation");
-        yield return new WaitForSeconds(delayBeforeDownstroke);
+        yield return new WaitForSeconds(_preDelay);
+
         EffectDestroy effect = Instantiate(downStroke_Active);
         effect.transform.position = downStroke_Wait.transform.position;
-        effect.SetDestroy(delayDownstrokeActive);
+        effect.SetDestroy(posDownstrokeDelay);
         downStroke_Wait.gameObject.SetActive(false);
         Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
-        yield return new WaitForSeconds(delayDownstrokeActive / 2);
+
+        yield return new WaitForSeconds(_posDelay / 2);
         SummonWave();
-        yield return new WaitForSeconds(delayDownstrokeActive / 2);
+        yield return new WaitForSeconds(_posDelay / 2);
         DisAppearBoss();
     }
 
-    IEnumerator FakeDownstrokePattern(Transform _target)
+    IEnumerator FakeDownstrokePattern(Transform _target, float _preDelay, float _posDelay)
     {
         Vector2 point1 = transform.position;
-        GameObject target = new();
         Vector2 pos = _target.position;
         pos.y = downstrokePositionY;
-        target.transform.position = pos;
-        PerformTeleport(target.transform);
+        PerformTeleport(pos);
         Vector2 point2 = transform.position;
         PlaceTeleportTrail(point1, point2);
         downStroke_Wait.gameObject.SetActive(true);
-        yield return StartCoroutine(DownstrokeWait(_target));
         animator.Play("Soul_Tyrant_Meditation");
-        yield return new WaitForSeconds(delayBeforeDownstroke);
-        EffectDestroy effect = Instantiate(downStroke_Active);
+        yield return new WaitForSeconds(_preDelay);
+
+        EffectDestroy effect = Instantiate(downStroke_Fake);
         effect.transform.position = downStroke_Wait.transform.position;
-        effect.SetDestroy(delayDownstrokeActive);
+        effect.SetDestroy(0.4f);
         downStroke_Wait.gameObject.SetActive(false);
         Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
         downStroke_Wait.Play("DownStroke_Fake");
-        yield return new WaitForSeconds(delayDownstrokeFake);
-        yield return StartCoroutine(DownstrokePattern(_target));
-    }
+        yield return new WaitForSeconds(_preDelay);
 
-    IEnumerator DownstrokeWait(Transform _target)
-    {
-        Vector2 pos = new();
-        float waitTime = waitDownstroke;
-        animator.Play("Soul_Tyrant_Idle");
-        while (waitTime > 0)
-        {
-            pos = _target.position;
-            pos.y = downstrokePositionY;
-            transform.position = pos;
-            waitTime -= Time.deltaTime;
-            yield return null;
-        }
+        yield return StartCoroutine(DownstrokePattern(_target, _preDelay, _posDelay));
     }
 
     void SummonWave()
@@ -372,6 +362,16 @@ public class SoulTyrant : Enemy
     {
         Vector2 scale;
         if (_start.position.x <= target.position.x)
+            scale = new Vector2(scaleX, scaleY);
+        else
+            scale = new Vector2(-scaleX, scaleY);
+        transform.localScale = scale;
+    }
+
+    void RotateBasedOnTargets(Vector2 _start, Transform target)
+    {
+        Vector2 scale;
+        if (_start.x <= target.position.x)
             scale = new Vector2(scaleX, scaleY);
         else
             scale = new Vector2(-scaleX, scaleY);

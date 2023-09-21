@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHitObj : MonoBehaviour
 {
     public int damage = 1;
-    private void OnTriggerEnter2D(Collider2D collision)
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
             collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);

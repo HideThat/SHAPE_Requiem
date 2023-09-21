@@ -23,6 +23,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public bool canMove = true;
 
     [Header("Jump")]
+    public EffectDestroy jumpEffect;
     public float minJumpSpeed = 2f; // 최대 점프 속도
     public float timeToReachMaxSpeed = 2f; // 최대 점프 속도
     public float platformCastDistance; // 땅과의 충돌 판정
@@ -50,6 +51,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public bool canAttack = true;
 
     [Header("Dash")]
+    public EffectDestroy dashEffect;
     public bool isDash = false;
     public bool canDash = true;
     public bool canDashDuringJump = true;  // 점프 중에 대쉬를 할 수 있는지 나타내는 변수
@@ -206,7 +208,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     IEnumerator JumpUp()
     {
         SetJumpState(true, true, false);
-
+        EffectDestroy effect = Instantiate(jumpEffect);
+        effect.transform.position = wallCastTransform.position;
+        effect.SetDestroy(0.32f);
         while (isPressingJump)
         {
             UpdateJumpPressTime();
@@ -417,7 +421,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 ProcessEnemyHit(collider, effect);
                 hitSomething = true;
             }
-            else if (collider.CompareTag("Platform"))
+            else if (collider.CompareTag("Platform") || collider.CompareTag("CanHit"))
             {
                 hitSomething = true;
             }
@@ -430,13 +434,13 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Vector2 enemyPos = collider.transform.position;
         Vector2 myPos = transform.position;
         Vector2 attackDir = (enemyPos - myPos).normalized;
-        Vector2 cardinalDir = attackDir.x > 0 ? Vector2.right : Vector2.left;
+        collider.GetComponent<Enemy>().Hit(damage, attackDir);
 
-        collider.GetComponent<Enemy>().Hit(damage, cardinalDir);
         currentSoul = Mathf.Min(currentSoul + getSoul, maxSoul);
         GetSoul();
         SoulUpdate();
     }
+
 
     void GetSoul()
     {
@@ -600,6 +604,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
                 if (dashDirection != 0)
                 {
+                    EffectDestroy effect = Instantiate(dashEffect);
+                    if (transform.rotation.y == 0f)
+                        effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                    effect.transform.position = transform.position;
+                    effect.SetDisappear(0.5f);
+                    effect.SetDestroy(1f);
                     isDash = true;
                     canDash = false;
                     canDashDuringJump = false;

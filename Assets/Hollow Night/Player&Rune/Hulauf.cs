@@ -6,7 +6,6 @@ using DG.Tweening;
 public class Hulauf : MonoBehaviour
 {
     public float rotationSpeed = 10.0f; // 회전 속도 (degrees per second)
-    public Vector3 rotationDirection = new Vector3(0, 0, 1); // 회전 방향 (여기서는 z 축을 기준으로 회전)
     public List<Transform> misileList; // 미사일들
     public List<Transform> misilePointList; // 미사일들이 이동할 목적지 포인트들
     public float misileSpeed = 5.0f; // 미사일 이동 속도

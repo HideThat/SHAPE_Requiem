@@ -61,11 +61,11 @@ MonoBehaviour:
   runeIn: 0
   target: {fileID: 0}
   waitTime: 0.2
-  initialSpeed: 5
+  initialSpeed: 3
   continuousForce: 10
   destroyTime: 4
   destroyEffect: {fileID: -8774992506441952361, guid: 01f4939bc46dca34c9861bbf1d0745a8, type: 3}
-  effectDestroyTime: 0.45
+  effectDestroyTime: 0.3
   pushForce: 10
 --- !u!212 &3163047783503055648
 SpriteRenderer:

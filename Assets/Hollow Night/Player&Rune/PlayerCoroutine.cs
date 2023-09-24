@@ -89,7 +89,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     [Header("UI")]
     public Canvas uiCanvas;
     public GridLayoutGroup HP_Panel;
-    public List<GameObject> heart;
+    public List<Heart> hearts;
 
     void Start()
     {
@@ -568,7 +568,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     void PlayerCanvasUpdate()
     {
-        int count = heart.Count(go => go.activeInHierarchy);
+        int count = hearts.Count(go => go.gameObject.activeInHierarchy);
 
         if (count == HP) return;
 
@@ -577,21 +577,22 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             int i = count - 1;
             while (count != HP)
             {
-                heart[i--].SetActive(false);
-                count = heart.Count(go => go.activeInHierarchy);
+                hearts[i--].BreakHeart();
+                count--;
             }
-
         }
         else
         {
             int i = count - 1;
             while (count != HP)
             {
-                heart[i++].SetActive(true);
-                count = heart.Count(go => go.activeInHierarchy);
+                hearts[i].gameObject.SetActive(true);
+                hearts[i++].ShowHeart();
+                count++;
             }
         }
     }
+
     #endregion
     #region Dash_System
     IEnumerator DashCoroutine()

@@ -23,15 +23,13 @@ public class Wave : MonoBehaviour
 
     IEnumerator MoveWave()
     {
+        yield return new WaitForSeconds(0.3f);
+
         // 초기 속도 설정
         if (transform.rotation.y != 0)
-        {
             rigid.velocity = new Vector2(initialSpeed, 0f);
-        }
         else
-        {
             rigid.velocity = new Vector2(-initialSpeed, 0f);
-        }
 
         while (true)
         {

@@ -10,7 +10,7 @@ public class ActiveTrigger : MonoBehaviour
     public GameObject target;
     public float shakeDuration;
     public float shakeMagnitude;
-    public Vector3 cameraPoint;
+    public float shakeFrequency = 0.5f;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
@@ -18,7 +18,7 @@ public class ActiveTrigger : MonoBehaviour
         {
             PlayerIn = true;
             target.SetActive(true);
-            CameraManager.Instance.CameraShake(shakeDuration, shakeMagnitude, cameraPoint);
+            CameraManager.Instance.CameraShake(shakeDuration, shakeMagnitude, shakeFrequency);
 
             Destroy(gameObject);
         }

@@ -1,43 +1,61 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Cinemachine;
 
 public class CameraManager : Singleton<CameraManager>
 {
-    [SerializeField] Transform target;
-    [SerializeField] CinemachineVirtualCamera cinemachineVirtual;
+    [SerializeField] private Transform target;
+    [SerializeField] private CinemachineVirtualCamera cinemachineVirtual;
+    [SerializeField] CinemachineBasicMultiChannelPerlin noise;
 
-    // Start is called before the first frame update
+    [SerializeField] float shakeDuration = 2f;
+    [SerializeField] float shakeMagnitude = 0.1f;
+    [SerializeField] float shakeFrequency = 0.5f;
+
+    Coroutine shakeCoroutine;
+
     void Start()
     {
-        cinemachineVirtual = GetComponent<CinemachineVirtualCamera>();
         target = GameObject.Find("Player").transform;
         cinemachineVirtual.Follow = target;
+        noise = cinemachineVirtual.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
     }
 
-    public void CameraShake(float duration, float magnitude, Vector3 cameraPoint)
+    public void CameraShake(float duration, float amplitude, float frequency)
     {
-        StartCoroutine(Shake(duration, magnitude, cameraPoint));
+        shakeCoroutine = StartCoroutine(Shake(duration, amplitude, frequency));
     }
 
-    IEnumerator Shake(float duration, float magnitude, Vector3 cameraPoint)
+    public void CameraShake()
     {
-        cinemachineVirtual.Follow = null;
-        float elapsed = 0.0f;
+        shakeCoroutine = StartCoroutine(Shake(shakeDuration, shakeMagnitude, shakeFrequency));
+    }
 
-        while (elapsed < duration)
+    private IEnumerator Shake(float duration, float amplitude, float frequency)
+    {
+        float timer = duration;
+
+        while (timer > 0)
         {
-            float x = Random.Range(-1f, 1f) * magnitude;
-            float y = Random.Range(-1f, 1f) * magnitude;
+            noise.m_AmplitudeGain = amplitude;
+            noise.m_FrequencyGain = frequency;
 
-            transform.localPosition = new Vector3(cameraPoint.x + x, cameraPoint.y + y, cameraPoint.z);
-
-            elapsed += Time.deltaTime;
-
+            timer -= Time.deltaTime;
             yield return null;
         }
-        cinemachineVirtual.Follow = target;
+
+        noise.m_AmplitudeGain = 0f;
+        noise.m_FrequencyGain = 0f;
     }
 
+    public void StopShake()
+    {
+        if (shakeCoroutine != null)
+        {
+            StopCoroutine(shakeCoroutine);
+
+            noise.m_AmplitudeGain = 0f;
+            noise.m_FrequencyGain = 0f;
+        }
+    }
 }

@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3163047783503055650}
   - component: {fileID: 6875601895093089135}
   m_Layer: 10
-  m_Name: HomimgMisile
+  m_Name: HomimgMisile2
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 3163047783503054047}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -7.3, y: 5.28, z: 0}
-  m_LocalScale: {x: 2, y: 2, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -60,15 +60,13 @@ MonoBehaviour:
   bloodCount: 0
   runeIn: 0
   target: {fileID: 0}
-  animator: {fileID: 6875601895093089135}
   waitTime: 0.2
   initialSpeed: 3
   continuousForce: 10
   destroyTime: 4
-  destroyEffect: {fileID: -8774992506441952361, guid: 01f4939bc46dca34c9861bbf1d0745a8, type: 3}
+  destroyEffect: {fileID: -8774992506441952361, guid: 0403e6f1a5852574cbcb4a9bc26c85ff, type: 3}
   effectDestroyTime: 0.3
   pushForce: 10
-  version: 0
 --- !u!212 &3163047783503055648
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -110,8 +108,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 390d049ad11a2ac49a873a3f8cdcb062, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 4ccbc95a31a51d849a1de8f26385016b, type: 3}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -157,7 +155,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.5
 --- !u!95 &6875601895093089135
 Animator:
   serializedVersion: 5
@@ -168,7 +166,7 @@ Animator:
   m_GameObject: {fileID: 3163047783503054047}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 5793fa6c069c0d0459012f6a2de63a12, type: 2}
+  m_Controller: {fileID: 9100000, guid: b54b00c589c092f478ad56f96fa3bb8a, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0

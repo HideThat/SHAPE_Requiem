@@ -9,6 +9,7 @@ public class Shadow_Of_King : Enemy
     [SerializeField] Animator animator;
     [SerializeField] EffectDestroy teleportEffect;
     [SerializeField] EffectDestroy teleportTrailPrefab;
+    [SerializeField] EffectDestroy lightBlowPrefab;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
     [SerializeField] GameObject misilePrefab;
@@ -128,7 +129,6 @@ public class Shadow_Of_King : Enemy
                 case 6:
                     yield return currentPatern = StartCoroutine(FakeDownstrokePattern(targetObject.transform, preDownstrokeFakeDelay, preDownstrokeFakeDelay));
                     break;
-                    break;
                 default:
                     break;
             }
@@ -193,6 +193,7 @@ public class Shadow_Of_King : Enemy
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
+        SummonTeleportEffect();
     }
 
     public void PerformTeleport(Vector2 teleportPoint)
@@ -227,6 +228,7 @@ public class Shadow_Of_King : Enemy
         EffectDestroy effect = Instantiate(teleportEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(0.4f);
+        SummonLightBlow(0.2f, transform.position, new Vector2(1.5f, 1.5f));
     }
 
     IEnumerator FireMisile(float _delay)
@@ -367,10 +369,12 @@ public class Shadow_Of_King : Enemy
         yield return rushPatern = StartCoroutine(RushStart(transform, endPosition, downstrokeMoveSpeed));
         CameraManager.Instance.StopShake();
         CameraManager.Instance.CameraShake();
+        SummonLightBlow(0.4f, transform.position, new Vector2(1.5f, 5f));
         yield return new WaitForSeconds(0.4f);
         SummonWave();
         animator.Play("A_Shadow_DownStroke_Ready_Reverse");
         yield return new WaitForSeconds(_posDelay);
+        SummonLightBlow(0.2f, transform.position, new Vector2(1.5f, 1.5f));
         DisAppearBoss();
     }
 
@@ -391,6 +395,7 @@ public class Shadow_Of_King : Enemy
         transform.DOMoveY(transform.position.y + 1f, _preDelay);
         yield return new WaitForSeconds(_preDelay);
         yield return rushPatern = StartCoroutine(RushStart(transform, endPosition + new Vector3(0f, 2.5f, 0f), downstrokeMoveSpeed));
+        SummonLightBlow(0.2f, transform.position, new Vector2(1.5f, 1.5f));
         yield return StartCoroutine(DownstrokePattern(_target, _preDelay, _posDelay));
     }
 
@@ -426,6 +431,15 @@ public class Shadow_Of_King : Enemy
         else
             scale = new Vector2(-scaleX, scaleY);
         transform.localScale = scale;
+    }
+
+    void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)
+    {
+        EffectDestroy effect = Instantiate(lightBlowPrefab);
+        effect.transform.position = _point;
+        effect.transform.localScale = _size;
+        effect.SetFade(_time);
+        effect.SetDestroy(_time);
     }
 
     public override void Dead()

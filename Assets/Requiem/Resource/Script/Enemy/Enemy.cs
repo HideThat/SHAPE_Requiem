@@ -13,6 +13,7 @@ public class Enemy : MonoBehaviour
     public float minBloodForce;
     public float maxBloodForce;
     public int bloodCount;
+    public Color hitColor = Color.red;
 
     public bool runeIn;
 
@@ -25,11 +26,13 @@ public class Enemy : MonoBehaviour
     {
         HP -= _damage;
 
+        Color currentColor = spriteRenderer.color;
+
         if (HP > 0)
         {
-            spriteRenderer.DOColor(Color.red, 0.2f).OnComplete(() =>
+            spriteRenderer.DOColor(hitColor, 0.2f).OnComplete(() =>
             {
-                spriteRenderer.DOColor(Color.white, 0.2f);
+                spriteRenderer.DOColor(currentColor, 0.2f);
             });
 
             for (int i = 0; i < bloodCount; i++)

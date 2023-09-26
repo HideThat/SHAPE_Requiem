@@ -5,6 +5,12 @@ using DG.Tweening;
 
 public class HomingMisile : Enemy
 {
+    public enum Version
+    {
+        One,
+        Two
+    }
+
     public GameObject target;  // 타겟 오브젝트
     public float waitTime = 1f;  // 대기 시간
     public float initialSpeed = 10f;  // 초기 발사 속도

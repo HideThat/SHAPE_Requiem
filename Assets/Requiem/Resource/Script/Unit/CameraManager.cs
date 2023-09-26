@@ -23,11 +23,13 @@ public class CameraManager : Singleton<CameraManager>
 
     public void CameraShake(float duration, float amplitude, float frequency)
     {
+        StopShake();
         shakeCoroutine = StartCoroutine(Shake(duration, amplitude, frequency));
     }
 
     public void CameraShake()
     {
+        StopShake();
         shakeCoroutine = StartCoroutine(Shake(shakeDuration, shakeMagnitude, shakeFrequency));
     }
 

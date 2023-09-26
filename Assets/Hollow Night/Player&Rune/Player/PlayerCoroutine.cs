@@ -33,6 +33,11 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public bool isPressingJump = false;
     public float jumpPressTime = 0f;
     public bool jumpEnded = false;
+    public int jumpCount = 0; // 점프한 횟수
+    public int maxJumpCount = 2; // 최대 점프 횟수
+    Coroutine jumpUpCoroutine;
+    Coroutine jumpDownCoroutine;
+    Coroutine groundCheckCoroutine;
 
     [Header("Attack")]
     public int damage;
@@ -94,6 +99,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     void Start()
     {
         StartCoroutine(PlayerControl());
+        groundCheckCoroutine = StartCoroutine(GroundCheck());
     }
     IEnumerator PlayerControl()
     {
@@ -101,15 +107,15 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         {
             if (canControl)
             {
-                GroundCheck();
                 Move();
                 JumpController();
 
                 if (Input.GetKeyDown(KeyCode.X) && canAttack)
                     StartCoroutine(Attack());
 
-                if (canDash && Input.GetKeyDown(KeyCode.C))
-                    yield return DashCoroutine();
+                // 대쉬
+                //if (canDash && Input.GetKeyDown(KeyCode.C))
+                //    yield return DashCoroutine();
             }
 
             PlayerCanvasUpdate();
@@ -201,24 +207,38 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     #region Jump_System
     private void JumpController()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && !isJump && m_isGrounded)
-            StartCoroutine(JumpUp());
+        if (Input.GetKeyDown(KeyCode.Z) && jumpCount < maxJumpCount)
+        {
+            StopCoroutine(groundCheckCoroutine);
+
+            if (jumpUpCoroutine != null)
+                StopCoroutine(jumpUpCoroutine);
+            if (jumpDownCoroutine != null)
+                StopCoroutine(jumpDownCoroutine);
+            jumpUpCoroutine = StartCoroutine(JumpUp());
+            jumpCount++;
+        }
     }
 
     IEnumerator JumpUp()
     {
         SetJumpState(true, true, false);
-        EffectDestroy effect = Instantiate(jumpEffect);
-        effect.transform.position = wallCastTransform.position;
-        effect.SetDestroy(0.32f);
+        if (jumpCount == 0)
+        {
+            EffectDestroy effect = Instantiate(jumpEffect);
+            effect.transform.position = wallCastTransform.position;
+            effect.SetDestroy(0.32f);
+        }
+        
         while (isPressingJump)
         {
             UpdateJumpPressTime();
 
             if (ShouldEndJump())
             {
+                groundCheckCoroutine = StartCoroutine(GroundCheck());
                 rigid.velocity = new Vector2(rigid.velocity.x, 0f);
-                StartCoroutine(JumpDown());
+                jumpDownCoroutine = StartCoroutine(JumpDown());
                 SetJumpState(false, true, true);  // 점프가 끝났으므로 jumpPressTime 초기화
                 break;
             }
@@ -269,13 +289,21 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         }
     }
 
-    private void GroundCheck()
+    IEnumerator GroundCheck()
     {
-        m_isGrounded = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, platformCastDistance, platform).collider != null;
-        if (m_isGrounded) canDashDuringJump = true;
-        animator.SetBool("IsGround", m_isGrounded);
-        animator.SetBool("IsJump", !m_isGrounded);
-        isJump = !m_isGrounded;
+        while (true)
+        {
+            m_isGrounded = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, platformCastDistance, platform).collider != null;
+            if (m_isGrounded)
+            {
+                jumpCount = 0;
+                canDashDuringJump = true;
+            }
+            animator.SetBool("IsGround", m_isGrounded);
+            animator.SetBool("IsJump", !m_isGrounded);
+            isJump = !m_isGrounded;
+            yield return null;
+        }
     }
     #endregion
     #region Attack_System
@@ -325,6 +353,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         {
             rigid.velocity = new Vector2(rigid.velocity.x, 0f);
             canDashDuringJump = true;
+            jumpCount = 1;
         }
         StartCoroutine(ApplyPushForce(hitSomething, Vector2.up, pushForce * 2));
         yield return new WaitForSeconds(attackDelay);

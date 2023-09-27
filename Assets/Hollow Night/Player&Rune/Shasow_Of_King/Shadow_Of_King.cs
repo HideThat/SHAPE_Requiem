@@ -138,6 +138,7 @@ public class Shadow_Of_King : Enemy
 
     IEnumerator RandomTeleport(float _preDelay, float _posDelay)
     {
+
         animator.Play("A_Shadow_TeleportAppear_Reverse");
         yield return new WaitForSeconds(_preDelay);
         SummonTeleportEffect();
@@ -260,7 +261,8 @@ public class Shadow_Of_King : Enemy
         animator.Play("A_Shadow_TransWave");
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
         yield return new WaitForSeconds(_preDelay);
-        
+
+        if (rushPatern != null) StopCoroutine(rushPatern);
         yield return rushPatern = StartCoroutine(RushStart(rushStart, rushEnd, rushSpeed));
         animator.Play("A_Shadow_TransWave_Reverse");
         yield return new WaitForSeconds(_preDelay);
@@ -269,13 +271,14 @@ public class Shadow_Of_King : Enemy
 
     IEnumerator RushStart(Transform _start, Transform _end, float _speed)
     {
-        if (rushPatern != null)
-            StopCoroutine(rushPatern);
+        float step = _speed / 200f;
 
-        float step = (_speed * Time.deltaTime);
+        Debug.Log($"Initial _speed: {_speed}, step: {step}");
+
         while (Vector3.Distance(transform.position, _end.position) > step)
         {
             Vector3 direction = (_end.position - transform.position).normalized;
+
             transform.Translate(direction * step, Space.World);
 
             yield return null;
@@ -284,13 +287,14 @@ public class Shadow_Of_King : Enemy
 
     IEnumerator RushStart(Transform _start, Vector2 _end, float _speed)
     {
-        if (rushPatern != null)
-            StopCoroutine(rushPatern);
+        float step = _speed / 200f;
 
-        float step = (_speed * Time.deltaTime);
+        Debug.Log($"Initial _speed: {_speed}, step: {step}");
+
         while (Vector3.Distance(transform.position, _end) > step)
         {
             Vector3 direction = (_end - (Vector2)transform.position).normalized;
+
             transform.Translate(direction * step, Space.World);
 
             yield return null;
@@ -324,6 +328,7 @@ public class Shadow_Of_King : Enemy
             hulauf.rotationSpeed = -hulauf.rotationSpeed;
         hulauf.transform.position = transform.position;
         yield return new WaitForSeconds(_preDelay);
+        if (rushPatern != null) StopCoroutine(rushPatern);
         yield return rushPatern = StartCoroutine(RushStart(rushStart, rushEnd, rushSpeed));
         hulauf.transform.parent = null;
         DisAppearBoss();
@@ -366,6 +371,7 @@ public class Shadow_Of_King : Enemy
 
         transform.DOMoveY(transform.position.y + 1f, _preDelay);
         yield return new WaitForSeconds(_preDelay);
+        if (rushPatern != null) StopCoroutine(rushPatern);
         yield return rushPatern = StartCoroutine(RushStart(transform, endPosition, downstrokeMoveSpeed));
         CameraManager.Instance.StopShake();
         CameraManager.Instance.CameraShake();
@@ -394,6 +400,7 @@ public class Shadow_Of_King : Enemy
 
         transform.DOMoveY(transform.position.y + 1f, _preDelay);
         yield return new WaitForSeconds(_preDelay);
+        if (rushPatern != null) StopCoroutine(rushPatern);
         yield return rushPatern = StartCoroutine(RushStart(transform, endPosition + new Vector3(0f, 2.5f, 0f), downstrokeMoveSpeed));
         SummonLightBlow(0.2f, transform.position, new Vector2(1.5f, 1.5f));
         yield return StartCoroutine(DownstrokePattern(_target, _preDelay, _posDelay));

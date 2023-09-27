@@ -58,9 +58,10 @@ MonoBehaviour:
   minBloodForce: 0
   maxBloodForce: 0
   bloodCount: 0
+  hitColor: {r: 1, g: 0, b: 0, a: 1}
+  currentColor: {r: 0, g: 0, b: 0, a: 1}
   runeIn: 0
   target: {fileID: 0}
-  animator: {fileID: 6875601895093089135}
   waitTime: 0.2
   initialSpeed: 3
   continuousForce: 10
@@ -68,7 +69,6 @@ MonoBehaviour:
   destroyEffect: {fileID: -8774992506441952361, guid: 01f4939bc46dca34c9861bbf1d0745a8, type: 3}
   effectDestroyTime: 0.3
   pushForce: 10
-  version: 0
 --- !u!212 &3163047783503055648
 SpriteRenderer:
   m_ObjectHideFlags: 0

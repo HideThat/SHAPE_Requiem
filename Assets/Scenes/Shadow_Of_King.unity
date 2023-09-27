@@ -543,6 +543,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
+      propertyPath: dashTime
+      value: 0.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
       propertyPath: dashDelay
       value: 0.3
       objectReference: {fileID: 0}
@@ -6154,7 +6158,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 957027525}
-  - component: {fileID: 957027524}
   - component: {fileID: 957027528}
   - component: {fileID: 957027523}
   - component: {fileID: 957027526}
@@ -6218,103 +6221,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &957027524
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 957027522}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5e6b6b417df496142ad52c9073304c66, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  HP: 300
-  damage: 1
-  m_collider2D: {fileID: 0}
-  spriteRenderer: {fileID: 957027523}
-  bloodPrefab: {fileID: 4040198546950883084, guid: 33678a82f80a26948b7100f3c437d288, type: 3}
-  minBloodSize: 0.2
-  maxBloodSize: 0.5
-  minBloodForce: 10
-  maxBloodForce: 20
-  bloodCount: 5
-  hitColor: {r: 1, g: 0, b: 0, a: 1}
-  runeIn: 0
-  player:
-    serializedVersion: 2
-    m_Bits: 8
-  animator: {fileID: 957027526}
-  downStroke_Wait: {fileID: 1035475388}
-  downStroke_Active: {fileID: 8191773267080062267, guid: 49029f1e03003544ba3b2465d799b027, type: 3}
-  downStroke_Fake: {fileID: 6132460153838695762, guid: 34f778b94caedd144bd8fe7fd5d7784e, type: 3}
-  teleportEffect: {fileID: 6269393924802659680, guid: 9b32ca76d8aafb44295d1c476dfbfd69, type: 3}
-  teleportTrailPrefab: {fileID: 6269393924802659680, guid: 9b32ca76d8aafb44295d1c476dfbfd69, type: 3}
-  trailSpacing: 1.5
-  appearDelay: 3
-  misilePrefab: {fileID: 3163047783503054047, guid: 5a76019b466bcd34fb0884e94f7dc746, type: 3}
-  focusEffectPrefab: {fileID: 3986611902124828016, guid: f854c260e749de741bf331ba65f0f87a, type: 3}
-  hulaufPrefab: {fileID: 444373796737971397, guid: c51db66fb585cfd47acf4959dd2ef8f3, type: 3}
-  wavePrefab: {fileID: 5086332332767373210, guid: a1d6b2bdb6cadf84fb8266c82f91a1b9, type: 3}
-  launchPoint: {fileID: 2020651408}
-  radius: 5
-  teleportPointList:
-  - {fileID: 2023165597}
-  - {fileID: 1268860364}
-  - {fileID: 1594256167}
-  - {fileID: 548991014}
-  - {fileID: 1689970661}
-  - {fileID: 784813724}
-  - {fileID: 1203183323}
-  - {fileID: 283805068}
-  - {fileID: 971930429}
-  - {fileID: 1586950647}
-  - {fileID: 1414560592}
-  - {fileID: 1955308767}
-  - {fileID: 443530775}
-  - {fileID: 1407923456}
-  - {fileID: 1395550907}
-  - {fileID: 2064823047}
-  - {fileID: 1365448138}
-  - {fileID: 1149798818}
-  - {fileID: 226800141}
-  - {fileID: 342349717}
-  - {fileID: 1114305172}
-  - {fileID: 977170275}
-  - {fileID: 257082650}
-  - {fileID: 644748989}
-  rushPointList:
-  - {fileID: 430680047}
-  - {fileID: 1865355295}
-  hulaufRushList:
-  - {fileID: 1254667597}
-  - {fileID: 1300722066}
-  preRandomTeleportDelay: 0
-  posRandomTeleportDelay: 2
-  preFireDelay: 1
-  postFireDelay: 0.6
-  rushSpeed: 12
-  preRushDelay: 1
-  posRushDelay: 2
-  preHulaufRushDelay: 1
-  posHulaufRushDelay: 2
-  hulaufShootSpeed: 10
-  hulaufShootForce: 5
-  downstrokePositionY: 7
-  downstrokeMoveDistance: 9
-  downstrokeMoveSpeed: 30
-  waitDownstroke: 0.5
-  preDownstrokeDelay: 0.5
-  posDownstrokeDelay: 2
-  preDownstrokeFakeDelay: 0.5
-  posDownstrokeFakeDelay: 2
-  preShootWaveDelay: 3
-  middleShootWaveDelay: 1
-  posShootWaveDelay: 0.6
-  wavePositionY: -1.424495
-  waveCorrectionX: 0
-  currentPosition: {x: 0, y: 0}
 --- !u!4 &957027525
 Transform:
   m_ObjectHideFlags: 0
@@ -6376,6 +6282,7 @@ MonoBehaviour:
   maxBloodForce: 20
   bloodCount: 5
   hitColor: {r: 1, g: 0, b: 0, a: 1}
+  currentColor: {r: 0, g: 0, b: 0, a: 1}
   runeIn: 0
   player:
     serializedVersion: 2
@@ -6427,7 +6334,7 @@ MonoBehaviour:
   posRandomTeleportDelay: 0.5
   preFireDelay: 1
   postFireDelay: 0.6
-  rushSpeed: 12
+  rushSpeed: 10
   preRushDelay: 1
   posRushDelay: 1
   preHulaufRushDelay: 1

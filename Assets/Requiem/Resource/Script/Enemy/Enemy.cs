@@ -14,8 +14,16 @@ public class Enemy : MonoBehaviour
     public float maxBloodForce;
     public int bloodCount;
     public Color hitColor = Color.red;
+    public Color currentColor = Color.white;
 
     public bool runeIn;
+
+    Tween colorTween;
+
+    protected virtual void Start()
+    {
+        currentColor = spriteRenderer.color;
+    }
 
     public virtual void ResetEnemy()
     {
@@ -26,13 +34,14 @@ public class Enemy : MonoBehaviour
     {
         HP -= _damage;
 
-        Color currentColor = spriteRenderer.color;
+        if (colorTween != null)
+            DOTween.Kill(colorTween);
 
         if (HP > 0)
         {
-            spriteRenderer.DOColor(hitColor, 0.2f).OnComplete(() =>
+            colorTween = spriteRenderer.DOColor(hitColor, 0.2f).OnComplete(() =>
             {
-                spriteRenderer.DOColor(currentColor, 0.2f);
+                colorTween = spriteRenderer.DOColor(currentColor, 0.2f);
             });
 
             for (int i = 0; i < bloodCount; i++)

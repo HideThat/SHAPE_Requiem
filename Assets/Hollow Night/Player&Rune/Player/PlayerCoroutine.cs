@@ -210,7 +210,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         if (Input.GetKeyDown(KeyCode.Z) && !isJump)
         {
-            StopCoroutine(groundCheckCoroutine);
+            //StopCoroutine(groundCheckCoroutine);
 
             if (jumpUpCoroutine != null)
                 StopCoroutine(jumpUpCoroutine);
@@ -245,7 +245,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
             if (ShouldEndJump())
             {
-                groundCheckCoroutine = StartCoroutine(GroundCheck());
+                //groundCheckCoroutine = StartCoroutine(GroundCheck());
                 rigid.velocity = new Vector2(rigid.velocity.x, 0f);
                 jumpDownCoroutine = StartCoroutine(JumpDown());
                 SetJumpState(false, true, true);  // 점프가 끝났으므로 jumpPressTime 초기화
@@ -637,46 +637,43 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         if (canDash && canDashDuringJump)
         {
-            if (Input.GetKeyDown(KeyCode.C))
+            if (transform.rotation.y != 0f)
+                dashDirection = -1f;
+            else
+                dashDirection = 1f;
+
+            EffectDestroy effect = Instantiate(dashEffect);
+            effect.transform.parent = transform;
+            if (transform.rotation.y == 0f)
+                effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+            effect.transform.position = transform.position;
+            effect.SetFade(0.2f);
+            effect.SetDestroy(0.3f);
+            isDash = true;
+            canDash = false;
+            canDashDuringJump = false;
+
+            isPressingJump = false;
+            jumpPressTime = 0f;
+            rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+            jumpEnded = true;
+            animator.SetBool("IsDown", true);
+            animator.SetBool("IsDash", true);
+            animator.SetTrigger("DashTrigger");
+
+            // 대시 시간 동안 대시를 실행
+            float elapsed = 0;
+            while (elapsed < dashTime)
             {
-                if (transform.rotation.y != 0f)
-                    dashDirection = -1f;
-                else
-                    dashDirection = 1f;
-
-                EffectDestroy effect = Instantiate(dashEffect);
-                effect.transform.parent = transform;
-                if (transform.rotation.y == 0f)
-                    effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-                effect.transform.position = transform.position;
-                effect.SetFade(0.2f);
-                effect.SetDestroy(0.3f);
-                isDash = true;
-                canDash = false;
-                canDashDuringJump = false;
-
-                isPressingJump = false;
-                jumpPressTime = 0f;
-                rigid.velocity = new Vector2(rigid.velocity.x, 0f);
-                jumpEnded = true;
-                animator.SetBool("IsDown", true);
-                animator.SetBool("IsDash", true);
-                animator.SetTrigger("DashTrigger");
-
-                // 대시 시간 동안 대시를 실행
-                float elapsed = 0;
-                while (elapsed < dashTime)
-                {
-                    rigid.velocity = new Vector2(dashSpeed * dashDirection, 0f);
-                    elapsed += Time.deltaTime;
-                    yield return null;
-                }
-
-                // 대시 종료
-                isDash = false;
-                rigid.velocity = Vector2.zero;
-                animator.SetBool("IsDash", false);
+                rigid.velocity = new Vector2(dashSpeed * dashDirection, 0f);
+                elapsed += Time.deltaTime;
+                yield return null;
             }
+
+            // 대시 종료
+            isDash = false;
+            rigid.velocity = Vector2.zero;
+            animator.SetBool("IsDash", false);
 
             dashCurrentDelay = dashDelay;
             StartCoroutine(DashDelay());

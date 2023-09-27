@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 95b64c4cf17c86c4591d8826b0a75dcc
+guid: a287eff1b519457429bf59ca4c58e61c
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -33,7 +33,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -47,7 +47,7 @@ TextureImporter:
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 24
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -129,85 +129,85 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: "\uB300\uC26C \uC774\uD399\uD2B8_0"
+      name: dashEffect_0
       rect:
         serializedVersion: 2
-        x: 56
-        y: 16
-        width: 21
-        height: 32
+        x: 4
+        y: 350
+        width: 123
+        height: 73
       alignment: 9
-      pivot: {x: 0.2, y: 0.7}
+      pivot: {x: 0, y: 0.9}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1641e4b92ec462a49b42a8e232cb6914
-      internalID: -1344607215
+      spriteID: 5c8d6449a9c7b25428a3ccb98fcdda79
+      internalID: 170888385
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uB300\uC26C \uC774\uD399\uD2B8_3"
+      name: dashEffect_1
       rect:
         serializedVersion: 2
-        x: 97
-        y: 15
-        width: 38
-        height: 34
+        x: 267
+        y: 312
+        width: 223
+        height: 144
       alignment: 9
-      pivot: {x: 0.2, y: 0.7}
+      pivot: {x: 0, y: 0.9}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 9abb0368b101a58439af99fc1bcba29c
-      internalID: -1673504304
+      spriteID: 752ff8a680616144ebc550aae73e85c4
+      internalID: 1038568347
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uB300\uC26C \uC774\uD399\uD2B8_4"
+      name: dashEffect_2
       rect:
         serializedVersion: 2
-        x: 151
-        y: 13
-        width: 27
-        height: 39
+        x: 57
+        y: 53
+        width: 186
+        height: 149
       alignment: 9
-      pivot: {x: 0.2, y: 0.7}
+      pivot: {x: 0, y: 0.9}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 74e4f8fda0428384dae0a520ff14e003
-      internalID: -480052785
+      spriteID: 2f62eeb0169ece14a88bff7a97f09876
+      internalID: -1720850408
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: "\uB300\uC26C \uC774\uD399\uD2B8_"
+      name: dashEffect_3
       rect:
         serializedVersion: 2
-        x: 14
-        y: 18
-        width: 15
-        height: 23
+        x: 331
+        y: 52
+        width: 175
+        height: 152
       alignment: 9
-      pivot: {x: 0.2, y: 0.7}
+      pivot: {x: 0, y: 0.9}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 62ab60372fb222345a7c9e17e85024b1
-      internalID: 764936507
+      spriteID: 662c6c601faea364096d069294dde8db
+      internalID: 1451107758
       vertices: []
       indices: 
       edges: []
@@ -223,14 +223,10 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      "\uB300\uC26C \uC774\uD399\uD2B8_3": -1673504304
-      "\uB300\uC26C \uC774\uD399\uD2B8_4": -480052785
-      "\uB300\uC26C \uC774\uD399\uD2B8_8": -1195005174
-      "\uB300\uC26C \uC774\uD399\uD2B8_": 764936507
-      "\uB300\uC26C \uC774\uD399\uD2B8_5": 369963255
-      "\uB300\uC26C \uC774\uD399\uD2B8_6": -884106796
-      "\uB300\uC26C \uC774\uD399\uD2B8_7": -741333684
-      "\uB300\uC26C \uC774\uD399\uD2B8_0": -1344607215
+      dashEffect_0: 170888385
+      dashEffect_3: 1451107758
+      dashEffect_2: -1720850408
+      dashEffect_1: 1038568347
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

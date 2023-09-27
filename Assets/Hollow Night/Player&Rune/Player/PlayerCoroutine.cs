@@ -24,6 +24,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     [Header("Jump")]
     public EffectDestroy jumpEffect;
+    public EffectDestroy doubleJumpEffect;
     public float minJumpSpeed = 2f; // 최대 점프 속도
     public float timeToReachMaxSpeed = 2f; // 최대 점프 속도
     public float platformCastDistance; // 땅과의 충돌 판정
@@ -114,8 +115,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                     StartCoroutine(Attack());
 
                 // 대쉬
-                //if (canDash && Input.GetKeyDown(KeyCode.C))
-                //    yield return DashCoroutine();
+                if (canDash && Input.GetKeyDown(KeyCode.C))
+                    yield return DashCoroutine();
             }
 
             PlayerCanvasUpdate();
@@ -207,7 +208,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     #region Jump_System
     private void JumpController()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && jumpCount < maxJumpCount)
+        if (Input.GetKeyDown(KeyCode.Z) && !isJump)
         {
             StopCoroutine(groundCheckCoroutine);
 
@@ -216,7 +217,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             if (jumpDownCoroutine != null)
                 StopCoroutine(jumpDownCoroutine);
             jumpUpCoroutine = StartCoroutine(JumpUp());
-            jumpCount++;
+
+            //jumpCount++;
         }
     }
 
@@ -229,7 +231,14 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.position = wallCastTransform.position;
             effect.SetDestroy(0.32f);
         }
-        
+        else if (jumpCount == 1)
+        {
+            EffectDestroy effect = Instantiate(doubleJumpEffect);
+            effect.transform.position = wallCastTransform.position;
+            effect.SetSmaller(1f);
+            effect.SetDestroy(1f);
+        }
+
         while (isPressingJump)
         {
             UpdateJumpPressTime();
@@ -630,41 +639,43 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         {
             if (Input.GetKeyDown(KeyCode.C))
             {
-                dashDirection = Input.GetAxisRaw("Debug Horizontal");
+                if (transform.rotation.y != 0f)
+                    dashDirection = -1f;
+                else
+                    dashDirection = 1f;
 
-                if (dashDirection != 0)
+                EffectDestroy effect = Instantiate(dashEffect);
+                effect.transform.parent = transform;
+                if (transform.rotation.y == 0f)
+                    effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
+                effect.transform.position = transform.position;
+                effect.SetFade(0.2f);
+                effect.SetDestroy(0.3f);
+                isDash = true;
+                canDash = false;
+                canDashDuringJump = false;
+
+                isPressingJump = false;
+                jumpPressTime = 0f;
+                rigid.velocity = new Vector2(rigid.velocity.x, 0f);
+                jumpEnded = true;
+                animator.SetBool("IsDown", true);
+                animator.SetBool("IsDash", true);
+                animator.SetTrigger("DashTrigger");
+
+                // 대시 시간 동안 대시를 실행
+                float elapsed = 0;
+                while (elapsed < dashTime)
                 {
-                    EffectDestroy effect = Instantiate(dashEffect);
-                    if (transform.rotation.y == 0f)
-                        effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-                    effect.transform.position = transform.position;
-                    effect.SetDisappear(0.5f);
-                    effect.SetDestroy(1f);
-                    isDash = true;
-                    canDash = false;
-                    canDashDuringJump = false;
-
-                    isPressingJump = false;
-                    jumpPressTime = 0f;
-                    rigid.velocity = new Vector2(rigid.velocity.x, 0f);
-                    jumpEnded = true;
-                    animator.SetBool("IsDown", true);
-                    animator.SetBool("IsDash", true);
-                    animator.SetTrigger("DashTrigger");
-
-                    // 대시 시간 동안 대시를 실행
-                    float elapsed = 0;
-                    while (elapsed < dashTime)
-                    {
-                        rigid.velocity = new Vector2(dashSpeed * dashDirection, 0f);
-                        elapsed += Time.deltaTime;
-                        yield return null;
-                    }
-
-                    // 대시 종료
-                    isDash = false;
-                    animator.SetBool("IsDash", false);
+                    rigid.velocity = new Vector2(dashSpeed * dashDirection, 0f);
+                    elapsed += Time.deltaTime;
+                    yield return null;
                 }
+
+                // 대시 종료
+                isDash = false;
+                rigid.velocity = Vector2.zero;
+                animator.SetBool("IsDash", false);
             }
 
             dashCurrentDelay = dashDelay;
@@ -687,7 +698,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
             yield return null;
         }
-        
+
     }
     #endregion
 }

@@ -54,7 +54,7 @@ public class Shadow_Of_King : Enemy
     public Coroutine currentPatern;
     public Coroutine rushPatern;
 
-    void Start()
+    protected override void Start()
     {
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
@@ -263,23 +263,23 @@ public class Shadow_Of_King : Enemy
         yield return new WaitForSeconds(_preDelay);
 
         if (rushPatern != null) StopCoroutine(rushPatern);
-        yield return rushPatern = StartCoroutine(RushStart(rushStart, rushEnd, rushSpeed));
+        yield return rushPatern = StartCoroutine(RushStart(rushEnd, rushSpeed));
         animator.Play("A_Shadow_TransWave_Reverse");
-        yield return new WaitForSeconds(_preDelay);
+        yield return new WaitForSeconds(_posDelay);
         yield return StartCoroutine(RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay));
     }
 
-    IEnumerator RushStart(Transform _start, Transform _end, float _speed)
+    IEnumerator RushStart(Transform _end, float _speed)
     {
-        float step = _speed / 200f;
+        float step = _speed * Time.deltaTime;
+        Vector3 direction = (_end.position - transform.position).normalized;
 
-        Debug.Log($"Initial _speed: {_speed}, step: {step}");
-
-        while (Vector3.Distance(transform.position, _end.position) > step)
+        while (Vector3.Distance(transform.position, _end.position) > 0.01f)
         {
-            Vector3 direction = (_end.position - transform.position).normalized;
+            step = _speed * Time.deltaTime; // Update step inside the loop in case _speed changes
+            direction = (_end.position - transform.position).normalized; // Update direction
 
-            transform.Translate(direction * step, Space.World);
+            transform.position = Vector3.MoveTowards(transform.position, _end.position, step);
 
             yield return null;
         }
@@ -287,19 +287,21 @@ public class Shadow_Of_King : Enemy
 
     IEnumerator RushStart(Transform _start, Vector2 _end, float _speed)
     {
-        float step = _speed / 200f;
+        float step = _speed * Time.deltaTime;
+        Vector3 direction = (_end - (Vector2)transform.position).normalized;
 
-        Debug.Log($"Initial _speed: {_speed}, step: {step}");
 
-        while (Vector3.Distance(transform.position, _end) > step)
+        while (Vector3.Distance(transform.position, _end) > 0.01f)
         {
-            Vector3 direction = (_end - (Vector2)transform.position).normalized;
+            step = _speed * Time.deltaTime; // Update step inside the loop in case _speed changes
+            direction = (_end - (Vector2)transform.position).normalized; // Update direction
 
-            transform.Translate(direction * step, Space.World);
+            transform.position = Vector3.MoveTowards(transform.position, _end, step);
 
             yield return null;
         }
     }
+
 
     IEnumerator SphereHulaufRushPattern(float _preDelay, float _posDelay)
     {
@@ -329,7 +331,7 @@ public class Shadow_Of_King : Enemy
         hulauf.transform.position = transform.position;
         yield return new WaitForSeconds(_preDelay);
         if (rushPatern != null) StopCoroutine(rushPatern);
-        yield return rushPatern = StartCoroutine(RushStart(rushStart, rushEnd, rushSpeed));
+        yield return rushPatern = StartCoroutine(RushStart(rushEnd, rushSpeed));
         hulauf.transform.parent = null;
         DisAppearBoss();
         hulauf.rotationSpeed = -hulauf.rotationSpeed;

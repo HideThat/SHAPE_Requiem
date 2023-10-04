@@ -23,6 +23,8 @@ public class SoulTyrant : Enemy
     [SerializeField] EffectDestroy downStroke_Fake;
     [SerializeField] EffectDestroy teleportEffect;
     [SerializeField] EffectDestroy teleportTrailPrefab;
+    [SerializeField] EffectDestroy lightBlowPrefab;
+    [SerializeField] EffectDestroy burstEffectPrefab;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
     [SerializeField] GameObject misilePrefab;
@@ -39,6 +41,7 @@ public class SoulTyrant : Enemy
     public float preFireDelay = 1f;  // 미사일 발사 전 딜레이
     public float postFireDelay = 1f; // 미사일 발사 후 딜레이
     public float rushSpeed = 5f;
+    public float hulaufRushSpeed = 5f;
     public float preRushDelay = 1f;
     public float posRushDelay = 1f;
     public float preHulaufRushDelay = 1f;
@@ -66,7 +69,7 @@ public class SoulTyrant : Enemy
 
     public Coroutine currentPatern;
 
-    void Start()
+    protected override void Start()
     {
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
@@ -244,6 +247,7 @@ public class SoulTyrant : Enemy
         EffectDestroy effect = Instantiate(teleportEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(0.4f);
+        SummonLightBlow(0.2f, transform.position, new Vector2(2f, 2f));
     }
 
     IEnumerator FireMisile(float _delay)
@@ -267,24 +271,39 @@ public class SoulTyrant : Enemy
         SummonTeleportEffect();
         PlaceTeleportTrail(point1, point2);
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
+        animator.Play("A_Rush_Ready");
+        FocusEffect effect = Instantiate(focusEffectPrefab);
+        effect.transform.position = transform.position;
+        effect.SetFocusEffect(_preDelay - 0.7f, 5 / (_preDelay - 0.7f));
         yield return new WaitForSeconds(_preDelay);
-        yield return StartCoroutine(RushStart(rushStart, rushEnd));
+        animator.Play("A_Rush_Active");
+        yield return StartCoroutine(RushStart(rushEnd, rushSpeed));
+        animator.Play("A_Rush_Finish");
+        CameraManager.Instance.StopShake();
+        CameraManager.Instance.CameraShake();
+        if (rushEnd == rushPointList[0])
+        {
+            SummonBurstEffect(3f, new Vector2(-21, 0.5f), 60f);
+        }
+        else
+        {
+            SummonBurstEffect(3f, new Vector2(-21, 0.5f), -60f);
+        }
         
-        yield return StartCoroutine(RandomTeleport(0f, _posDelay));
+        yield return new WaitForSeconds(_posDelay);
     }
 
-    IEnumerator RushStart(Transform _start, Transform _end)
+    IEnumerator RushStart(Transform _end, float _speed)
     {
-        animator.Play("Soul_Tyrant_DownStroke_Kick");
-        float step = (rushSpeed * Time.deltaTime);
-        while (Vector3.Distance(transform.position, _end.position) > step)
+        while (Vector3.Distance(transform.position, _end.position) > 0.01f) // 일종의 "허용 오차"를 설정
         {
             Vector3 direction = (_end.position - transform.position).normalized;
-            transform.Translate(direction * step, Space.World);
-
+            float step = _speed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _end.position, step);
             yield return null;
         }
     }
+
 
     IEnumerator SphereHulaufRushPattern(float _preDelay, float _posDelay)
     {
@@ -307,7 +326,7 @@ public class SoulTyrant : Enemy
         hulauf.transform.position = transform.position;
         yield return new WaitForSeconds(_preDelay);
 
-        yield return StartCoroutine(RushStart(rushStart, rushEnd));
+        yield return StartCoroutine(RushStart(rushEnd, hulaufRushSpeed));
         hulauf.transform.parent = null;
         DisAppearBoss();
         hulauf.rotationSpeed = -hulauf.rotationSpeed;
@@ -334,7 +353,6 @@ public class SoulTyrant : Enemy
         Vector2 pos = _target.position;
         pos.y = downstrokePositionY;
         PerformTeleport(pos);
-        Vector2 point2 = transform.position;
         downStroke_Wait.gameObject.SetActive(true);
         animator.Play("Soul_Tyrant_Meditation");
         yield return new WaitForSeconds(_preDelay);
@@ -343,9 +361,11 @@ public class SoulTyrant : Enemy
         effect.transform.position = downStroke_Wait.transform.position;
         effect.SetDestroy(0.4f);
         downStroke_Wait.gameObject.SetActive(false);
-        Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
-
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(0.2f);
+        CameraManager.Instance.StopShake();
+        CameraManager.Instance.CameraShake();
+        SummonBurstEffect(3f, new Vector2(transform.position.x, 1.7f), 0f);
+        yield return new WaitForSeconds(0.3f);
         SummonWave();
         yield return new WaitForSeconds(_posDelay);
         DisAppearBoss();
@@ -367,10 +387,8 @@ public class SoulTyrant : Enemy
         effect.transform.position = downStroke_Wait.transform.position;
         effect.SetDestroy(0.4f);
         downStroke_Wait.gameObject.SetActive(false);
-        Vector3 endPosition = transform.position + new Vector3(0, -downstrokeMoveDistance, 0);
         downStroke_Wait.Play("DownStroke_Fake");
         yield return new WaitForSeconds(0.5f);
-
         yield return StartCoroutine(DownstrokePattern(_target, _preDelay, _posDelay));
     }
 
@@ -448,6 +466,38 @@ public class SoulTyrant : Enemy
             scale = new Vector2(-scaleX, scaleY);
         transform.localScale = scale;
     }
+
+    void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)
+    {
+        EffectDestroy effect = Instantiate(lightBlowPrefab);
+        effect.transform.position = _point;
+        effect.transform.localScale = _size;
+        effect.SetFade(_time);
+        effect.SetDestroy(_time);
+    }
+
+    void SummonBurstEffect(float _time, Vector2 _point, float _rotate)
+    {
+        EffectDestroy effect = Instantiate(burstEffectPrefab);
+        effect.transform.position = _point;
+
+        // ParticleSystem을 가져온 뒤 중지합니다.
+        ParticleSystem ps = effect.GetComponent<ParticleSystem>();
+        ps.Stop();
+
+        // Shape 모듈에 접근합니다.
+        ParticleSystem.ShapeModule shape = ps.shape;
+
+        // 모듈 설정을 변경합니다.
+        Vector3 currentRotation = shape.rotation;
+        shape.rotation = new Vector3(currentRotation.x, _rotate, currentRotation.z);
+
+        // ParticleSystem을 다시 시작합니다.
+        ps.Play();
+
+        effect.SetDestroy(_time);
+    }
+
 
     public override void Dead()
     {

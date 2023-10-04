@@ -5,7 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using static Unity.VisualScripting.Member;
+using DG.Tweening;
 
 public class PlayerCoroutine : Singleton<PlayerCoroutine>
 {
@@ -84,13 +84,10 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public float recorverDelay = 1f;
     public Coroutine hitCoroutine;
     public EffectDestroy hitEffect;
+    public Image canvasHitEffect;
     public float invincibleTime = 2.0f; // 무적 시간
     public float knockbackForce = 10.0f; // 뒤로 밀리는 힘
-
-    [Header("Skill")]
-    public int currentSoul;
-    public int maxSoul;
-    public Image soul;
+    public Tween timeTween;
 
     [Header("UI")]
     public Canvas uiCanvas;
@@ -120,7 +117,6 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             }
 
             PlayerCanvasUpdate();
-            SoulUpdate();
             yield return null;
         }
     }
@@ -357,7 +353,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         animator.Play("DownAttack");
         Vector2 boxPos = new(transform.position.x, transform.position.y - downAttackSizeY / 2);
-        bool hitSomething = PerformAttack(boxPos, new Vector2(downAttackSizeX, downAttackSizeY), Vector2.down);
+        bool hitSomething = PerformDownAttack(boxPos, new Vector2(downAttackSizeX, downAttackSizeY), Vector2.down);
         if (hitSomething)
         {
             rigid.velocity = new Vector2(rigid.velocity.x, 0f);
@@ -467,33 +463,46 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         return hitSomething;
     }
 
+    bool PerformDownAttack(Vector2 boxPos, Vector2 boxSize, Vector2 direction)
+    {
+        bool hitSomething = false;
+        RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos, boxSize, 0f, direction, 0f, enemyAndPlatform);
+        for (int i = 0; i < hit2D.Length; i++)
+        {
+            Collider2D collider = hit2D[i].collider;
+            EffectDestroy effect = Instantiate(attackEffect);
+            effect.transform.position = hit2D[i].point;
+            effect.SetDestroy(attackEffectDestroyTime);
+
+            if (Mathf.Abs(transform.rotation.y) < 0.0001f)
+                effect.transform.localScale = new Vector3(-1f, 1f, 1f);
+
+            if (collider.CompareTag("Enemy"))
+            {
+                ProcessEnemyHit(collider, effect);
+                hitSomething = true;
+            }
+            else if (collider.CompareTag("CanHit"))
+            {
+                hitSomething = true;
+            }
+            else if (collider.CompareTag("Platform"))
+            {
+                hitSomething = false;
+            }
+        }
+        return hitSomething;
+    }
+
     void ProcessEnemyHit(Collider2D collider, EffectDestroy effect)
     {
         Vector2 enemyPos = collider.transform.position;
         Vector2 myPos = transform.position;
         Vector2 attackDir = (enemyPos - myPos).normalized;
         collider.GetComponent<Enemy>().Hit(damage, attackDir);
-
-        currentSoul = Mathf.Min(currentSoul + getSoul, maxSoul);
-        GetSoul();
-        SoulUpdate();
     }
 
 
-    void GetSoul()
-    {
-        currentSoul += getSoul;
-
-        if (currentSoul > maxSoul)
-            currentSoul = maxSoul;
-
-        SoulUpdate();
-    }
-
-    void SoulUpdate()
-    {
-        soul.fillAmount = (float)currentSoul / (float)maxSoul;
-    }
     #endregion
     #region Hit_Sysytem
     public void Hit(Vector2 _player, Vector2 _enemy, int _damage)
@@ -523,8 +532,6 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         EffectDestroy effect = Instantiate(hitEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(1f);
-        // 3. 게임 시간 일시 정지
-
         if (HP > 0)
         {
             isHit = true;
@@ -536,9 +543,19 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             StartCoroutine(Dead());
             yield break;
         }
-        Time.timeScale = 0;
-        yield return new WaitForSecondsRealtime(0.3f);
-        Time.timeScale = originalTimeScale;
+
+        // 3. 게임 시간 일시 정지
+        // Time.timeScale을 0으로 천천히 느려지게 만듭니다.
+        canvasHitEffect.DOColor(Color.red, 0.5f);
+        if (timeTween != null) DOTween.Kill(timeTween);
+        timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.2f, 0.5f)
+            .OnComplete(() =>
+            {
+                // 0에 도달한 후 원래의 Time.timeScale 값으로 천천히 돌아갑니다.
+                if (timeTween != null) DOTween.Kill(timeTween);
+                timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 0.5f);
+                canvasHitEffect.DOColor(Color.clear, 0.5f);
+            });
 
         // 4. 반대 방향으로 밀리는 힘
 

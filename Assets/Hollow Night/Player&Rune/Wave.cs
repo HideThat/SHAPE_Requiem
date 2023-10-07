@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Wave : MonoBehaviour
+public class Wave : Enemy
 {
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] float initialSpeed = 2.0f; // 초기 속도

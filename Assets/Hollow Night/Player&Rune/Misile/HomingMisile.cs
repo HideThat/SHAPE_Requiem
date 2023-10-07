@@ -22,7 +22,7 @@ public class HomingMisile : Enemy
 
     private Rigidbody2D rigid;
 
-    void Start()
+    protected override void Start()
     {
         target = PlayerCoroutine.Instance.gameObject;
         rigid = GetComponent<Rigidbody2D>();
@@ -69,8 +69,10 @@ public class HomingMisile : Enemy
     {
         EffectDestroy effect = Instantiate(destroyEffect);
         effect.transform.position = transform.position;
-        effect.SetDestroy(effectDestroyTime);
+        effect.SetDisappear(effectDestroyTime);
+        effect.SetDestroy(effectDestroyTime + 2f);
         Destroy(gameObject);
+        
     }
 
     IEnumerator Disappear()
@@ -83,9 +85,9 @@ public class HomingMisile : Enemy
         });
     }
 
-    public override void Hit(int _damage, Vector2 _hitDir)
+    public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
-        base.Hit(_damage, _hitDir);
+        base.Hit(_damage, _hitDir, _audioSource);
 
         rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
     }

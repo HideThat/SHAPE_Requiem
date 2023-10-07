@@ -18,32 +18,24 @@ public class SoulTyrant : Enemy
     [Header("Soul_Tyrant")]
     [SerializeField] LayerMask player;
     [SerializeField] Animator animator;
+    [SerializeField] AudioSource voiceSource;
+    [SerializeField] AudioSource effectSource;
     [SerializeField] Animator downStroke_Wait;
     [SerializeField] EffectDestroy downStroke_Active;
     [SerializeField] EffectDestroy downStroke_Fake;
-    [SerializeField] EffectDestroy teleportEffect;
-    [SerializeField] EffectDestroy teleportTrailPrefab;
-    [SerializeField] EffectDestroy lightBlowPrefab;
     [SerializeField] EffectDestroy burstEffectPrefab;
+    [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
-    [SerializeField] GameObject misilePrefab;
     [SerializeField] FocusEffect focusEffectPrefab;
     [SerializeField] Hulauf hulaufPrefab;
     [SerializeField] Wave wavePrefab;
-    [SerializeField] Transform launchPoint;
     public float radius = 5f;
-    public List<Transform> teleportPointList;
-    public List<Transform> rushPointList;
+    
     public List<Transform> hulaufRushList;
-    public float preRandomTeleportDelay = 0f;
-    public float posRandomTeleportDelay = 1f;
-    public float preFireDelay = 1f;  // 미사일 발사 전 딜레이
-    public float postFireDelay = 1f; // 미사일 발사 후 딜레이
-    public float rushSpeed = 5f;
+    
+    
     public float hulaufRushSpeed = 5f;
-    public float preRushDelay = 1f;
-    public float posRushDelay = 1f;
     public float preHulaufRushDelay = 1f;
     public float posHulaufRushDelay = 1f;
     public float hulaufShootSpeed = 1f;
@@ -62,6 +54,37 @@ public class SoulTyrant : Enemy
     public float wavePositionY;
     public float waveCorrectionX;
     public Vector2 currentPosition;
+    public bool isDead = false;
+
+    [Header("RandomTeleport")]
+    public List<Transform> teleportPointList;
+    [SerializeField] EffectDestroy teleportEffect;
+    [SerializeField] EffectDestroy teleportTrailPrefab;
+    [SerializeField] EffectDestroy lightBlowPrefab;
+    public float preRandomTeleportDelay = 0f;
+    public float posRandomTeleportDelay = 1f;
+    public AudioClip randomTeleportClip;
+
+    [Header("fire")]
+    [SerializeField] GameObject misilePrefab;
+    [SerializeField] Transform launchPoint;
+    public float preFireDelay = 1f;  // 미사일 발사 전 딜레이
+    public float postFireDelay = 0.5f; // 미사일 발사 후 딜레이
+    public AudioClip fireReadyClip;
+    public AudioClip fireClip;
+    public AudioClip fireLaugh;
+
+
+    [Header("rush")]
+    public List<Transform> rushPointList;
+    public float rushSpeed = 5f;
+    public float preRushDelay = 1f;
+    public float posRushDelay = 1f;
+    public AudioClip rushReadyClip;
+    public AudioClip rushSpiritClip;
+    public AudioClip rushMoveClip;
+    public AudioClip rushBurstClip;
+
 
     GameObject targetObject;
     float scaleX;
@@ -159,6 +182,7 @@ public class SoulTyrant : Enemy
     IEnumerator RandomTeleport(float _preDelay, float _posDelay)
     {
         yield return new WaitForSeconds(_preDelay);
+        //voiceSource.PlayOneShot(randomTeleportClip);
         SummonTeleportEffect();
         Vector2 point1 = transform.position;
         PerformTeleport(GetRandomTeleportPoint());
@@ -177,6 +201,8 @@ public class SoulTyrant : Enemy
         effect.transform.position = launchPoint.position;
         effect.SetFocusEffect(_preDelay, 5 / _preDelay);
 
+        effectSource.PlayOneShot(fireReadyClip);
+        voiceSource.PlayOneShot(fireLaugh);
         yield return new WaitForSeconds(_preDelay);
         yield return StartCoroutine(FireMisile(0f));
         yield return new WaitForSeconds(_posDelay);
@@ -209,6 +235,7 @@ public class SoulTyrant : Enemy
 
     public void PerformTeleport(Transform teleportPoint)
     {
+        voiceSource.PlayOneShot(randomTeleportClip);
         animator.Play("Soul_Tyrant_Idle");
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
@@ -252,6 +279,8 @@ public class SoulTyrant : Enemy
 
     IEnumerator FireMisile(float _delay)
     {
+        effectSource.Stop();
+        effectSource.PlayOneShot(fireClip);
         GameObject miosile = Instantiate(misilePrefab, transform.position, Quaternion.identity);
         miosile.transform.position = launchPoint.position;
         yield return new WaitForSeconds(_delay);
@@ -272,13 +301,19 @@ public class SoulTyrant : Enemy
         PlaceTeleportTrail(point1, point2);
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
         animator.Play("A_Rush_Ready");
+        voiceSource.PlayOneShot(rushReadyClip);
         FocusEffect effect = Instantiate(focusEffectPrefab);
         effect.transform.position = transform.position;
         effect.SetFocusEffect(_preDelay - 0.7f, 5 / (_preDelay - 0.7f));
         yield return new WaitForSeconds(_preDelay);
+        voiceSource.Stop();
+        voiceSource.PlayOneShot(rushSpiritClip);
+        yield return new WaitForSeconds(0.2f);
         animator.Play("A_Rush_Active");
+        effectSource.PlayOneShot(rushMoveClip);
         yield return StartCoroutine(RushStart(rushEnd, rushSpeed));
         animator.Play("A_Rush_Finish");
+        effectSource.PlayOneShot(rushBurstClip);
         CameraManager.Instance.StopShake();
         CameraManager.Instance.CameraShake();
         if (rushEnd == rushPointList[0])
@@ -287,7 +322,7 @@ public class SoulTyrant : Enemy
         }
         else
         {
-            SummonBurstEffect(3f, new Vector2(-21, 0.5f), -60f);
+            SummonBurstEffect(3f, new Vector2(7f, 0.5f), -60f);
         }
         
         yield return new WaitForSeconds(_posDelay);
@@ -502,6 +537,29 @@ public class SoulTyrant : Enemy
     public override void Dead()
     {
         base.Dead();
+        if (!isDead)
+        {
+            isDead = true;
+            StopAllCoroutines();
+            animator.Play("Soul_Tyrant_Dead");
+            CameraManager.Instance.StopShake();
+            CameraManager.Instance.CameraShake(5f, 8f, 1f);
+
+            StartCoroutine(DeadCoroutine(5f));
+        }
+        
+    }
+
+    IEnumerator DeadCoroutine(float _delay)
+    {
+        EffectDestroy effect = Instantiate(DeadEffect);
+        effect.transform.position = transform.position;
+        effect.SetDestroy(15f);
+
+        yield return new WaitForSeconds(_delay);
+        Destroy(effect.transform.GetChild(0).gameObject);
+        SummonLightBlow(1f, transform.position, new Vector2(2f, 2f));
+        
 
         Destroy(gameObject);
     }

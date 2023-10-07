@@ -15,6 +15,7 @@ public class Enemy : MonoBehaviour
     public int bloodCount;
     public Color hitColor = Color.red;
     public Color currentColor = Color.white;
+    public AudioClip hitClip;
 
     public bool runeIn;
 
@@ -30,12 +31,14 @@ public class Enemy : MonoBehaviour
         // 리셋 로직
     }
 
-    public virtual void Hit(int _damage, Vector2 _hitDir)
+    public virtual void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         HP -= _damage;
 
         if (colorTween != null)
             DOTween.Kill(colorTween);
+
+        _audioSource.PlayOneShot(hitClip);
 
         if (HP > 0)
         {

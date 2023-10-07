@@ -10,6 +10,8 @@ public class EffectDestroy : MonoBehaviour
     public float destroyTime = 0f;
     public float fadeTime = 0f;
     public float smallerTime = 0f;
+    public AudioSource effectAudioSource;
+    public AudioClip effectClip;
 
     private void Start()
     {
@@ -30,6 +32,10 @@ public class EffectDestroy : MonoBehaviour
 
     IEnumerator DestroyObj(float _delay)
     {
+        if (effectAudioSource != null)
+        {
+            effectAudioSource.PlayOneShot(effectClip);
+        }
         yield return new WaitForSeconds(_delay);
         Destroy(gameObject);
     }

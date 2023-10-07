@@ -13,6 +13,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     [SerializeField] Collider2D m_collider;
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] bool canControl = true;
+    [SerializeField] AudioSource playerVoiceSource;
     [Header("Move")]
     public float playerSpeed;
     public Transform wallCastTransform;
@@ -21,6 +22,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     private bool isTouchingWall = false;
     Coroutine moveCoroutine;
     public bool canMove = true;
+    public AudioSource moveAudioSource;
+    public AudioClip moveClip;
 
     [Header("Jump")]
     public EffectDestroy jumpEffect;
@@ -30,6 +33,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public float platformCastDistance; // 땅과의 충돌 판정
     public bool isJump; // 점프 상태 체크
     public bool m_isGrounded; // 땅 접촉 상태 체크
+    public bool m_wasGrounded;
     public LayerMask platform; // 플랫폼 레이어 마스크
     public bool isPressingJump = false;
     public float jumpPressTime = 0f;
@@ -39,6 +43,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     Coroutine jumpUpCoroutine;
     Coroutine jumpDownCoroutine;
     Coroutine groundCheckCoroutine;
+    public AudioClip jumpClip;
 
     [Header("Attack")]
     public int damage;
@@ -55,6 +60,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public EffectDestroy attackEffect;
     public float attackEffectDestroyTime = 0.2f;
     public bool canAttack = true;
+    public AudioSource attackAudioSource;
+    public AudioClip attackClip;
+    public AudioClip downAttackClip;
+    public AudioSource hittingAudioSource;
+    public AudioClip[] wallHitClips;
+    public AudioClip spiritClip;
 
     [Header("Dash")]
     public EffectDestroy dashEffect;
@@ -67,6 +78,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public float dashDelay;
     public float dashCurrentDelay;
     public float dashDirection;
+    public AudioClip dashClip;
 
     [Header("HP")]
     public SpriteRenderer spriteRenderer;
@@ -88,6 +100,11 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public float invincibleTime = 2.0f; // 무적 시간
     public float knockbackForce = 10.0f; // 뒤로 밀리는 힘
     public Tween timeTween;
+    public Tween pinchTween;
+    public Coroutine playerPinchCoroutine;
+    public bool isDead = false;
+    public AudioClip hitClip;
+    public AudioClip deadClip;
 
     [Header("UI")]
     public Canvas uiCanvas;
@@ -98,6 +115,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         StartCoroutine(PlayerControl());
         groundCheckCoroutine = StartCoroutine(GroundCheck());
+        BGM_Manager.Instance.PlayBGM(0);
     }
     IEnumerator PlayerControl()
     {
@@ -145,6 +163,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Gizmos.DrawWireCube(downBoxPos, new(downAttackSizeX, downAttackSizeY));
     }
 
+    
+
 
 
     #region Move_System
@@ -163,6 +183,10 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         if (canMove)
         {
             transform.rotation = _dir > 0 ? Quaternion.identity : new Quaternion(0f, 180f, 0f, 0f);
+            if (!moveAudioSource.isPlaying && !isJump)
+            {
+                moveAudioSource.PlayOneShot(moveClip);
+            }
         }
         if (!animator.GetBool("IsMove"))
             StartCoroutine(MoveAniControl());
@@ -221,6 +245,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     IEnumerator JumpUp()
     {
         SetJumpState(true, true, false);
+        moveAudioSource.PlayOneShot(jumpClip);
         if (jumpCount == 0)
         {
             EffectDestroy effect = Instantiate(jumpEffect);
@@ -296,6 +321,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     IEnumerator GroundCheck()
     {
+
         while (true)
         {
             m_isGrounded = Physics2D.Raycast(m_collider.bounds.center, Vector2.down, platformCastDistance, platform).collider != null;
@@ -308,6 +334,13 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             animator.SetBool("IsJump", !m_isGrounded);
             isJump = !m_isGrounded;
             yield return null;
+
+            if (!m_wasGrounded && m_isGrounded)
+            {
+                moveAudioSource.Stop();
+            }
+
+            m_wasGrounded = m_isGrounded;
         }
     }
     #endregion
@@ -345,6 +378,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Vector2 boxPos = new(transform.position.x, transform.position.y + upAttackSizeY / 2);
         bool hitSomething = PerformAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
         StartCoroutine(ApplyPushForce(hitSomething, Vector2.down, pushForce));
+        attackAudioSource.PlayOneShot(attackClip);
 
         yield return new WaitForSeconds(attackDelay);
     }
@@ -359,6 +393,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             rigid.velocity = new Vector2(rigid.velocity.x, 0f);
             canDashDuringJump = true;
             jumpCount = 1;
+
+            attackAudioSource.PlayOneShot(downAttackClip);
+        }
+        else
+        {
+            attackAudioSource.PlayOneShot(downAttackClip);
         }
         StartCoroutine(ApplyPushForce(hitSomething, Vector2.up, pushForce * 2));
         yield return new WaitForSeconds(attackDelay);
@@ -375,7 +415,14 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce * 3));
             else
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
+
+            attackAudioSource.PlayOneShot(attackClip);
         }
+        else
+        {
+            attackAudioSource.PlayOneShot(attackClip);
+        }
+
         yield return new WaitForSeconds(attackDelay);
     }
 
@@ -390,6 +437,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce * 3));
             else
                 StartCoroutine(ApplyPushForce(hitSomething, DeterminePushDirection(), pushForce));
+
+            attackAudioSource.PlayOneShot(attackClip);
+        }
+        else
+        {
+            attackAudioSource.PlayOneShot(attackClip);
         }
         yield return new WaitForSeconds(attackDelay);
     }
@@ -438,6 +491,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     bool PerformAttack(Vector2 boxPos, Vector2 boxSize, Vector2 direction)
     {
+        playerVoiceSource.PlayOneShot(spiritClip);
         bool hitSomething = false;
         RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos, boxSize, 0f, direction, 0f, enemyAndPlatform);
         for (int i = 0; i < hit2D.Length; i++)
@@ -452,11 +506,13 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
             if (collider.CompareTag("Enemy"))
             {
-                ProcessEnemyHit(collider, effect);
+                ProcessEnemyHit(collider, effect, hittingAudioSource);
                 hitSomething = true;
             }
             else if (collider.CompareTag("Platform") || collider.CompareTag("CanHit"))
             {
+                int rand = Random.Range(0, 3);
+                hittingAudioSource.PlayOneShot(wallHitClips[rand]);
                 hitSomething = true;
             }
         }
@@ -479,7 +535,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
             if (collider.CompareTag("Enemy"))
             {
-                ProcessEnemyHit(collider, effect);
+                ProcessEnemyHit(collider, effect, hittingAudioSource);
                 hitSomething = true;
             }
             else if (collider.CompareTag("CanHit"))
@@ -488,18 +544,20 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             }
             else if (collider.CompareTag("Platform"))
             {
+                int rand = Random.Range(0, 3);
+                hittingAudioSource.PlayOneShot(wallHitClips[rand]);
                 hitSomething = false;
             }
         }
         return hitSomething;
     }
 
-    void ProcessEnemyHit(Collider2D collider, EffectDestroy effect)
+    void ProcessEnemyHit(Collider2D collider, EffectDestroy effect, AudioSource _audioSource)
     {
         Vector2 enemyPos = collider.transform.position;
         Vector2 myPos = transform.position;
         Vector2 attackDir = (enemyPos - myPos).normalized;
-        collider.GetComponent<Enemy>().Hit(damage, attackDir);
+        collider.GetComponent<Enemy>().Hit(damage, attackDir, _audioSource);
     }
 
 
@@ -507,8 +565,10 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     #region Hit_Sysytem
     public void Hit(Vector2 _player, Vector2 _enemy, int _damage)
     {
-        if (!isHit)
+        if (!isHit && !isDead)
         {
+            moveAudioSource.PlayOneShot(hitClip);
+
             rigid.velocity = Vector2.zero;
 
             Vector2 _force;
@@ -540,7 +600,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         }
         else
         {
-            StartCoroutine(Dead());
+            Dead(_force);
             yield break;
         }
 
@@ -554,7 +614,16 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 // 0에 도달한 후 원래의 Time.timeScale 값으로 천천히 돌아갑니다.
                 if (timeTween != null) DOTween.Kill(timeTween);
                 timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 0.5f);
-                canvasHitEffect.DOColor(Color.clear, 0.5f);
+                canvasHitEffect.DOColor(Color.clear, 0.5f).OnComplete(() =>
+                {
+                    if (HP == 2)
+                    {
+                        if (playerPinchCoroutine != null) StopCoroutine(playerPinchCoroutine);
+                        playerPinchCoroutine = StartCoroutine(PlayerPinch());
+                        BGM_Manager.Instance.PlayBGM(2);
+                    }
+                });
+
             });
 
         // 4. 반대 방향으로 밀리는 힘
@@ -567,19 +636,56 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         yield return null;
     }
 
+    void Dead(Vector2 _force)
+    {
+        StopAllCoroutines();
+        StartCoroutine(DeadCoroutine(_force));
+    }
 
 
-    IEnumerator Dead()
+    IEnumerator DeadCoroutine(Vector2 _force)
     {
         HP = maxHP;
         animator.SetTrigger("IsDead");
         SaveSystem.Instance.playerState.playerDead = true;
         GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        loseControl = true;
+        isDead = true;
+        rigid.AddForce(_force * knockbackForce, ForceMode2D.Impulse);
+        Debug.Log($"밀리는 방향 = {_force * knockbackForce}");
+        moveAudioSource.PlayOneShot(deadClip);
+
+        // Time.timeScale을 0으로 천천히 느려지게 만듭니다.
+        float originalTimeScale = Time.timeScale;
+        if (playerPinchCoroutine != null) StopCoroutine(playerPinchCoroutine);
+        if (pinchTween != null) DOTween.Kill(pinchTween);
+        pinchTween = canvasHitEffect.DOColor(Color.red, 1f);
+        if (timeTween != null) DOTween.Kill(timeTween);
+        timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.2f, 1f)
+            .OnComplete(() =>
+            {
+                // 0에 도달한 후 원래의 Time.timeScale 값으로 천천히 돌아갑니다.
+                if (timeTween != null) DOTween.Kill(timeTween);
+                timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 1f);
+            });
 
         yield return new WaitForSeconds(2f);
+    }
 
-        SceneManager.LoadScene("SoulTyrant");
+    IEnumerator PlayerPinch()
+    {
+        if (pinchTween != null) DOTween.Kill(pinchTween);
+
+        while (true)
+        {
+            pinchTween = canvasHitEffect.DOColor(Color.red, 1.5f);
+            
+            yield return new WaitForSeconds(1.5f);
+
+            pinchTween = canvasHitEffect.DOColor(Color.clear, 1.5f);
+
+            yield return new WaitForSeconds(1.5f);
+        }
+
     }
 
     IEnumerator HitEffet()
@@ -654,6 +760,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         if (canDash && canDashDuringJump)
         {
+            moveAudioSource.PlayOneShot(dashClip);
+
             if (transform.rotation.y != 0f)
                 dashDirection = -1f;
             else
@@ -663,7 +771,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.parent = transform;
             if (transform.rotation.y == 0f)
                 effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
-            effect.transform.position = transform.position;
+            Vector2 effectPos = new Vector2(transform.position.x, transform.position.y + 0.9f);
+            effect.transform.position = effectPos;
             effect.SetFade(0.2f);
             effect.SetDestroy(0.3f);
             isDash = true;

@@ -86,6 +86,22 @@ public class Hulauf : MonoBehaviour
 
             yield return null;
         }
+    }
+
+    public IEnumerator ShootHulaufCoroutine(Transform _target, float _initSpeed, float _force, int a)
+    {
+        float currentSpeed = _initSpeed;
+
+        while (Vector3.Distance(transform.position, _target.position) > 0.1f) // You can adjust this threshold as needed
+        {
+            float step = currentSpeed * Time.deltaTime;
+            transform.position = Vector3.MoveTowards(transform.position, _target.position, step);
+
+            // Increase the speed using the force
+            currentSpeed += _force * Time.deltaTime;
+
+            yield return null;
+        }
 
         Destroy(gameObject);
     }

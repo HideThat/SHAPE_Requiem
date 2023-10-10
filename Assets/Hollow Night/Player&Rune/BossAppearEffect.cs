@@ -17,6 +17,21 @@ public class BossAppearEffect : MonoBehaviour
         StartCoroutine(DestroyObj());
     }
 
+    public void EffectOneShoot()
+    {
+        StartCoroutine(EffectOneShootCoroutine());
+    }
+    IEnumerator EffectOneShootCoroutine()
+    {
+        // Effect 积己
+        EffectDestroy effect = Instantiate(appearEffectPrefab, transform.position, Quaternion.identity);
+        effect.transform.position = transform.position;
+        // 农扁啊 目瘤绰 贸府
+        StartCoroutine(GrowEffect(effect));
+
+        yield return null;
+    }
+
     IEnumerator EffectLoop()
     {
         while (true)
@@ -52,6 +67,5 @@ public class BossAppearEffect : MonoBehaviour
         yield return new WaitForSeconds(duration);
         StopCoroutine(Loop);
         yield return new WaitForSeconds(duration);
-        Destroy(gameObject);
     }
 }

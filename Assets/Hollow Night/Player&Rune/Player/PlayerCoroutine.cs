@@ -390,9 +390,10 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         bool hitSomething = PerformDownAttack(boxPos, new Vector2(downAttackSizeX, downAttackSizeY), Vector2.down);
         if (hitSomething)
         {
+            StopCoroutine(jumpUpCoroutine);
+            StartCoroutine(JumpDown());
             rigid.velocity = new Vector2(rigid.velocity.x, 0f);
             canDashDuringJump = true;
-            jumpCount = 1;
 
             attackAudioSource.PlayOneShot(downAttackClip);
         }
@@ -509,7 +510,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 ProcessEnemyHit(collider, effect, hittingAudioSource);
                 hitSomething = true;
             }
-            else if (collider.CompareTag("Platform") || collider.CompareTag("CanHit"))
+
+            if (collider.CompareTag("Platform") || collider.CompareTag("CanHit"))
             {
                 int rand = Random.Range(0, 3);
                 hittingAudioSource.PlayOneShot(wallHitClips[rand]);
@@ -538,15 +540,16 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 ProcessEnemyHit(collider, effect, hittingAudioSource);
                 hitSomething = true;
             }
-            else if (collider.CompareTag("CanHit"))
+
+            if (collider.CompareTag("CanHit"))
             {
                 hitSomething = true;
             }
-            else if (collider.CompareTag("Platform"))
+
+            if (collider.CompareTag("Platform"))
             {
                 int rand = Random.Range(0, 3);
                 hittingAudioSource.PlayOneShot(wallHitClips[rand]);
-                hitSomething = false;
             }
         }
         return hitSomething;

@@ -224,6 +224,37 @@ MonoBehaviour:
   moveRateX: 0.4
   moveRateY: 0.4
   originTargetPos: {x: 0, y: 0}
+--- !u!1 &40756610
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 40756611}
+  m_Layer: 0
+  m_Name: HulaufShootPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &40756611
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 40756610}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -36.14, y: 5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 24
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &90199331
 GameObject:
   m_ObjectHideFlags: 0
@@ -811,6 +842,14 @@ PrefabInstance:
     - target: {fileID: 5082364524294797669, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
+      propertyPath: HP
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
+      propertyPath: playerSpeed
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 6746341528569896909, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1653,6 +1692,37 @@ Transform:
   m_Father: {fileID: 1027494647}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &481272084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 481272085}
+  m_Layer: 0
+  m_Name: HulaufShootPoint (1)
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &481272085
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 481272084}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 23.06, y: 5, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 25
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &548991013
 GameObject:
   m_ObjectHideFlags: 0
@@ -1714,7 +1784,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 957027525}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &555056432
 AudioSource:
@@ -7164,6 +7234,7 @@ GameObject:
   - component: {fileID: 957027523}
   - component: {fileID: 957027526}
   - component: {fileID: 957027527}
+  - component: {fileID: 957027528}
   m_Layer: 10
   m_Name: SoulTyrant
   m_TagString: Enemy
@@ -7258,6 +7329,7 @@ MonoBehaviour:
   appearSource: {fileID: 1587536047}
   appearClip: {fileID: 8300000, guid: 8c095396100ddc448aab1ca0f9c1782b, type: 3}
   deadClip: {fileID: 8300000, guid: f9e7805a187733647adbb6bc6c0aa234, type: 3}
+  appearEffectManager: {fileID: 957027528}
   burstEffectPrefab: {fileID: 4108200315019683409, guid: 6ba09e6d544fa3a49962b7c42e81f924, type: 3}
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   trailSpacing: 1.5
@@ -7313,23 +7385,33 @@ MonoBehaviour:
   rushPointList:
   - {fileID: 430680047}
   - {fileID: 1865355295}
-  rushSpeed: 17
+  rushSpeed: 20
   preRushDelay: 2
-  posRushDelay: 3
+  posRushDelay: 1.5
   rushReadyClip: {fileID: 8300000, guid: 13a7ad310a17e08458f8cc6a31ab0f14, type: 3}
   rushSpiritClip: {fileID: 8300000, guid: a82e995a066d4e74c9befcb7cc93b238, type: 3}
   rushMoveClip: {fileID: 8300000, guid: 2d1b7d1d394f80a4ab777c0e2f4f949d, type: 3}
   rushBurstClip: {fileID: 8300000, guid: eab5592f735d6364ab3fa23dabb7ae95, type: 3}
   hulaufPrefab: {fileID: 444373796737971397, guid: c51db66fb585cfd47acf4959dd2ef8f3, type: 3}
-  hulaufRushList:
+  hulaufShootList:
   - {fileID: 1254667597}
   - {fileID: 1300722066}
-  hulaufRushSpeed: 10
+  hulaufLastShootList:
+  - {fileID: 40756611}
+  - {fileID: 481272085}
   preHulaufRushDelay: 1
   posHulaufRushDelay: 2
   hulaufShootSpeed: 10
   hulaufShootForce: 5
-  hulaufRushReadyClip: {fileID: 8300000, guid: 002f08effbd2ab749a3b218b588fccd0, type: 3}
+  hulaufPingPongReadyClip: {fileID: 8300000, guid: 002f08effbd2ab749a3b218b588fccd0, type: 3}
+  hulaufPingPongSpiritClip:
+  - {fileID: 8300000, guid: 76892ce9b5e53444cafb5e7b61234689, type: 3}
+  - {fileID: 8300000, guid: f4be8d1b193268f4e8eb582991d324ea, type: 3}
+  - {fileID: 8300000, guid: e6f6dca15184c5c478648bd1ff5c7cea, type: 3}
+  - {fileID: 8300000, guid: 5ded456d2aeada04da4a1ce3a0ad4a2d, type: 3}
+  - {fileID: 8300000, guid: a5ee11d38329e424fa615c3bb3acc94f, type: 3}
+  hulaufPingPongLastSpiritClip: {fileID: 8300000, guid: 1bcf4b885be7bd740991296d739935bb, type: 3}
+  hulaufPingPongBurstClip: {fileID: 8300000, guid: a0d0792fdd460b749b2ece392f1edfcb, type: 3}
   downStroke_Wait: {fileID: 1035475388}
   downStroke_Active: {fileID: 8191773267080062267, guid: 49029f1e03003544ba3b2465d799b027, type: 3}
   downStroke_Fake: {fileID: 6132460153838695762, guid: 34f778b94caedd144bd8fe7fd5d7784e, type: 3}
@@ -7351,7 +7433,7 @@ MonoBehaviour:
   electroBurstClip1: {fileID: 8300000, guid: a0d0792fdd460b749b2ece392f1edfcb, type: 3}
   electroBurstClip2: {fileID: 8300000, guid: 3f70dacf68a0d1145a5cd5b3c5873d0f, type: 3}
   wavePrefab: {fileID: 5086332332767373210, guid: a1d6b2bdb6cadf84fb8266c82f91a1b9, type: 3}
-  preShootWaveDelay: 3
+  preShootWaveDelay: 2
   middleShootWaveDelay: 0.8
   posShootWaveDelay: 0.6
   shootWaveReadyClip: {fileID: 8300000, guid: 6b5bfaf802944f246ba017f586a7a9ba, type: 3}
@@ -7375,7 +7457,6 @@ Transform:
   m_Children:
   - {fileID: 2020651408}
   - {fileID: 1035475390}
-  - {fileID: 1489774884}
   - {fileID: 2048421841}
   - {fileID: 555056431}
   - {fileID: 1587536048}
@@ -7418,6 +7499,22 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.4
+--- !u!114 &957027528
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 957027522}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a06b84f14948a9147886c4988d5bdc67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  appearEffectPrefab: {fileID: 829022230668072815, guid: 8dcf36d60936164449c1318d17eea8d6, type: 3}
+  delay: 0.25
+  growSpeed: 30
+  duration: 2
 --- !u!1 &971930428
 GameObject:
   m_ObjectHideFlags: 0
@@ -8587,54 +8684,6 @@ Transform:
   m_Father: {fileID: 1538882639}
   m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1489774883
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1489774884}
-  - component: {fileID: 1489774885}
-  m_Layer: 0
-  m_Name: BossAppearEffectManager
-  m_TagString: Untagged
-  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1489774884
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489774883}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.4, y: 0.4, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 957027525}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1489774885
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1489774883}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a06b84f14948a9147886c4988d5bdc67, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  appearEffectPrefab: {fileID: 829022230668072815, guid: 8dcf36d60936164449c1318d17eea8d6, type: 3}
-  delay: 0.25
-  growSpeed: 30
-  duration: 2
 --- !u!1 &1497418987
 GameObject:
   m_ObjectHideFlags: 0
@@ -9100,7 +9149,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 957027525}
-  m_RootOrder: 5
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1594256166
 GameObject:
@@ -29774,7 +29823,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 957027525}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!82 &2048421842
 AudioSource:

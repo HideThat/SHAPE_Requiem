@@ -1,5 +1,7 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Wave : Enemy
@@ -9,10 +11,18 @@ public class Wave : Enemy
     [SerializeField] float maxSpeed = 5.0f; // 최대 속도
     [SerializeField] float acceleration = 0.1f; // 프레임마다 증가할 속도
     [SerializeField] float destroyTime = 4.0f;
+    [SerializeField] AudioSource effectSource;
+    [SerializeField] AudioClip effectClip;
+    [SerializeField] float soundFadeTime;
 
-    void Start()
+    protected override void Start()
     {
         SetMoveWave();
+    }
+
+    protected override void OnTriggerStay2D(Collider2D collision)
+    {
+        base.OnTriggerStay2D(collision);
     }
 
     public void SetMoveWave()
@@ -23,6 +33,7 @@ public class Wave : Enemy
 
     IEnumerator MoveWave()
     {
+        effectSource.PlayOneShot(effectClip);
         yield return new WaitForSeconds(0.3f);
 
         // 초기 속도 설정
@@ -55,6 +66,7 @@ public class Wave : Enemy
 
     IEnumerator DestroyWave()
     {
+        effectSource.DOFade(0f, soundFadeTime);
         yield return new WaitForSeconds(destroyTime);
         Destroy(gameObject);
     }

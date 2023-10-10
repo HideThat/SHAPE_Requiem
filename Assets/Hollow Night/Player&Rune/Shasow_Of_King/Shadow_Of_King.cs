@@ -258,13 +258,13 @@ public class Shadow_Of_King : Enemy
         yield return new WaitForSeconds(posRandomTeleportDelay);
         #endregion
 
-        animator.Play("A_Shadow_TransWave");
+        animator.Play("A_Shadow_Rush_Hand_Ready");
         Transform rushEnd = rushPointList.Find(t => t != rushStart);
         yield return new WaitForSeconds(_preDelay);
 
         if (rushPatern != null) StopCoroutine(rushPatern);
         yield return rushPatern = StartCoroutine(RushStart(rushEnd, rushSpeed));
-        animator.Play("A_Shadow_TransWave_Reverse");
+        animator.Play("A_Shadow_Rush_Hand_Ready_Reverse");
         yield return new WaitForSeconds(_posDelay);
         yield return StartCoroutine(RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay));
     }

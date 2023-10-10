@@ -31,6 +31,14 @@ public class Enemy : MonoBehaviour
         // 리셋 로직
     }
 
+    protected virtual void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player"))
+            collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
+    }
+
+    
+
     public virtual void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         HP -= _damage;

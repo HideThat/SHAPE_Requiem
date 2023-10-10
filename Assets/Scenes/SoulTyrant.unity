@@ -7454,38 +7454,15 @@ MonoBehaviour:
   animator: {fileID: 957027526}
   voiceSource: {fileID: 2048421842}
   effectSource: {fileID: 555056432}
-  downStroke_Wait: {fileID: 1035475388}
-  downStroke_Active: {fileID: 8191773267080062267, guid: 49029f1e03003544ba3b2465d799b027, type: 3}
-  downStroke_Fake: {fileID: 6132460153838695762, guid: 34f778b94caedd144bd8fe7fd5d7784e, type: 3}
+  appearSource: {fileID: 1587536047}
+  appearClip: {fileID: 8300000, guid: 8c095396100ddc448aab1ca0f9c1782b, type: 3}
+  deadClip: {fileID: 8300000, guid: f9e7805a187733647adbb6bc6c0aa234, type: 3}
   burstEffectPrefab: {fileID: 4108200315019683409, guid: 6ba09e6d544fa3a49962b7c42e81f924, type: 3}
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   trailSpacing: 1.5
   appearDelay: 3
   focusEffectPrefab: {fileID: 3986611902124828016, guid: f854c260e749de741bf331ba65f0f87a, type: 3}
-  hulaufPrefab: {fileID: 444373796737971397, guid: c51db66fb585cfd47acf4959dd2ef8f3, type: 3}
-  wavePrefab: {fileID: 5086332332767373210, guid: a1d6b2bdb6cadf84fb8266c82f91a1b9, type: 3}
   radius: 5
-  hulaufRushList:
-  - {fileID: 1254667597}
-  - {fileID: 1300722066}
-  hulaufRushSpeed: 10
-  preHulaufRushDelay: 1
-  posHulaufRushDelay: 2
-  hulaufShootSpeed: 10
-  hulaufShootForce: 5
-  downstrokePositionY: 6.5
-  downstrokeMoveDistance: 9
-  downstrokeMoveSpeed: 30
-  waitDownstroke: 1
-  preDownstrokeDelay: 1
-  posDownstrokeDelay: 2
-  preDownstrokeFakeDelay: 1
-  posDownstrokeFakeDelay: 1
-  preShootWaveDelay: 3
-  middleShootWaveDelay: 0.8
-  posShootWaveDelay: 0.6
-  wavePositionY: -1.424495
-  waveCorrectionX: 0
   currentPosition: {x: 0, y: 0}
   isDead: 0
   teleportPointList:
@@ -7518,14 +7495,20 @@ MonoBehaviour:
   lightBlowPrefab: {fileID: 8492229113843468458, guid: eca78f989eb17f74692ae5380528b894, type: 3}
   preRandomTeleportDelay: 0
   posRandomTeleportDelay: 1
-  randomTeleportClip: {fileID: 8300000, guid: 28d622c05c0b39c47a9a5c459fa24abd, type: 3}
+  randomTeleportClip:
+  - {fileID: 8300000, guid: 28d622c05c0b39c47a9a5c459fa24abd, type: 3}
+  - {fileID: 8300000, guid: 702e1b68f95ea6c41ba56ccbed8adad9, type: 3}
+  - {fileID: 8300000, guid: 1bcf4b885be7bd740991296d739935bb, type: 3}
   misilePrefab: {fileID: 3163047783503054047, guid: 5a76019b466bcd34fb0884e94f7dc746, type: 3}
   launchPoint: {fileID: 2020651408}
   preFireDelay: 1
   postFireDelay: 0.3
   fireReadyClip: {fileID: 8300000, guid: 6f31441cb7cbcf243b59f03c929b12a7, type: 3}
   fireClip: {fileID: 8300000, guid: c132b403aceccf642a70d3666f17704a, type: 3}
-  fireLaugh: {fileID: 8300000, guid: 6d39c08cedc401d449daec3d311c7b9f, type: 3}
+  fireLaugh:
+  - {fileID: 8300000, guid: 0a2cf8a5d0f8b2b448465f62b80d62ad, type: 3}
+  - {fileID: 8300000, guid: c8339e46e3212f341a12051af162b39a, type: 3}
+  - {fileID: 8300000, guid: e13c8921a5207cc40933f1b468876b22, type: 3}
   rushPointList:
   - {fileID: 430680047}
   - {fileID: 1865355295}
@@ -7536,6 +7519,47 @@ MonoBehaviour:
   rushSpiritClip: {fileID: 8300000, guid: a82e995a066d4e74c9befcb7cc93b238, type: 3}
   rushMoveClip: {fileID: 8300000, guid: 2d1b7d1d394f80a4ab777c0e2f4f949d, type: 3}
   rushBurstClip: {fileID: 8300000, guid: eab5592f735d6364ab3fa23dabb7ae95, type: 3}
+  hulaufPrefab: {fileID: 444373796737971397, guid: c51db66fb585cfd47acf4959dd2ef8f3, type: 3}
+  hulaufRushList:
+  - {fileID: 1254667597}
+  - {fileID: 1300722066}
+  hulaufRushSpeed: 10
+  preHulaufRushDelay: 1
+  posHulaufRushDelay: 2
+  hulaufShootSpeed: 10
+  hulaufShootForce: 5
+  hulaufRushReadyClip: {fileID: 8300000, guid: 002f08effbd2ab749a3b218b588fccd0, type: 3}
+  downStroke_Wait: {fileID: 1035475388}
+  downStroke_Active: {fileID: 8191773267080062267, guid: 49029f1e03003544ba3b2465d799b027, type: 3}
+  downStroke_Fake: {fileID: 6132460153838695762, guid: 34f778b94caedd144bd8fe7fd5d7784e, type: 3}
+  downstrokePositionY: 6.5
+  downstrokeMoveDistance: 9
+  downstrokeMoveSpeed: 30
+  waitDownstroke: 1
+  preDownstrokeDelay: 1
+  posDownstrokeDelay: 2
+  preDownstrokeFakeDelay: 1
+  posDownstrokeFakeDelay: 1
+  wavePositionY: -1.424495
+  waveCorrectionX: 0
+  electroReadyClip_V:
+  - {fileID: 8300000, guid: 0a2cf8a5d0f8b2b448465f62b80d62ad, type: 3}
+  - {fileID: 8300000, guid: c8339e46e3212f341a12051af162b39a, type: 3}
+  - {fileID: 8300000, guid: e13c8921a5207cc40933f1b468876b22, type: 3}
+  electroReadyClip_E: {fileID: 8300000, guid: 8db80e798aeca7d4ab9f949911089ffb, type: 3}
+  electroBurstClip1: {fileID: 8300000, guid: a0d0792fdd460b749b2ece392f1edfcb, type: 3}
+  electroBurstClip2: {fileID: 8300000, guid: 3f70dacf68a0d1145a5cd5b3c5873d0f, type: 3}
+  wavePrefab: {fileID: 5086332332767373210, guid: a1d6b2bdb6cadf84fb8266c82f91a1b9, type: 3}
+  preShootWaveDelay: 3
+  middleShootWaveDelay: 0.8
+  posShootWaveDelay: 0.6
+  shootWaveReadyClip: {fileID: 8300000, guid: 6b5bfaf802944f246ba017f586a7a9ba, type: 3}
+  shootWaveSpiritClip:
+  - {fileID: 8300000, guid: 76892ce9b5e53444cafb5e7b61234689, type: 3}
+  - {fileID: 8300000, guid: f4be8d1b193268f4e8eb582991d324ea, type: 3}
+  - {fileID: 8300000, guid: e6f6dca15184c5c478648bd1ff5c7cea, type: 3}
+  - {fileID: 8300000, guid: 5ded456d2aeada04da4a1ce3a0ad4a2d, type: 3}
+  - {fileID: 8300000, guid: a5ee11d38329e424fa615c3bb3acc94f, type: 3}
 --- !u!4 &957027525
 Transform:
   m_ObjectHideFlags: 0
@@ -7553,6 +7577,7 @@ Transform:
   - {fileID: 1489774884}
   - {fileID: 2048421841}
   - {fileID: 555056431}
+  - {fileID: 1587536048}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -9737,6 +9762,134 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1538882639}
   m_RootOrder: 9
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1587536046
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1587536048}
+  - component: {fileID: 1587536047}
+  m_Layer: 10
+  m_Name: AppearSource
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!82 &1587536047
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587536046}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!4 &1587536048
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1587536046}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 957027525}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1593809859
 GameObject:

@@ -9,6 +9,8 @@ public class Hulauf : MonoBehaviour
     public List<Transform> misileList; // 미사일들
     public List<Transform> misilePointList; // 미사일들이 이동할 목적지 포인트들
     public float misileSpeed = 5.0f; // 미사일 이동 속도
+    public AudioSource effectSource;
+    public AudioClip effectClip;
 
     void Start()
     {
@@ -18,6 +20,11 @@ public class Hulauf : MonoBehaviour
 
     void Update()
     {
+        if (!effectSource.isPlaying)
+        {
+            effectSource.PlayOneShot(effectClip);
+        }
+
         // Z축을 중심으로 rotationSpeed만큼 회전
         transform.Rotate(0, 0, rotationSpeed * Time.deltaTime);
 

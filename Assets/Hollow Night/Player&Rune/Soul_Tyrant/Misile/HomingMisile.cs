@@ -53,16 +53,15 @@ public class HomingMisile : Enemy
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("Platform"))
-        {
-            Impact();
-        }
+        
+    }
 
-        if (collision.CompareTag("Player"))
-        {
+    protected override void OnTriggerStay2D(Collider2D collision)
+    {
+        if (collision.CompareTag("Player") || collision.CompareTag("Platform"))
             Impact();
-            collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
-        }
+
+        base.OnTriggerStay2D(collision);
     }
 
     void Impact()

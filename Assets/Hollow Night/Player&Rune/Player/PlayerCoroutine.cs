@@ -111,8 +111,11 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public GridLayoutGroup HP_Panel;
     public List<Heart> hearts;
 
+    Vector3 currentScale;
+
     void Start()
     {
+        currentScale = transform.localScale;
         StartCoroutine(PlayerControl());
         groundCheckCoroutine = StartCoroutine(GroundCheck());
         BGM_Manager.Instance.PlayBGM(0);
@@ -147,9 +150,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Gizmos.DrawWireCube(boxPos, new(upAttackSizeX, upAttackSizeY));
 
         // Regular Attack Box
-        float epsilon = 0.0001f;
         Vector2 regularBoxPos;
-        if (Mathf.Abs(transform.rotation.y) < epsilon)
+        if (transform.localScale.x < 0f)
             regularBoxPos = new(transform.position.x + attackSizeX / 2, transform.position.y);
         else
             regularBoxPos = new(transform.position.x - attackSizeX / 2, transform.position.y);
@@ -182,7 +184,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         rigid.velocity = new Vector2((!isTouchingWall ? _dir : 0) * playerSpeed, rigid.velocity.y);
         if (canMove)
         {
-            transform.rotation = _dir > 0 ? Quaternion.identity : new Quaternion(0f, 180f, 0f, 0f);
+            transform.localScale = _dir < 0 ? currentScale : new Vector3(-currentScale.x, currentScale.y, currentScale.z);
             if (!moveAudioSource.isPlaying && !isJump)
             {
                 moveAudioSource.PlayOneShot(moveClip);
@@ -219,7 +221,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     private void CheckWallCollision()
     {
-        Vector2 direction = transform.rotation.y == 0f ? Vector2.right : Vector2.left;
+        Vector2 direction = transform.localScale.x < 0f ? Vector2.right : Vector2.left;
         RaycastHit2D hitInfo = Physics2D.Raycast(wallCastTransform.position, direction, wallCastDistance, platformLayer);
         isTouchingWall = hitInfo.collider != null;
         rigid.drag = isTouchingWall ? 0f : 1f;
@@ -450,16 +452,10 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     Vector2 DeterminePushDirection()
     {
-        float epsilon = 0.0001f;
-
-        if (Mathf.Abs(transform.rotation.y) < epsilon)
-        {
+        if (transform.localScale.x < 0f)
             return new Vector2(-1, 0);
-        }
         else
-        {
             return new Vector2(1, 0);
-        }
     }
 
     IEnumerator ApplyPushForce(bool hitSomething, Vector2 direction, float _pushForce)
@@ -483,8 +479,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     Vector2 DetermineBoxPosition()
     {
-        float epsilon = 0.0001f;
-        if (Mathf.Abs(transform.rotation.y) < epsilon)
+        if (transform.localScale.x < 0f)
             return new Vector2(transform.position.x + attackSizeX / 2, transform.position.y);
         else
             return new Vector2(transform.position.x - attackSizeX / 2, transform.position.y);
@@ -502,7 +497,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.position = hit2D[i].point;
             effect.SetDestroy(attackEffectDestroyTime);
 
-            if (Mathf.Abs(transform.rotation.y) < 0.0001f)
+            if (transform.localScale.x < 0f)
                 effect.transform.localScale = new Vector3(-1f, 1f, 1f);
 
             if (collider.CompareTag("Enemy"))
@@ -532,7 +527,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.position = hit2D[i].point;
             effect.SetDestroy(attackEffectDestroyTime);
 
-            if (Mathf.Abs(transform.rotation.y) < 0.0001f)
+            if (transform.localScale.x < 0f)
                 effect.transform.localScale = new Vector3(-1f, 1f, 1f);
 
             if (collider.CompareTag("Enemy"))
@@ -765,14 +760,14 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         {
             moveAudioSource.PlayOneShot(dashClip);
 
-            if (transform.rotation.y != 0f)
-                dashDirection = -1f;
-            else
+            if (transform.localScale.x < 0f)
                 dashDirection = 1f;
+            else
+                dashDirection = -1f;
 
             EffectDestroy effect = Instantiate(dashEffect);
             effect.transform.parent = transform;
-            if (transform.rotation.y == 0f)
+            if (transform.localScale.x < 0f)
                 effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             Vector2 effectPos = new Vector2(transform.position.x, transform.position.y + 0.9f);
             effect.transform.position = effectPos;

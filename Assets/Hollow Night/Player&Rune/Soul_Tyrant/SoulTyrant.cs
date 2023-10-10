@@ -67,8 +67,8 @@ public class SoulTyrant : Enemy
     [SerializeField] Hulauf hulaufPrefab;
     public List<Transform> hulaufShootList;
     public List<Transform> hulaufLastShootList;
-    public float preHulaufRushDelay = 1f;
-    public float posHulaufRushDelay = 1f;
+    public float preHulaufPingPongDelay = 1f;
+    public float posHulaufPingPongDelay = 1f;
     public float hulaufShootSpeed = 1f;
     public float hulaufShootForce = 1f;
     public AudioClip hulaufPingPongReadyClip;
@@ -126,7 +126,7 @@ public class SoulTyrant : Enemy
         //if (Input.GetKeyDown(KeyCode.Q))
         //    StartCoroutine(RushPattern(preRushDelay, posRushDelay));
         //if (Input.GetKeyDown(KeyCode.E))
-        //    StartCoroutine(SphereHulaufPingPongPattern(preHulaufRushDelay, posHulaufRushDelay));
+        //    StartCoroutine(SphereHulaufPingPongPattern(preHulaufPingPongDelay, posHulaufPingPongDelay));
         //if (Input.GetKeyDown(KeyCode.R))
         //    StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
         //if (Input.GetKeyDown(KeyCode.T))
@@ -156,7 +156,7 @@ public class SoulTyrant : Enemy
         appearSource.DOFade(0f, 1f);
         animator.Play("Soul_Tyrant_Idle");
         PlayerCoroutine.Instance.enabled = true;
-        //StartCoroutine(FSM());
+        StartCoroutine(FSM());
     }
 
     IEnumerator FSM()
@@ -179,7 +179,7 @@ public class SoulTyrant : Enemy
                     yield return currentPatern = StartCoroutine(RushPattern(preRushDelay, posRushDelay));
                     break;
                 case 4:
-                    yield return currentPatern = StartCoroutine(SphereHulaufPingPongPattern(preHulaufRushDelay, posHulaufRushDelay));
+                    yield return currentPatern = StartCoroutine(SphereHulaufPingPongPattern(preHulaufPingPongDelay, posHulaufPingPongDelay));
                     break;
                 case 5:
                     yield return currentPatern = StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
@@ -224,8 +224,8 @@ public class SoulTyrant : Enemy
         voiceSource.PlayOneShot(fireLaugh[rand]);
         yield return new WaitForSeconds(_preDelay);
         yield return StartCoroutine(FireMisile(0f));
-        yield return new WaitForSeconds(_posDelay);
         animator.Play("Soul_Tyrant_Idle");
+        yield return new WaitForSeconds(_posDelay);
     }
 
     IEnumerator TeleportAndFireMisilePatternX3()
@@ -256,7 +256,7 @@ public class SoulTyrant : Enemy
     {
         int rand = Random.Range(0, 3);
         voiceSource.PlayOneShot(randomTeleportClip[rand]);
-        animator.Play("Soul_Tyrant_Idle");
+        animator.Play("Soul_Tyrant_Meditation");
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
@@ -264,7 +264,7 @@ public class SoulTyrant : Enemy
 
     public void PerformTeleport(Vector2 teleportPoint)
     {
-        animator.Play("Soul_Tyrant_Idle");
+        animator.Play("Soul_Tyrant_Meditation");
         transform.position = teleportPoint;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
@@ -405,7 +405,6 @@ public class SoulTyrant : Enemy
         SummonTeleportEffect();
         PlaceTeleportTrail(rushStart.transform.position, rushEnd.transform.position);
         hulauf.rotationSpeed = -hulauf.rotationSpeed;
-        hulauf.transform.parent = null;
         voiceSource.Stop();
         rand = Random.Range(0, 5);
         voiceSource.PlayOneShot(hulaufPingPongSpiritClip[rand]);
@@ -422,8 +421,8 @@ public class SoulTyrant : Enemy
         PerformTeleport(rushStart);
         SummonTeleportEffect();
         PlaceTeleportTrail(rushEnd.transform.position, rushStart.transform.position);
+        hulauf.rotationSpeed = -hulauf.rotationSpeed;
         animator.Play("Soul_Tyrant_FlyingKick");
-        hulauf.transform.parent = null;
         voiceSource.Stop();
         voiceSource.PlayOneShot(hulaufPingPongLastSpiritClip);
         effectSource.Stop();
@@ -433,7 +432,7 @@ public class SoulTyrant : Enemy
         CameraManager.Instance.CameraShake();
         if (rushStart == hulaufShootList[0])
         {
-            yield return StartCoroutine(hulauf.ShootHulaufCoroutine(hulaufLastShootList[1], hulaufShootSpeed+5f, hulaufShootForce+3f, 1));
+            yield return StartCoroutine(hulauf.ShootHulaufCoroutine(hulaufLastShootList[1], hulaufShootSpeed + 5f, hulaufShootForce + 3f, 1));
             yield return StartCoroutine(RandomTeleport(0f, _posDelay));
         }
         else

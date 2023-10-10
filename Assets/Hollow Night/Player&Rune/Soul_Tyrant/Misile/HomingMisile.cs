@@ -17,6 +17,7 @@ public class HomingMisile : Enemy
     public float continuousForce = 2f;  // 지속적으로 가할 힘
     public float destroyTime = 6f;
     public EffectDestroy destroyEffect;
+    public EffectDestroy trailEffect;
     public float effectDestroyTime = 0.2f;
     public float pushForce = 5f;
 
@@ -70,6 +71,10 @@ public class HomingMisile : Enemy
         effect.transform.position = transform.position;
         effect.SetDisappear(effectDestroyTime);
         effect.SetDestroy(effectDestroyTime + 2f);
+        trailEffect.transform.parent = null;
+        trailEffect.transform.localScale = new Vector3(1f, 1f, 1f);
+        trailEffect.GetComponent<ParticleSystem>().Stop();
+        trailEffect.SetDestroy(2f);
         Destroy(gameObject);
         
     }
@@ -80,6 +85,10 @@ public class HomingMisile : Enemy
         m_collider2D.enabled = false;
         transform.DOScale(0.1f, effectDestroyTime).OnComplete(()=>
         {
+            trailEffect.transform.parent = null;
+            trailEffect.transform.localScale = new Vector3(1f, 1f, 1f);
+            trailEffect.GetComponent<ParticleSystem>().Stop();
+            trailEffect.SetDestroy(2f);
             Destroy(gameObject);
         });
     }

@@ -103,6 +103,7 @@ public class Hulauf : MonoBehaviour
             yield return null;
         }
 
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject);
     }
 }

@@ -1587,25 +1587,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 444373797262156431}
     m_Modifications:
-    - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.9960785
-      objectReference: {fileID: 0}
-    - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.82745105
-      objectReference: {fileID: 0}
-    - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
-      propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.57254905
-      objectReference: {fileID: 0}
     - target: {fileID: 7178054037919629721, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: m_Name
       value: MisileTrail
-      objectReference: {fileID: 0}
-    - target: {fileID: 7178054037919629721, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7594530090931408510, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: m_RootOrder
@@ -1901,23 +1885,19 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: InitialModule.startColor.maxColor.b
-      value: 0.9960785
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: InitialModule.startColor.maxColor.g
-      value: 0.82745105
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6843557349667585961, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: InitialModule.startColor.maxColor.r
-      value: 0.57254905
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7178054037919629721, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: m_Name
       value: MisileTrail
-      objectReference: {fileID: 0}
-    - target: {fileID: 7178054037919629721, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7594530090931408510, guid: c68f796d167de7a4d93a48283f95682a, type: 3}
       propertyPath: m_RootOrder

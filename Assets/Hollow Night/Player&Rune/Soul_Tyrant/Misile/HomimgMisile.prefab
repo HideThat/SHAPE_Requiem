@@ -49,7 +49,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efa1f2b856995074a9b706d051601131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 30
+  HP: 20
   damage: 1
   m_collider2D: {fileID: 3163047783503055650}
   spriteRenderer: {fileID: 3163047783503055648}
@@ -60,7 +60,7 @@ MonoBehaviour:
   maxBloodForce: 0
   bloodCount: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
-  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  currentColor: {r: 0, g: 1, b: 0, a: 1}
   hitClip: {fileID: 8300000, guid: 3e536fb1fe9bd944babcf9769457adb1, type: 3}
   runeIn: 0
   target: {fileID: 0}

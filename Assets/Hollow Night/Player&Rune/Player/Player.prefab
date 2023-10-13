@@ -306,7 +306,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.000061035156, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1001476708
@@ -382,10 +382,10 @@ RectTransform:
   m_Father: {fileID: 1662580512}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 45}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchorMin: {x: 0.112299554, y: 0.5}
+  m_AnchorMax: {x: 0.8906498, y: 0.5848356}
+  m_AnchoredPosition: {x: -1, y: 0}
+  m_SizeDelta: {x: -2, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1085742059
 CanvasRenderer:
@@ -639,10 +639,10 @@ RectTransform:
   m_Father: {fileID: 1662580512}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 411}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchorMin: {x: 0.112299554, y: 0.84656155}
+  m_AnchorMax: {x: 0.8906498, y: 0.92800003}
+  m_AnchoredPosition: {x: -1, y: 1}
+  m_SizeDelta: {x: -2, y: 4}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1367522860
 CanvasRenderer:
@@ -773,10 +773,10 @@ RectTransform:
   m_Father: {fileID: 1662580512}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 236.99994}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchorMin: {x: 0.112299554, y: 0.68056154}
+  m_AnchorMax: {x: 0.8906498, y: 0.76650673}
+  m_AnchoredPosition: {x: -1, y: 0.49993896}
+  m_SizeDelta: {x: -2, y: -1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1383716665
 CanvasRenderer:
@@ -1014,10 +1014,10 @@ RectTransform:
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -626.41626, y: -1.8342896}
-  m_SizeDelta: {x: -1274.8074, y: -22.014}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 10.987549, y: -1.8342896}
+  m_SizeDelta: {x: 645.1926, y: -22.014}
+  m_Pivot: {x: 0, y: 0.5}
 --- !u!222 &1662580515
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1106,10 +1106,10 @@ RectTransform:
   m_Father: {fileID: 1662580512}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -363}
-  m_SizeDelta: {x: 500, y: 90}
+  m_AnchorMin: {x: 0.112299554, y: 0.11516443}
+  m_AnchorMax: {x: 0.8906498, y: 0.19843848}
+  m_AnchoredPosition: {x: -1, y: 0}
+  m_SizeDelta: {x: -2, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1671757280
 CanvasRenderer:
@@ -1501,7 +1501,7 @@ Transform:
   m_GameObject: {fileID: 5082364522794502456}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: -14.14, y: -0.29, z: 0}
-  m_LocalScale: {x: 1.2, y: 1, z: 1}
+  m_LocalScale: {x: -1.2, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5082364523333129713}
@@ -1533,7 +1533,7 @@ MonoBehaviour:
   rigid: {fileID: 5082364522794502460}
   canControl: 1
   playerVoiceSource: {fileID: 1331587107755244489}
-  playerSpeed: 8
+  playerSpeed: 9
   wallCastTransform: {fileID: 5082364523919442253}
   wallCastDistance: 0.4
   platformLayer:
@@ -1607,7 +1607,7 @@ MonoBehaviour:
   maxAlpha: 1
   cycleTime: 2
   loseControl: 0
-  recorverDelay: 0.7
+  recorverDelay: 0.5
   hitEffect: {fileID: 4855738749349605096, guid: 71c1e16e84136a3409d62cafd6344e21, type: 3}
   canvasHitEffect: {fileID: 4078096867507759128}
   invincibleTime: 2
@@ -1670,7 +1670,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 1010006685, guid: 21b400a52065d2a4c8729d6bf2de6083, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.509434, g: 0.509434, b: 0.509434, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1772,7 +1772,7 @@ MonoBehaviour:
   m_AlphaBlendOnOverlap: 0
   m_OverlapOperation: 1
   m_NormalMapDistance: 3
-  m_NormalMapQuality: 0
+  m_NormalMapQuality: 2
   m_UseNormalMap: 0
   m_ShadowIntensityEnabled: 0
   m_ShadowIntensity: 0.75
@@ -1813,7 +1813,7 @@ MonoBehaviour:
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
   m_PointLightInnerRadius: 0
-  m_PointLightOuterRadius: 3
+  m_PointLightOuterRadius: 3.25
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1

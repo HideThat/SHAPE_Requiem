@@ -148,14 +148,9 @@ public class SoulTyrant : Enemy
     {
         appearSource.PlayOneShot(appearClip);
         animator.Play("Soul_Tyrant_Meditation");
-        PlayerCoroutine.Instance.animator.Play("Idle");
-        PlayerCoroutine.Instance.enabled = false;
-        targetObject.GetComponent<Animator>().Play("Idle");
-        targetObject.GetComponent<Rigidbody2D>().velocity = new Vector2(0f, 0f);
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
         animator.Play("Soul_Tyrant_Idle");
-        PlayerCoroutine.Instance.enabled = true;
         StartCoroutine(FSM());
     }
 

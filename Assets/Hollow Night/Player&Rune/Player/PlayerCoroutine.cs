@@ -112,11 +112,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public List<Heart> hearts;
 
     Vector3 currentScale;
+    Coroutine playerControlCoroutine;
 
     void Start()
     {
         currentScale = transform.localScale;
-        StartCoroutine(PlayerControl());
+        playerControlCoroutine = StartCoroutine(PlayerControl());
         groundCheckCoroutine = StartCoroutine(GroundCheck());
         Sound_Manager.Instance.PlayBGM(0);
     }
@@ -151,7 +152,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
         // Regular Attack Box
         Vector2 regularBoxPos;
-        if (transform.localScale.x < 0f)
+        if (transform.localScale.x > 0f)
             regularBoxPos = new(transform.position.x + attackSizeX / 2, transform.position.y);
         else
             regularBoxPos = new(transform.position.x - attackSizeX / 2, transform.position.y);
@@ -221,7 +222,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     private void CheckWallCollision()
     {
-        Vector2 direction = transform.localScale.x < 0f ? Vector2.right : Vector2.left;
+        Vector2 direction = transform.localScale.x > 0f ? Vector2.right : Vector2.left;
         RaycastHit2D hitInfo = Physics2D.Raycast(wallCastTransform.position, direction, wallCastDistance, platformLayer);
         isTouchingWall = hitInfo.collider != null;
         rigid.drag = isTouchingWall ? 0f : 1f;
@@ -452,7 +453,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     Vector2 DeterminePushDirection()
     {
-        if (transform.localScale.x < 0f)
+        if (transform.localScale.x > 0f)
             return new Vector2(-1, 0);
         else
             return new Vector2(1, 0);
@@ -479,7 +480,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     Vector2 DetermineBoxPosition()
     {
-        if (transform.localScale.x < 0f)
+        if (transform.localScale.x > 0f)
             return new Vector2(transform.position.x + attackSizeX / 2, transform.position.y);
         else
             return new Vector2(transform.position.x - attackSizeX / 2, transform.position.y);
@@ -497,7 +498,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.position = hit2D[i].point;
             effect.SetDestroy(attackEffectDestroyTime);
 
-            if (transform.localScale.x < 0f)
+            if (transform.localScale.x > 0f)
                 effect.transform.localScale = new Vector3(-1f, 1f, 1f);
 
             if (collider.CompareTag("Enemy"))
@@ -527,7 +528,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             effect.transform.position = hit2D[i].point;
             effect.SetDestroy(attackEffectDestroyTime);
 
-            if (transform.localScale.x < 0f)
+            if (transform.localScale.x > 0f)
                 effect.transform.localScale = new Vector3(-1f, 1f, 1f);
 
             if (collider.CompareTag("Enemy"))
@@ -581,6 +582,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     IEnumerator HitCoroutine(int _damage, Vector2 _force)
     {
+        if (playerControlCoroutine != null)
+            StopCoroutine(playerControlCoroutine);
+
         // 1. HP 감소
         HP -= _damage;
         canControl = false;
@@ -630,6 +634,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Debug.Log($"밀리는 방향 = {_force * knockbackForce}");
         yield return new WaitForSeconds(recorverDelay);
         canControl = true;
+        playerControlCoroutine = StartCoroutine(PlayerControl());
 
         yield return null;
     }
@@ -760,14 +765,14 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         {
             moveAudioSource.PlayOneShot(dashClip);
 
-            if (transform.localScale.x < 0f)
+            if (transform.localScale.x > 0f)
                 dashDirection = 1f;
             else
                 dashDirection = -1f;
 
             EffectDestroy effect = Instantiate(dashEffect);
             effect.transform.parent = transform;
-            if (transform.localScale.x < 0f)
+            if (transform.localScale.x > 0f)
                 effect.transform.rotation = Quaternion.Euler(0f, 180f, 0f);
             Vector2 effectPos = new Vector2(transform.position.x, transform.position.y + 0.9f);
             effect.transform.position = effectPos;

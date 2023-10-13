@@ -118,7 +118,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         currentScale = transform.localScale;
         StartCoroutine(PlayerControl());
         groundCheckCoroutine = StartCoroutine(GroundCheck());
-        BGM_Manager.Instance.PlayBGM(0);
+        Sound_Manager.Instance.PlayBGM(0);
     }
     IEnumerator PlayerControl()
     {
@@ -618,7 +618,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                     {
                         if (playerPinchCoroutine != null) StopCoroutine(playerPinchCoroutine);
                         playerPinchCoroutine = StartCoroutine(PlayerPinch());
-                        BGM_Manager.Instance.PlayBGM(2);
+                        Sound_Manager.Instance.PlayBGM(2);
                     }
                 });
 

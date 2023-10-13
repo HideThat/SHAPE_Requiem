@@ -119,22 +119,22 @@ public class SoulTyrant : Enemy
 
     private void Update()
     {
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //    RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay);
-        //if (Input.GetKeyDown(KeyCode.W))
-        //    StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
-        //if (Input.GetKeyDown(KeyCode.Q))
-        //    StartCoroutine(RushPattern(preRushDelay, posRushDelay));
-        //if (Input.GetKeyDown(KeyCode.E))
-        //    StartCoroutine(SphereHulaufPingPongPattern(preHulaufPingPongDelay, posHulaufPingPongDelay));
-        //if (Input.GetKeyDown(KeyCode.R))
-        //    StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
-        //if (Input.GetKeyDown(KeyCode.T))
-        //    StartCoroutine(FakeDownstrokePattern(targetObject.transform, preDownstrokeFakeDelay, posDownstrokeFakeDelay));
-        //if (Input.GetKeyDown(KeyCode.Y))
-        //    StartCoroutine(ShootWave(preShootWaveDelay, middleShootWaveDelay, posShootWaveDelay));
-        //if (Input.GetKeyDown(KeyCode.U))
-        //    StartCoroutine(TeleportAndFireMisilePatternX3());
+        if (Input.GetKeyDown(KeyCode.Space))
+            RandomTeleport(preRandomTeleportDelay, posRandomTeleportDelay);
+        if (Input.GetKeyDown(KeyCode.W))
+            StartCoroutine(TeleportAndFireMisilePattern(preFireDelay, postFireDelay));
+        if (Input.GetKeyDown(KeyCode.Q))
+            StartCoroutine(RushPattern(preRushDelay, posRushDelay));
+        if (Input.GetKeyDown(KeyCode.E))
+            StartCoroutine(SphereHulaufPingPongPattern(preHulaufPingPongDelay, posHulaufPingPongDelay));
+        if (Input.GetKeyDown(KeyCode.R))
+            StartCoroutine(DownstrokePattern(targetObject.transform, preDownstrokeDelay, posDownstrokeDelay));
+        if (Input.GetKeyDown(KeyCode.T))
+            StartCoroutine(FakeDownstrokePattern(targetObject.transform, preDownstrokeFakeDelay, posDownstrokeFakeDelay));
+        if (Input.GetKeyDown(KeyCode.Y))
+            StartCoroutine(ShootWave(preShootWaveDelay, middleShootWaveDelay, posShootWaveDelay));
+        if (Input.GetKeyDown(KeyCode.U))
+            StartCoroutine(TeleportAndFireMisilePatternX3());
     }
 
     protected override void OnTriggerStay2D(Collider2D collision)
@@ -225,6 +225,7 @@ public class SoulTyrant : Enemy
         yield return new WaitForSeconds(_preDelay);
         yield return StartCoroutine(FireMisile(0f));
         animator.Play("Soul_Tyrant_Idle");
+        StartCoroutine(Sound_Manager.Instance.Sound_FadeOut(voiceSource, _posDelay));
         yield return new WaitForSeconds(_posDelay);
     }
 
@@ -299,7 +300,6 @@ public class SoulTyrant : Enemy
 
     IEnumerator FireMisile(float _delay)
     {
-        voiceSource.Stop();
         effectSource.Stop();
         effectSource.PlayOneShot(fireClip);
         GameObject miosile = Instantiate(misilePrefab, transform.position, Quaternion.identity);
@@ -644,7 +644,7 @@ public class SoulTyrant : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        BGM_Manager.Instance.PlayBGM(0);
+        Sound_Manager.Instance.PlayBGM(0);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);

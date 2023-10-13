@@ -19,7 +19,7 @@ public class ActiveTrigger : MonoBehaviour
             PlayerIn = true;
             target.SetActive(true);
             CameraManager.Instance.CameraShake(shakeDuration, shakeMagnitude, shakeFrequency);
-            BGM_Manager.Instance.PlayBGM(1);
+            Sound_Manager.Instance.PlayBGM(1);
 
             Destroy(gameObject);
         }

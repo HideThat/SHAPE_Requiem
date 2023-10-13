@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BGM_Manager : Singleton<BGM_Manager>
+public class Sound_Manager : Singleton<Sound_Manager>
 {
     public AudioSource audioSource;
     public AudioClip[] SoulTyrant_BGM;
@@ -17,7 +17,7 @@ public class BGM_Manager : Singleton<BGM_Manager>
     {
         if (audioSource.isPlaying)
         {
-            yield return StartCoroutine(BGM_FadeOut());
+            yield return StartCoroutine(Sound_FadeOut(audioSource, fadeOutTime));
         }
 
         audioSource.clip = _audioClip;
@@ -27,18 +27,18 @@ public class BGM_Manager : Singleton<BGM_Manager>
         yield return null;
     }
 
-    IEnumerator BGM_FadeOut()
+    public IEnumerator Sound_FadeOut(AudioSource _audioSource, float _fadeOutTime)
     {
-        float startVolume = audioSource.volume;
+        float startVolume = _audioSource.volume;
 
-        for (float t = 0; t < fadeOutTime; t += Time.deltaTime)
+        for (float t = 0; t < _fadeOutTime; t += Time.deltaTime)
         {
-            audioSource.volume = startVolume * (1 - t / fadeOutTime);
+            _audioSource.volume = startVolume * (1 - t / _fadeOutTime);
             yield return null;
         }
 
-        audioSource.Stop();
-        audioSource.volume = startVolume; // 볼륨을 원래대로 복구
+        _audioSource.Stop();
+        _audioSource.volume = startVolume; // 볼륨을 원래대로 복구
 
         yield return null;
     }

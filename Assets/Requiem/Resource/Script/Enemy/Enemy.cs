@@ -37,8 +37,6 @@ public class Enemy : MonoBehaviour
             collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
     }
 
-    
-
     public virtual void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         HP -= _damage;
@@ -46,7 +44,8 @@ public class Enemy : MonoBehaviour
         if (colorTween != null)
             DOTween.Kill(colorTween);
 
-        _audioSource.PlayOneShot(hitClip);
+        if (hitClip != null)
+            _audioSource.PlayOneShot(hitClip);
 
         if (HP > 0)
         {

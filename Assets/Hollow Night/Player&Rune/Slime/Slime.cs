@@ -23,7 +23,10 @@ public class Slime : Enemy
     public float radius = 5f;
 
     [Header("Throwing Poop")]
+    public ThrowingPoop fakePoop;
     public ThrowingPoop poopPrefab;
+    public Transform[] poopPoints;
+    public int poopPointIndex = 0;
     public Transform poopLunchPoint;
     public float shootX_Min;
     public float shootX_Max;
@@ -78,18 +81,37 @@ public class Slime : Enemy
     {
         yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, 0f));
         yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, posThrowingPoopDelay));
+
+        animator.Play("A_Slime_Idle");
     }
 
     IEnumerator ThrowingPoop(ThrowingPoop _poop, float _preDelay, float _posDelay)
     {
+        animator.Play("A_Slime_ThrowReady");
+        fakePoop.gameObject.SetActive(true);
         // 똥 만드는 애니매이션 실행
         yield return new WaitForSeconds(_preDelay);
+        animator.Play("A_Slime_ThrowShoot");
         ThrowingPoop poop = Instantiate(_poop);
         poop.transform.position = poopLunchPoint.position;
         float dirX = Random.Range(shootX_Min, shootX_Max);
         float dirY = Random.Range(shootY_Min, shootY_Max);
         poop.rigid.velocity = new Vector2(dirX, dirY).normalized * shootPower;
-
+        fakePoop.gameObject.SetActive(false);
+        poopPointIndex = 0;
+        yield return new WaitForSeconds(0.2f);
+        animator.Play("A_Slime_Idle");
         yield return new WaitForSeconds(_posDelay);
+    }
+
+    public void MoveFakePoop()
+    {
+        fakePoop.transform.position = poopPoints[poopPointIndex++].position;
+
+        if (poopPointIndex > poopPoints.Length)
+        {
+            poopPointIndex = 0;
+            fakePoop.transform.position = poopPoints[poopPointIndex].position;
+        }
     }
 }

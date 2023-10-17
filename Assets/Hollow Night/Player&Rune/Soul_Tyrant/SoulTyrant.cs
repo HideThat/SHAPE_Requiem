@@ -22,15 +22,12 @@ public class SoulTyrant : Enemy
     [SerializeField] AudioClip deadClip;
     [SerializeField] BossAppearEffect appearEffectManager;
 
-
     [SerializeField] EffectDestroy burstEffectPrefab;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
     [SerializeField] FocusEffect focusEffectPrefab;
     public float radius = 5f;
-    
-    
     
     public Vector2 currentPosition;
     public bool isDead = false;

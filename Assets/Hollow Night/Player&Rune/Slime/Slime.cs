@@ -2,6 +2,7 @@ using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class Slime : Enemy
 {
@@ -14,7 +15,6 @@ public class Slime : Enemy
     [SerializeField] AudioClip appearClip;
     [SerializeField] AudioClip deadClip;
     [SerializeField] BossAppearEffect appearEffectManager;
-    [SerializeField] EffectDestroy burstEffectPrefab;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
@@ -58,10 +58,77 @@ public class Slime : Enemy
     public float jumpPower;
     public Transform[] poopJumpLunchPoint;
 
+    [Header("Slime Smash")]
+    public float preSmashDelay = 1f;
+    public float middleSmashDelay = 1f;
+    public float posSmashDelay = 1f;
+    public EffectDestroy burstEffectPrefab;
+    public Transform[] burstPoint;
+    public Collider2D[] smashColliders;
+    public int smashColliderIndex = 0;
+
+    [Header("Slime Back Move")]
+    public float backMoveDistance = 5f;
+    public float backMoveSpeed = 20;
+    public float ActiveDistance = 5f;
+    public float posBackMoveDelay = 1f;
+
+    [Header("Slime Bounce Ball")]
+    public float preBounceBallDelay = 0.5f;
+    public float middleBounceBallDelay = 0.5f;
+    public float posBounceBallDelay;
+    public float bounceBallShootSpeedX;
+    public float bounceBallShootSpeedY;
+    public CircleCollider2D myCircleCollider;
+    public float raycastDistanceX;
+    public float raycastDistanceY;
+    public LayerMask platformLayerMask;
+    public BounceBall bounceBall;
+    public bool isBounceBall = false;
+    public float upAttackHitForce = 7f;
+
+
     protected override void Start()
     {
         base.Start();
         StartCoroutine(StartAppear());
+    }
+
+    private void FixedUpdate()
+    {
+        if (isBounceBall)
+        {
+            // 속도에 따라 castDistance를 조절합니다. 
+            float value = 0.005f;
+            float castDistanceX = Mathf.Abs(rigid2D.velocity.x * value);
+            float castDistanceY = Mathf.Abs(rigid2D.velocity.y * value);
+
+            // CircleCast를 실행합니다.
+            RaycastHit2D hitPlusX = Physics2D.Raycast(myCircleCollider.bounds.center, Vector2.right, raycastDistanceX + castDistanceX, platformLayerMask);
+            RaycastHit2D hitMinusX = Physics2D.Raycast(myCircleCollider.bounds.center, Vector2.left, raycastDistanceX + castDistanceX, platformLayerMask);
+            RaycastHit2D hitMinusY = Physics2D.Raycast(myCircleCollider.bounds.center, Vector2.down, raycastDistanceY + castDistanceY, platformLayerMask);
+
+            if (hitPlusX)
+            {
+                rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, rigid2D.velocity.y);
+                bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
+                Debug.Log("Hit from the East");
+            }
+
+            if (hitMinusX)
+            {
+                rigid2D.velocity = new Vector2(bounceBallShootSpeedX, rigid2D.velocity.y);
+                bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
+                Debug.Log("Hit from the West");
+            }
+
+            if (hitMinusY)
+            {
+                rigid2D.velocity = new Vector2(rigid2D.velocity.x, bounceBallShootSpeedY);
+                bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
+                Debug.Log("Hit from the South");
+            }
+        }
     }
 
     private void Update()
@@ -73,9 +140,28 @@ public class Slime : Enemy
             StartCoroutine(SlimeDownAndUp());
 
         if (Input.GetKeyDown(KeyCode.E))
-        {
             StartCoroutine(SlimeSliding());
-        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+            StartCoroutine(SlimeSmash());
+
+        if (Input.GetKeyDown(KeyCode.T))
+            StartCoroutine(SlimeBackMove());
+
+        if (Input.GetKeyDown(KeyCode.Y))
+            StartCoroutine(SlimeBounceBall());
+
+        if (Input.GetKeyDown(KeyCode.A))
+            animator.Play("A_Slime_SmashReady");
+
+        if (Input.GetKeyDown(KeyCode.S))
+            animator.Play("A_Slime_SmashActive");
+
+        if (Input.GetKeyDown(KeyCode.D))
+            animator.Play("A_Slime_SmashReturn");
+
+        
+
     }
 
     public override void ResetEnemy()
@@ -91,6 +177,15 @@ public class Slime : Enemy
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         base.Hit(_damage, _hitDir, _audioSource);
+    }
+
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.UpAttackHit(_damage, _hitDir, _audioSource);
+
+        if (isBounceBall)
+            rigid2D.velocity = new Vector2(rigid2D.velocity.x, upAttackHitForce);
+        
     }
 
     public override void Dead()
@@ -202,7 +297,7 @@ public class Slime : Enemy
     }
     #endregion
 
-    #region Slime Down And Move And Jump
+    #region Down And Move And Jump
     IEnumerator SlimeSliding()
     {
         // 아래로 내려감
@@ -226,8 +321,10 @@ public class Slime : Enemy
     {
         Vector3 direction = (targetX > transform.position.x) ? Vector3.right : Vector3.left;
 
+        targetX = Mathf.Clamp(targetX, slidingPos[0].position.x, slidingPos[1].position.x);
+
         // 이동
-        while (Mathf.Abs(transform.position.x - targetX) > 0.2f)
+        while (Mathf.Abs(transform.position.x - targetX) > 0.3f)
         {
             transform.Translate(direction * _speed * Time.deltaTime, Space.World);
             yield return null;
@@ -298,4 +395,120 @@ public class Slime : Enemy
         yield return new WaitForSeconds(0.15f);
     }
     #endregion
+
+    #region Smash
+    IEnumerator SlimeSmash()
+    {
+        animator.Play("A_Slime_SmashReady");
+        yield return new WaitForSeconds(preSmashDelay);
+        animator.Play("A_Slime_SmashActive");
+        yield return new WaitForSeconds(0.15f);
+        EffectDestroy effect = Instantiate(burstEffectPrefab);
+        EffectDestroy effect2 = Instantiate(burstEffectPrefab);
+        effect.transform.position = burstPoint[0].position;
+        effect2.transform.position = burstPoint[1].position;
+        effect.SetDestroy(3f);
+        effect2.SetDestroy(3f);
+
+        CameraManager.Instance.CameraShake();
+        yield return new WaitForSeconds(middleSmashDelay);
+        animator.Play("A_Slime_SmashReturn");
+        yield return new WaitForSeconds(posSmashDelay);
+        animator.Play("A_Slime_Idle");
+    }
+
+    public void OnSlimeSmashCollider()
+    {
+        if (smashColliderIndex != 0)
+            smashColliders[smashColliderIndex - 1].enabled = false;
+
+        m_collider2D.enabled = false;
+        smashColliders[smashColliderIndex++].enabled = true;
+
+        if (smashColliders.Length == smashColliderIndex)
+        {
+            m_collider2D.enabled = true;
+            smashColliders[smashColliderIndex - 1].enabled = false;
+            smashColliderIndex = 0;
+        }
+    }
+    #endregion
+
+    #region Back Move
+    IEnumerator SlimeBackMove()
+    {
+        if (PlayerCoroutine.Instance.transform.position.x > transform.position.x)
+            transform.localScale = new Vector3(-1f, 1f, 1f);
+        else
+            transform.localScale = new Vector3(1f, 1f, 1f);
+        animator.Play("A_Slime_BackMove_Down");
+
+        float moveDistanceX;
+        if (transform.localScale.x > 0f)
+            moveDistanceX = transform.position.x + backMoveDistance;
+        else
+            moveDistanceX = transform.position.x - backMoveDistance;
+
+        yield return SlimeMoveTranslate(backMoveSpeed, moveDistanceX);
+        animator.Play("A_Slime_BackMove_Up");
+        yield return new WaitForSeconds(posBackMoveDelay);
+        animator.Play("A_Slime_Idle");
+    }
+    #endregion
+
+    #region Bounce Ball
+    IEnumerator SlimeBounceBall()
+    {
+        // 대각선으로 튀어오르면서 공으로 변하기
+        animator.Play("A_Slime_BounceBall_JumpReady");
+        yield return new WaitForSeconds(preBounceBallDelay);
+        rigid2D.bodyType = RigidbodyType2D.Dynamic;
+        rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, bounceBallShootSpeedY);
+        rigid2D.gravityScale = 2f;
+        transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+        animator.Play("A_Slime_JumpUp");
+        isBounceBall = true;
+        yield return new WaitForSeconds(middleBounceBallDelay);
+        spriteRenderer.enabled = false;
+        bounceBall.gameObject.SetActive(true);
+
+        yield return StartCoroutine(BounceBallColliderCheckCoroutine());
+
+        // 가로 이동은 일정함.
+        // 세로 이동은 플레이어가 타격 시 일정 높이 만큼 떠오름(아주 약간)
+        // 플레이어가 타격 시 -> 대쉬 위 공격 타이밍에 맞춰 다시 하강
+        // 바닥에 닿으면 일정 높이 만큼 떠오름 (어색하지 않게)
+        
+
+        yield return null;
+    }
+
+    IEnumerator BounceBallColliderCheckCoroutine()
+    {
+        while (true)
+        {
+            isBounceBall = true;
+            yield return null;
+        }
+    }
+    #endregion
+
+
+
+    private void OnDrawGizmos()
+    {
+        if (myCircleCollider == null) return; // Collider가 없으면 그리지 않습니다.
+
+        Gizmos.color = Color.red; // 기즈모의 색을 빨간색으로 설정합니다.
+
+        // +X 방향의 Ray를 그립니다.
+        Gizmos.DrawRay(myCircleCollider.bounds.center, Vector2.right * raycastDistanceX);
+
+        // -X 방향의 Ray를 그립니다.
+        Gizmos.DrawRay(myCircleCollider.bounds.center, Vector2.left * raycastDistanceX);
+
+        // -Y 방향의 Ray를 그립니다.
+        Gizmos.DrawRay(myCircleCollider.bounds.center, Vector2.down * raycastDistanceY);
+    }
+
 }

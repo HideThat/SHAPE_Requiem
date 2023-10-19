@@ -73,7 +73,44 @@ public class Enemy : MonoBehaviour
         {
             Dead();
         }
-        
+    }
+
+    public virtual void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        HP -= _damage;
+
+        if (colorTween != null)
+            DOTween.Kill(colorTween);
+
+        if (hitClip != null)
+            _audioSource.PlayOneShot(hitClip);
+
+        if (HP > 0)
+        {
+            colorTween = spriteRenderer.DOColor(hitColor, 0.2f).OnComplete(() =>
+            {
+                colorTween = spriteRenderer.DOColor(currentColor, 0.2f);
+            });
+
+            for (int i = 0; i < bloodCount; i++)
+            {
+                // 방사형으로 퍼질 각도를 랜덤하게 선택
+                float angle = Random.Range(0f, 360f) * Mathf.Deg2Rad;
+
+                // 해당 각도로 방향 벡터 계산
+                Vector2 direction = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
+
+                float force = Random.Range(minBloodForce, maxBloodForce);
+                Vector2 bloodSize = new Vector2(Random.Range(minBloodSize, maxBloodSize), Random.Range(minBloodSize, maxBloodSize));
+
+                Blood spawnedBlood = Instantiate(bloodPrefab, transform.position, Quaternion.identity);
+                spawnedBlood.SetBlood(bloodSize, direction, force);
+            }
+        }
+        else
+        {
+            Dead();
+        }
     }
 
     public virtual void Dead()

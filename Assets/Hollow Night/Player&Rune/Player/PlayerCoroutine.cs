@@ -347,6 +347,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         }
     }
     #endregion
+
     #region Attack_System
     public IEnumerator Attack()
     {
@@ -379,7 +380,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         animator.Play("UpAttack");
         Vector2 boxPos = new(transform.position.x, transform.position.y + upAttackSizeY / 2);
-        bool hitSomething = PerformAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
+        bool hitSomething = PerformUpAttack(boxPos, new Vector2(upAttackSizeX, upAttackSizeY), Vector2.up);
         StartCoroutine(ApplyPushForce(hitSomething, Vector2.down, pushForce));
         attackAudioSource.PlayOneShot(attackClip);
 
@@ -517,6 +518,37 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         return hitSomething;
     }
 
+    bool PerformUpAttack(Vector2 boxPos, Vector2 boxSize, Vector2 direction)
+    {
+        playerVoiceSource.PlayOneShot(spiritClip);
+        bool hitSomething = false;
+        RaycastHit2D[] hit2D = Physics2D.BoxCastAll(boxPos, boxSize, 0f, direction, 0f, enemyAndPlatform);
+        for (int i = 0; i < hit2D.Length; i++)
+        {
+            Collider2D collider = hit2D[i].collider;
+            EffectDestroy effect = Instantiate(attackEffect);
+            effect.transform.position = hit2D[i].point;
+            effect.SetDestroy(attackEffectDestroyTime);
+
+            if (transform.localScale.x > 0f)
+                effect.transform.localScale = new Vector3(-1f, 1f, 1f);
+
+            if (collider.CompareTag("Enemy"))
+            {
+                ProcessEnemyUpAttackHit(collider, effect, hittingAudioSource);
+                hitSomething = true;
+            }
+
+            if (collider.CompareTag("Platform") || collider.CompareTag("CanHit"))
+            {
+                int rand = Random.Range(0, 3);
+                hittingAudioSource.PlayOneShot(wallHitClips[rand]);
+                hitSomething = true;
+            }
+        }
+        return hitSomething;
+    }
+
     bool PerformDownAttack(Vector2 boxPos, Vector2 boxSize, Vector2 direction)
     {
         bool hitSomething = false;
@@ -559,8 +591,17 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         collider.GetComponent<Enemy>().Hit(damage, attackDir, _audioSource);
     }
 
+    void ProcessEnemyUpAttackHit(Collider2D collider, EffectDestroy effect, AudioSource _audioSource)
+    {
+        Vector2 enemyPos = collider.transform.position;
+        Vector2 myPos = transform.position;
+        Vector2 attackDir = (enemyPos - myPos).normalized;
+        collider.GetComponent<Enemy>().UpAttackHit(damage, attackDir, _audioSource);
+    }
+
 
     #endregion
+
     #region Hit_Sysytem
     public void Hit(Vector2 _player, Vector2 _enemy, int _damage)
     {
@@ -607,15 +648,14 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         }
 
         // 3. 게임 시간 일시 정지
-        // Time.timeScale을 0으로 천천히 느려지게 만듭니다.
+        // Time.timeScale을 천천히 느려지게 만듭니다.
         canvasHitEffect.DOColor(Color.red, 0.5f);
         if (timeTween != null) DOTween.Kill(timeTween);
-        timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.2f, 0.5f)
+        timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, 0.2f, 0.3f)
             .OnComplete(() =>
             {
-                // 0에 도달한 후 원래의 Time.timeScale 값으로 천천히 돌아갑니다.
                 if (timeTween != null) DOTween.Kill(timeTween);
-                timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 0.5f);
+                timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 0.3f);
                 canvasHitEffect.DOColor(Color.clear, 0.5f).OnComplete(() =>
                 {
                     if (HP == 2)
@@ -635,6 +675,8 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         yield return new WaitForSeconds(recorverDelay);
         canControl = true;
         playerControlCoroutine = StartCoroutine(PlayerControl());
+        canDash = true;
+        isDash = false;
 
         yield return null;
     }
@@ -758,6 +800,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     }
 
     #endregion
+
     #region Dash_System
     IEnumerator DashCoroutine()
     {

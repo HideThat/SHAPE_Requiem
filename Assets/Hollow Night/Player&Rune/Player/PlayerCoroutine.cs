@@ -14,6 +14,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] bool canControl = true;
     [SerializeField] AudioSource playerVoiceSource;
+
     [Header("Move")]
     public float playerSpeed;
     public Transform wallCastTransform;
@@ -24,6 +25,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public bool canMove = true;
     public AudioSource moveAudioSource;
     public AudioClip moveClip;
+    public Rigidbody2D rigid2D;
 
     [Header("Jump")]
     public EffectDestroy jumpEffect;
@@ -228,6 +230,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         rigid.drag = isTouchingWall ? 0f : 1f;
     }
     #endregion
+
     #region Jump_System
     private void JumpController()
     {
@@ -665,7 +668,6 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                         Sound_Manager.Instance.PlayBGM(2);
                     }
                 });
-
             });
 
         // 4. 반대 방향으로 밀리는 힘
@@ -690,11 +692,13 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     IEnumerator DeadCoroutine(Vector2 _force)
     {
-        HP = maxHP;
+        Debug.Log("데드 코루틴 실행");
+        HP = 0;
         animator.SetTrigger("IsDead");
         SaveSystem.Instance.playerState.playerDead = true;
-        GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        rigid2D.velocity = Vector2.zero;
         isDead = true;
+        Debug.Log(isDead);
         rigid.AddForce(_force * knockbackForce, ForceMode2D.Impulse);
         Debug.Log($"밀리는 방향 = {_force * knockbackForce}");
         moveAudioSource.PlayOneShot(deadClip);

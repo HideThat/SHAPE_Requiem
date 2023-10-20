@@ -53,10 +53,11 @@ public class Slime : Enemy
     public float preJumpDelay = 1f;
     public float posJumpDelay = 1f;
     public Color jumpColor;
-    public float gravity;
+    public float jumpGravity;
     public Rigidbody2D rigid2D;
     public float jumpPower;
     public Transform[] poopJumpLunchPoint;
+    public float groundCheckDistance = 0.2f;
 
     [Header("Slime Smash")]
     public float preSmashDelay = 1f;
@@ -86,11 +87,30 @@ public class Slime : Enemy
     public BounceBall bounceBall;
     public bool isBounceBall = false;
     public float upAttackHitForce = 7f;
+    public Transform[] wallPos; // 0이 왼쪽, 1이 오른쪽
+    public float wallDistance;
+    public int maxBounceGround = 0;
+    public int currentBounceGround = 0;
+    public float bounceBallGravity = 2.5f;
+
+    [Header("Dive The Ground")]
+    public float preDiveDelay = 0.5f;
+    public float middleDiveDelay = 0.5f;
+    public float posDiveDelay;
+    public float diveSpeed;
+
+    [Header("SlimeThorn")]
+    public Slime_Thorn thornPrefab;
+    public float thornMakeDelay;
+    public float thornMakeDistance;
+    public float thornPosY;
+    public float maxThornCount;
 
 
     protected override void Start()
     {
         base.Start();
+        originY = transform.position.y;
         StartCoroutine(StartAppear());
     }
 
@@ -126,6 +146,7 @@ public class Slime : Enemy
             {
                 rigid2D.velocity = new Vector2(rigid2D.velocity.x, bounceBallShootSpeedY);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
+                currentBounceGround++;
                 Debug.Log("Hit from the South");
             }
         }
@@ -197,6 +218,8 @@ public class Slime : Enemy
     {
         slidingPos[0].parent = null;
         slidingPos[1].parent = null;
+        wallPos[0].parent = null;
+        wallPos[1].parent = null;
         appearSource.PlayOneShot(appearClip);
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
@@ -311,22 +334,21 @@ public class Slime : Enemy
         yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 3f));
         yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 1f));
         yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 1f));
-        spriteRenderer.DOColor(jumpColor, preJumpDelay);
-        yield return new WaitForSeconds(preJumpDelay);
-        yield return StartCoroutine(SlimeJump(posJumpDelay));
+        yield return StartCoroutine(SlimeJump(preJumpDelay, posJumpDelay));
         
     }
 
     IEnumerator SlimeMoveTranslate(float _speed, float targetX)
     {
-        Vector3 direction = (targetX > transform.position.x) ? Vector3.right : Vector3.left;
-
+        // 목표 위치를 제한
         targetX = Mathf.Clamp(targetX, slidingPos[0].position.x, slidingPos[1].position.x);
 
-        // 이동
-        while (Mathf.Abs(transform.position.x - targetX) > 0.3f)
+        Vector3 targetPos = new Vector3(targetX, transform.position.y, transform.position.z);
+        float closeEnough = 0.3f;
+
+        while (Vector3.Distance(transform.position, targetPos) > closeEnough)
         {
-            transform.Translate(direction * _speed * Time.deltaTime, Space.World);
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, _speed * Time.deltaTime);
             yield return null;
         }
 
@@ -334,14 +356,17 @@ public class Slime : Enemy
         yield break;
     }
 
-    IEnumerator SlimeJump(float _delay)
+
+    IEnumerator SlimeJump(float _preDelay, float _posDelay)
     {
+        spriteRenderer.DOColor(jumpColor, preJumpDelay);
+        yield return new WaitForSeconds(_preDelay);
         rigid2D.bodyType = RigidbodyType2D.Dynamic;
         m_collider2D.enabled = true;
         downHornCollider.enabled = false;
         animator.Play("A_Slime_JumpUp");
         rigid2D.velocity = new Vector2(0f, jumpPower);
-        rigid2D.gravityScale = gravity;
+        rigid2D.gravityScale = jumpGravity;
 
         yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[0]));
         yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[1]));
@@ -363,12 +388,15 @@ public class Slime : Enemy
 
         while (true)
         {
+            RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.down, groundCheckDistance, platformLayerMask);
+
             // 여기서 땅과 접촉했는지 여부 체크
-            if (Mathf.Abs(originY - transform.position.y) < 0.2f)
+            if (hit)
             {
+                rigid2D.gravityScale = 0f;
+                rigid2D.velocity = Vector2.zero;
                 rigid2D.bodyType = RigidbodyType2D.Static;
                 animator.Play("A_Slime_JumpLanding");
-                rigid2D.gravityScale = 0f;
                 spriteRenderer.DOColor(currentColor, preJumpDelay);
                 break;
             }
@@ -377,7 +405,7 @@ public class Slime : Enemy
         }
 
         transform.DOMoveY(originY, 0.3f);
-        yield return new WaitForSeconds(_delay);
+        yield return new WaitForSeconds(_posDelay);
         animator.Play("A_Slime_Idle");
     }
 
@@ -463,32 +491,128 @@ public class Slime : Enemy
         animator.Play("A_Slime_BounceBall_JumpReady");
         yield return new WaitForSeconds(preBounceBallDelay);
         rigid2D.bodyType = RigidbodyType2D.Dynamic;
-        rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, bounceBallShootSpeedY);
-        rigid2D.gravityScale = 2f;
-        transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+
+        float leftDistance = Mathf.Abs(wallPos[0].position.x - transform.position.x);
+        float rightDistance = Mathf.Abs(wallPos[1].position.x - transform.position.x);
+
+        bool jumpLeft = transform.position.x > PlayerCoroutine.Instance.transform.position.x;
+
+        if (jumpLeft && leftDistance < wallDistance)
+        {
+            jumpLeft = false;
+        }
+        else if (!jumpLeft && rightDistance < wallDistance)
+        {
+            jumpLeft = true;
+        }
+
+        if (jumpLeft)
+        {
+            rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, bounceBallShootSpeedY);
+            transform.rotation = Quaternion.Euler(0f, 0f, 45f);
+        }
+        else
+        {
+            rigid2D.velocity = new Vector2(bounceBallShootSpeedX, bounceBallShootSpeedY);
+            transform.rotation = Quaternion.Euler(0f, 0f, -45f);
+        }
+        
+        
+        rigid2D.gravityScale = bounceBallGravity;
+        
         animator.Play("A_Slime_JumpUp");
         isBounceBall = true;
         yield return new WaitForSeconds(middleBounceBallDelay);
         spriteRenderer.enabled = false;
         bounceBall.gameObject.SetActive(true);
 
-        yield return StartCoroutine(BounceBallColliderCheckCoroutine());
+        yield return StartCoroutine(BounceBallLoopCoroutine());
+        isBounceBall = false;
+        currentBounceGround = 0;
 
-        // 가로 이동은 일정함.
-        // 세로 이동은 플레이어가 타격 시 일정 높이 만큼 떠오름(아주 약간)
-        // 플레이어가 타격 시 -> 대쉬 위 공격 타이밍에 맞춰 다시 하강
-        // 바닥에 닿으면 일정 높이 만큼 떠오름 (어색하지 않게)
-        
+        yield return StartCoroutine(DiveTheGround());
+    }
+
+    IEnumerator BounceBallLoopCoroutine()
+    {
+        float epsilon = 1f; // 허용 오차
+
+        while (true)
+        {
+            if (maxBounceGround < currentBounceGround && Mathf.Abs(rigid2D.velocity.y) < epsilon)
+                break;
+
+            yield return null;
+        }
 
         yield return null;
     }
 
-    IEnumerator BounceBallColliderCheckCoroutine()
+
+    IEnumerator DiveTheGround()
     {
-        while (true)
+        rigid2D.gravityScale = 0f;
+        rigid2D.bodyType = RigidbodyType2D.Static;
+
+        transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+        spriteRenderer.enabled = true;
+        bounceBall.gameObject.SetActive(false);
+        animator.Play("A_Slime_BackMove_Down");
+        yield return new WaitForSeconds(preDiveDelay);
+        animator.Play("A_Slime_DiveDown");
+
+        yield return StartCoroutine(SlimeMoveY(diveSpeed, originY - 3f));
+
+        EffectDestroy effect = Instantiate(burstEffectPrefab, new Vector3(transform.position.x, originY, 0f), Quaternion.Euler(-90f, 90f, 0f));
+        EffectDestroy effect2 = Instantiate(burstEffectPrefab, new Vector3(transform.position.x - 0.5f, originY, 0f), Quaternion.Euler(-100f, 90f, 30f));
+        EffectDestroy effect3 = Instantiate(burstEffectPrefab, new Vector3(transform.position.x + 0.5f, originY, 0f), Quaternion.Euler(-80f, 90f, -30f));
+        effect.SetDestroy(3f);
+        effect2.SetDestroy(3f);
+        effect3.SetDestroy(3f);
+        CameraManager.Instance.CameraShake();
+
+        StartCoroutine(SlimeMakeThorn());
+
+        transform.DOMoveY(originY - downDistance, middleDiveDelay / 2f);
+        animator.Play("A_Slime_DownIdle");
+        yield return StartCoroutine(SlimeJump(middleDiveDelay / 2f, posDiveDelay));
+    }
+
+    IEnumerator SlimeMoveY(float _speed, float targetY)
+    {
+        Vector2 startPos = transform.position;
+        Vector2 targetPos = new Vector2(startPos.x, targetY);
+        float closeEnough = 0.3f;
+
+        while (Vector2.Distance(transform.position, targetPos) > closeEnough)
         {
-            isBounceBall = true;
+            transform.position = Vector2.MoveTowards(transform.position, targetPos, _speed * Time.deltaTime);
             yield return null;
+        }
+    }
+
+    IEnumerator SlimeMakeThorn()
+    {
+        int thornCount = 0;
+        Vector3 spawnPosition = transform.position;
+        spawnPosition.y = thornPosY; // y 좌표 설정
+
+        while (thornCount < maxThornCount)
+        {
+            // 왼쪽에 가시 생성
+            spawnPosition.x = transform.position.x - (thornMakeDistance * (thornCount + 1));
+            Slime_Thorn leftThorn = Instantiate(thornPrefab, spawnPosition, Quaternion.identity);
+            leftThorn.transform.localScale = new Vector3(1f, 1f, 1f);
+            leftThorn.StartMakeThorn();
+
+            // 오른쪽에 가시 생성
+            spawnPosition.x = transform.position.x + (thornMakeDistance * (thornCount + 1));
+            Slime_Thorn rightThorn = Instantiate(thornPrefab, spawnPosition, Quaternion.identity);
+            rightThorn.transform.localScale = new Vector3(-1f, 1f, 1f);
+            rightThorn.StartMakeThorn();
+
+            thornCount++;
+            yield return new WaitForSeconds(thornMakeDelay); // 딜레이 적용
         }
     }
     #endregion
@@ -509,6 +633,8 @@ public class Slime : Enemy
 
         // -Y 방향의 Ray를 그립니다.
         Gizmos.DrawRay(myCircleCollider.bounds.center, Vector2.down * raycastDistanceY);
+
+        Gizmos.DrawRay(transform.position, Vector2.down * groundCheckDistance);
     }
 
 }

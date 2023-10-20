@@ -4975,11 +4975,11 @@ MonoBehaviour:
   m_collider2D: {fileID: 9075467187693119358}
   spriteRenderer: {fileID: 9075467187693119346}
   bloodPrefab: {fileID: 4040198546950883084, guid: f91052cc0ef77f34294a374719f4e875, type: 3}
-  minBloodSize: 0.2
-  maxBloodSize: 0.5
-  minBloodForce: 10
-  maxBloodForce: 20
-  bloodCount: 5
+  minBloodSize: 0
+  maxBloodSize: 0
+  minBloodForce: 0
+  maxBloodForce: 0
+  bloodCount: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   hitClip: {fileID: 0}

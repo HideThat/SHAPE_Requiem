@@ -1,6 +1,7 @@
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -16,10 +17,15 @@ public class Slime : Enemy
     [SerializeField] AudioClip deadClip;
     [SerializeField] BossAppearEffect appearEffectManager;
     [SerializeField] EffectDestroy DeadEffect;
+    [SerializeField] EffectDestroy lightBlowPrefab;
+    [SerializeField] BossAppearEffect appearEffect;
     [SerializeField] float trailSpacing = 0.5f;  // The spacing between each trail sprite
     public float appearDelay = 1f;
     [SerializeField] FocusEffect focusEffectPrefab;
     public float radius = 5f;
+    public bool isDead;
+    public float changePhaseTime;
+    public float changeDelay = 0.75f;
 
     [Header("Throwing Poop")]
     public ThrowingPoop fakePoop;
@@ -35,6 +41,9 @@ public class Slime : Enemy
     public float preThrowingPoopDelay = 1f;
     public float middleThrowingPoopDelay = 0f;
     public float posThrowingPoopDelay = 1f;
+    public AudioClip throwPoopClip;
+    public Transform[] swingPoint;
+    public EffectDestroy swingTrail;
 
     [Header("Slime Down And Up")]
     public Collider2D downHornCollider;
@@ -44,10 +53,12 @@ public class Slime : Enemy
     public float preDownDelay = 1f;
     public float middleDownDelay = 1f;
     public float posDownDelay = 1f;
+    public AudioClip downSoundClip;
 
     [Header("Slime Sliding")]
     public float slidingSpeed;
     public Transform[] slidingPos; // 0번이 왼쪽 1번이 오른쪽
+    public AudioClip slidingSoundClip;
 
     [Header("Slime Jump")]
     public float preJumpDelay = 1f;
@@ -58,6 +69,8 @@ public class Slime : Enemy
     public float jumpPower;
     public Transform[] poopJumpLunchPoint;
     public float groundCheckDistance = 0.2f;
+    public AudioClip jumpReadyClip;
+    public AudioClip jumpClip;
 
     [Header("Slime Smash")]
     public float preSmashDelay = 1f;
@@ -133,6 +146,8 @@ public class Slime : Enemy
                 rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the East");
+                Instantiate(burstEffectPrefab, hitPlusX.point, Quaternion.Euler(-180f, 90f, 0f));
+                CameraManager.Instance.CameraShake();
             }
 
             if (hitMinusX)
@@ -140,6 +155,8 @@ public class Slime : Enemy
                 rigid2D.velocity = new Vector2(bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the West");
+                Instantiate(burstEffectPrefab, hitMinusX.point, Quaternion.Euler(0f, 90f, 0f));
+                CameraManager.Instance.CameraShake();
             }
 
             if (hitMinusY)
@@ -148,29 +165,33 @@ public class Slime : Enemy
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 currentBounceGround++;
                 Debug.Log("Hit from the South");
+                Instantiate(burstEffectPrefab, hitMinusY.point, Quaternion.Euler(-90f, 90f, 0f));
+                CameraManager.Instance.CameraShake();
             }
+
         }
     }
 
+    bool isChanged = false;
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Q))
             StartCoroutine(ThrowingPoopTwoTime());
 
         if (Input.GetKeyDown(KeyCode.W))
-            StartCoroutine(SlimeDownAndUp());
+            StartCoroutine(SlimeDownAndUp(preDownDelay, middleDownDelay, posDownDelay));
 
         if (Input.GetKeyDown(KeyCode.E))
-            StartCoroutine(SlimeSliding());
+            StartCoroutine(SlimeSliding(preDownDelay, slidingSpeed, preJumpDelay, posJumpDelay));
 
         if (Input.GetKeyDown(KeyCode.R))
-            StartCoroutine(SlimeSmash());
+            StartCoroutine(SlimeSmash(preSmashDelay, middleSmashDelay, posSmashDelay));
 
         if (Input.GetKeyDown(KeyCode.T))
             StartCoroutine(SlimeBackMove());
 
         if (Input.GetKeyDown(KeyCode.Y))
-            StartCoroutine(SlimeBounceBall());
+            StartCoroutine(SlimeBounceBall(preBounceBallDelay, middleBounceBallDelay, preDiveDelay, middleDiveDelay, posDiveDelay));
 
         if (Input.GetKeyDown(KeyCode.A))
             animator.Play("A_Slime_SmashReady");
@@ -181,23 +202,25 @@ public class Slime : Enemy
         if (Input.GetKeyDown(KeyCode.D))
             animator.Play("A_Slime_SmashReturn");
 
-        
-
-    }
-
-    public override void ResetEnemy()
-    {
-        base.ResetEnemy();
-    }
-
-    protected override void OnTriggerStay2D(Collider2D collision)
-    {
-        base.OnTriggerStay2D(collision);
+        if (HP <= maxHP / 2 && !isChanged)
+        {
+            StopAllCoroutines();
+            StopCoroutine(FSM_Coroutine);
+            StartCoroutine(ChangePhase());
+            isChanged = true;
+        }
     }
 
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         base.Hit(_damage, _hitDir, _audioSource);
+
+        // maxHP와 HP의 비율을 계산
+        float healthRatio = (float)HP / maxHP; // 예를 들어, maxHP가 100이고 HP가 90이면 0.9가 됩니다.
+        Debug.Log(healthRatio);
+        // currentColor를 조정
+        // 1 - healthRatio를 하면, HP가 줄어들 때 값이 증가합니다. 예를 들어, healthRatio가 0.9면 1 - 0.9 = 0.1이 됩니다.
+        currentColor = new Color(1f, healthRatio, healthRatio, 1f);
     }
 
     public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
@@ -206,14 +229,68 @@ public class Slime : Enemy
 
         if (isBounceBall)
             rigid2D.velocity = new Vector2(rigid2D.velocity.x, upAttackHitForce);
-        
     }
 
     public override void Dead()
     {
         base.Dead();
+
+        if (!isDead)
+        {
+            isDead = true;
+
+            if (isBounceBall || rigid2D.bodyType == RigidbodyType2D.Dynamic)
+            {
+                isBounceBall = false;
+
+                rigid2D.gravityScale = 0f;
+                rigid2D.velocity = Vector2.zero;
+                rigid2D.bodyType = RigidbodyType2D.Static;
+
+                transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+                spriteRenderer.enabled = true;
+                bounceBall.gameObject.SetActive(false);
+            }
+
+            StopAllCoroutines();
+            animator.Play("A_Slime_DeadReady");
+
+            CameraManager.Instance.StopShake();
+            CameraManager.Instance.CameraShake(5f, 8f, 1f);
+
+            StartCoroutine(DeadCoroutine(5f));
+        }
     }
 
+    IEnumerator DeadCoroutine(float _delay)
+    {
+        Sound_Manager.Instance.PlayBGM(0);
+        EffectDestroy effect = Instantiate(DeadEffect);
+        effect.transform.position = transform.position;
+        effect.SetDestroy(15f);
+        voiceSource.Stop();
+        voiceSource.PlayOneShot(deadClip);
+
+        yield return new WaitForSeconds(_delay / 2);
+        animator.Play("A_Slime_Dead");
+        yield return new WaitForSeconds(_delay / 2);
+        Destroy(effect.transform.GetChild(0).gameObject);
+        SummonLightBlow(1f, transform.position, new Vector2(2f, 2f));
+
+
+        Destroy(gameObject);
+    }
+
+    void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)
+    {
+        EffectDestroy effect = Instantiate(lightBlowPrefab);
+        effect.transform.position = _point;
+        effect.transform.localScale = _size;
+        effect.SetFade(_time);
+        effect.SetDestroy(_time);
+    }
+
+    Coroutine FSM_Coroutine;
     IEnumerator StartAppear()
     {
         slidingPos[0].parent = null;
@@ -223,6 +300,168 @@ public class Slime : Enemy
         appearSource.PlayOneShot(appearClip);
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
+        FSM_Coroutine = StartCoroutine(FSM_1());
+    }
+
+    #region phase1
+    IEnumerator FSM_1()
+    {
+        // 1페이즈
+        // 1. 구체 던지기 X 2
+        // 2. 공놀이 -> 다이브 -> 점프
+        // 3. 백스텝
+        // 4. 앞으로 잠수
+        // 5. 땅 찍기
+        // 6. 구체 던지기 X 3
+
+        while (true)
+        {
+            if (HP < maxHP / 2)
+                break;
+
+            int rand = Random.Range(0, 8);
+
+            switch (rand)
+            {
+                case 0:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, middleThrowingPoopDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, posThrowingPoopDelay));
+                    break;
+                case 1:
+                    yield return StartCoroutine(SlimeBounceBall(preBounceBallDelay, middleBounceBallDelay, preDiveDelay, middleDiveDelay, posDiveDelay));
+                    break;
+                case 2:
+                    yield return StartCoroutine(SlimeBackMove());
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, middleThrowingPoopDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, posThrowingPoopDelay));
+                    break;
+                case 3:
+                    yield return StartCoroutine(SlimeSliding(preDownDelay, slidingSpeed, preJumpDelay, posJumpDelay));
+                    break;
+                case 4:
+                    yield return StartCoroutine(SlimeSmash(preSmashDelay, middleSmashDelay, posSmashDelay));
+                    break;
+                case 5:
+                    yield return StartCoroutine(SlimeSmash(preSmashDelay, middleSmashDelay, posSmashDelay));
+                    break;
+                case 6:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, middleThrowingPoopDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, middleThrowingPoopDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay, posThrowingPoopDelay));
+                    break;
+                case 7:
+                    yield return StartCoroutine(SlimeDownAndUp(preDownDelay, middleDownDelay, posDownDelay));
+                    break;
+                default:
+                    break;
+            }
+
+            yield return null;
+        }
+    }
+    #endregion
+
+    #region phase2
+    IEnumerator FSM_2()
+    {
+        // 2페이즈
+        // 1. 구체 던지기 X 2
+        // 2. 구체 던지기 X 3 -> 공놀이 -> 다이브 -> 점프
+        // 3. 백스텝
+        // 4. 앞으로 잠수
+        // 5. 구체 던지기 X 2 -> 잠수 -> 점프
+        // 6. 땅 찍기 -> 구체 던지기 X 2
+        // 7. 백스텝 -> 구체 던지기 X 2
+        // 8. 앞으로 잠수 -> 백스텝
+        // 9. 잠수 -> 점프 -> 땅찍기
+
+
+        while (true)
+        {
+            int rand = Random.Range(0, 7);
+
+            switch (rand)
+            {
+                case 0:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    break;
+                case 1:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    yield return StartCoroutine(SlimeBounceBall(preBounceBallDelay * changeDelay, middleBounceBallDelay * changeDelay, preDiveDelay * changeDelay, middleDiveDelay * changeDelay, posDiveDelay * changeDelay));
+                    break;
+                case 2:
+                    yield return StartCoroutine(SlimeBackMove());
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    break;
+                case 3:
+                    yield return StartCoroutine(SlimeDownAndUp(preDownDelay * changeDelay, middleDownDelay * changeDelay, posDownDelay * changeDelay));
+                    break;
+                case 4:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    yield return StartCoroutine(SlimeSliding(preDownDelay * changeDelay, slidingSpeed * 1.5f, preJumpDelay * changeDelay, posJumpDelay * changeDelay));
+                    break;
+                case 5:
+                    yield return StartCoroutine(SlimeSmash(preSmashDelay * changeDelay, middleSmashDelay * changeDelay, posSmashDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    break;
+                case 6:
+                    yield return StartCoroutine(SlimeSmash(preSmashDelay * changeDelay, middleSmashDelay * changeDelay, posSmashDelay * changeDelay));
+                    break;
+                case 7:
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, middleThrowingPoopDelay * changeDelay));
+                    yield return StartCoroutine(ThrowingPoop(poopPrefab, preThrowingPoopDelay * changeDelay, posThrowingPoopDelay / 2));
+                    break;
+                case 8:
+                    yield return StartCoroutine(SlimeBackMove());
+                    break;
+                case 9:
+                    yield return StartCoroutine(SlimeDownAndUp(preDownDelay * changeDelay, middleDownDelay * changeDelay, posDownDelay * changeDelay));
+                    yield return StartCoroutine(SlimeBackMove());
+                    break;
+                case 10:
+                    yield return StartCoroutine(SlimeSliding(preDownDelay * changeDelay, slidingSpeed * 1.5f, preJumpDelay * changeDelay, posJumpDelay * changeDelay));
+                    yield return StartCoroutine(SlimeSmash(preSmashDelay * changeDelay, middleSmashDelay * changeDelay, posSmashDelay * changeDelay));
+                    break;
+                default:
+                    break;
+            }
+            yield return null;
+        }
+
+    }
+    #endregion
+
+    IEnumerator ChangePhase()
+    {
+        if (isBounceBall || rigid2D.bodyType == RigidbodyType2D.Dynamic)
+        {
+            isBounceBall = false;
+
+            rigid2D.gravityScale = 0f;
+            rigid2D.velocity = Vector2.zero;
+            rigid2D.bodyType = RigidbodyType2D.Static;
+
+            transform.rotation = Quaternion.Euler(0f, 0f, 0f);
+            spriteRenderer.enabled = true;
+            bounceBall.gameObject.SetActive(false);
+        }
+
+        animator.Play("A_Slime_PhaseChange");
+        appearEffect.Start();
+        appearSource.volume = 1f;
+        appearSource.PlayOneShot(appearClip);
+
+        transform.DOMoveY(originY, changePhaseTime);
+        yield return new WaitForSeconds(changePhaseTime);
+        appearSource.DOFade(0f, 1f);
+        FSM_Coroutine = StartCoroutine(FSM_2());
     }
 
     #region ThrowingPoop
@@ -242,8 +481,19 @@ public class Slime : Enemy
         animator.Play("A_Slime_ThrowReady");
         fakePoop.gameObject.SetActive(true);
         // 똥 만드는 애니매이션 실행
+        EffectDestroy effect = Instantiate(swingTrail, swingPoint[0].position, Quaternion.identity);
         yield return new WaitForSeconds(_preDelay);
+        effect.transform.DOMove(swingPoint[1].position, 0.01f, false).OnComplete(() =>
+        {
+            effect.transform.DOMove(swingPoint[2].position, 0.01f, false).OnComplete(() =>
+            {
+                effect.SetDestroy(0.5f);
+            });
+        });
+
+
         animator.Play("A_Slime_ThrowShoot");
+        effectSource.PlayOneShot(throwPoopClip);
         ThrowingPoop poop = Instantiate(_poop);
         poop.transform.position = poopLunchPoint.position;
 
@@ -272,27 +522,28 @@ public class Slime : Enemy
     #endregion
 
     #region DownAndUp
-    IEnumerator SlimeDownAndUp()
+    IEnumerator SlimeDownAndUp(float _preDownDelay, float _middleDownDelay, float _posDownDelay)
     {
         if (PlayerCoroutine.Instance.transform.position.x > transform.position.x)
             transform.localScale = new Vector3(-1f, 1f, 1f);
         else
             transform.localScale = new Vector3(1f, 1f, 1f);
 
-        yield return StartCoroutine(SlimeDown(preDownDelay));
+        yield return StartCoroutine(SlimeDown(_preDownDelay));
 
         if (transform.localScale.x > 0f)
-            yield return StartCoroutine(SlimeMoveTween(middleDownDelay + posDownDelay, transform.position.x - advanceDistance));
+            yield return StartCoroutine(SlimeMoveTween(_middleDownDelay + _posDownDelay, transform.position.x - advanceDistance));
         else
-            yield return StartCoroutine(SlimeMoveTween(middleDownDelay + posDownDelay, transform.position.x + advanceDistance));
+            yield return StartCoroutine(SlimeMoveTween(_middleDownDelay + _posDownDelay, transform.position.x + advanceDistance));
 
 
-        yield return StartCoroutine(SlimeUp(posDownDelay));
+        yield return StartCoroutine(SlimeUp(_posDownDelay));
     }
 
     IEnumerator SlimeDown(float _delay)
     {
         animator.Play("A_Slime_Down");
+        effectSource.PlayOneShot(downSoundClip);
         transform.DOMoveY(transform.position.y - downDistance, _delay);
         yield return new WaitForSeconds(0.1f);
         m_collider2D.enabled = false;
@@ -314,28 +565,28 @@ public class Slime : Enemy
     IEnumerator SlimeMoveTween(float _delay, float _moveDistanceX)
     {
         float targetX = Mathf.Clamp(_moveDistanceX, slidingPos[0].position.x, slidingPos[1].position.x);
-
+        effectSource.PlayOneShot(slidingSoundClip);
         transform.DOMoveX(targetX, _delay);
         yield return new WaitForSeconds(_delay);
+        effectSource.Stop();
     }
     #endregion
 
     #region Down And Move And Jump
-    IEnumerator SlimeSliding()
+    IEnumerator SlimeSliding(float _preDelay, float _slidingSpeed, float _preJumpDelay, float _posJumpDelay)
     {
         // 아래로 내려감
-        yield return StartCoroutine(SlimeDown(preDownDelay));
+        yield return StartCoroutine(SlimeDown(_preDelay));
 
         int rand = Random.Range(0, 2);
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, slidingPos[rand].position.x));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 5f));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 5f));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 3f));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 3f));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 1f));
-        yield return StartCoroutine(SlimeMoveTranslate(slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 1f));
-        yield return StartCoroutine(SlimeJump(preJumpDelay, posJumpDelay));
-        
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, slidingPos[rand].position.x));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 5f));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 5f));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 3f));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 3f));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x - 1f));
+        yield return StartCoroutine(SlimeMoveTranslate(_slidingSpeed, PlayerCoroutine.Instance.transform.position.x + 1f));
+        yield return StartCoroutine(SlimeJump(_preJumpDelay, _posJumpDelay));
     }
 
     IEnumerator SlimeMoveTranslate(float _speed, float targetX)
@@ -343,15 +594,21 @@ public class Slime : Enemy
         // 목표 위치를 제한
         targetX = Mathf.Clamp(targetX, slidingPos[0].position.x, slidingPos[1].position.x);
 
-        Vector3 targetPos = new Vector3(targetX, transform.position.y, transform.position.z);
+        Vector3 targetPos = new(targetX, transform.position.y, transform.position.z);
         float closeEnough = 0.3f;
+
+        effectSource.PlayOneShot(slidingSoundClip);
 
         while (Vector3.Distance(transform.position, targetPos) > closeEnough)
         {
+            if (!effectSource.isPlaying)
+                effectSource.PlayOneShot(slidingSoundClip);
+
+
             transform.position = Vector3.MoveTowards(transform.position, targetPos, _speed * Time.deltaTime);
             yield return null;
         }
-
+        effectSource.Stop();
         // 목적지에 도달하면 코루틴 종료
         yield break;
     }
@@ -360,7 +617,10 @@ public class Slime : Enemy
     IEnumerator SlimeJump(float _preDelay, float _posDelay)
     {
         spriteRenderer.DOColor(jumpColor, preJumpDelay);
+        effectSource.PlayOneShot(jumpReadyClip);
         yield return new WaitForSeconds(_preDelay);
+        effectSource.Stop();
+        effectSource.PlayOneShot(jumpClip);
         rigid2D.bodyType = RigidbodyType2D.Dynamic;
         m_collider2D.enabled = true;
         downHornCollider.enabled = false;
@@ -370,8 +630,6 @@ public class Slime : Enemy
 
         yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[0]));
         yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[1]));
-        yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[2]));
-        yield return StartCoroutine(ShootPoop(poopPrefab, poopJumpLunchPoint[3]));
 
         // 구체를 여러개 막 소환함
         // 구체는 발사 방향, 발사 속도, 발사 위치 등이 있다.
@@ -414,10 +672,6 @@ public class Slime : Enemy
         ThrowingPoop poop = Instantiate(_poop);
         poop.transform.position = lunchPoint.position;
 
-        float dirX = Random.Range(shootX_Min, shootX_Max);
-        if (transform.localScale.x > 0f) dirX = -dirX;
-        float dirY = Random.Range(shootY_Min, shootY_Max);
-
         poop.rigid.velocity = (lunchPoint.position - transform.position).normalized * shootPower;
 
         yield return new WaitForSeconds(0.15f);
@@ -425,10 +679,10 @@ public class Slime : Enemy
     #endregion
 
     #region Smash
-    IEnumerator SlimeSmash()
+    IEnumerator SlimeSmash(float _preSmashDelay, float _middleSmashDelay, float _posSmashDelay)
     {
         animator.Play("A_Slime_SmashReady");
-        yield return new WaitForSeconds(preSmashDelay);
+        yield return new WaitForSeconds(_preSmashDelay);
         animator.Play("A_Slime_SmashActive");
         yield return new WaitForSeconds(0.15f);
         EffectDestroy effect = Instantiate(burstEffectPrefab);
@@ -439,9 +693,9 @@ public class Slime : Enemy
         effect2.SetDestroy(3f);
 
         CameraManager.Instance.CameraShake();
-        yield return new WaitForSeconds(middleSmashDelay);
+        yield return new WaitForSeconds(_middleSmashDelay);
         animator.Play("A_Slime_SmashReturn");
-        yield return new WaitForSeconds(posSmashDelay);
+        yield return new WaitForSeconds(_posSmashDelay);
         animator.Play("A_Slime_Idle");
     }
 
@@ -477,19 +731,22 @@ public class Slime : Enemy
         else
             moveDistanceX = transform.position.x - backMoveDistance;
 
+        voiceSource.PlayOneShot(downSoundClip);
+
         yield return SlimeMoveTranslate(backMoveSpeed, moveDistanceX);
         animator.Play("A_Slime_BackMove_Up");
-        yield return new WaitForSeconds(posBackMoveDelay);
+        yield return new WaitForSeconds(0.25f);
         animator.Play("A_Slime_Idle");
+        yield return new WaitForSeconds(posBackMoveDelay);
     }
     #endregion
 
     #region Bounce Ball
-    IEnumerator SlimeBounceBall()
+    IEnumerator SlimeBounceBall(float _preBounceBallDelay, float _middleBounceBallDelay, float _preDiveDelay, float _middleDiveDelay, float _posDiveDelay)
     {
         // 대각선으로 튀어오르면서 공으로 변하기
         animator.Play("A_Slime_BounceBall_JumpReady");
-        yield return new WaitForSeconds(preBounceBallDelay);
+        yield return new WaitForSeconds(_preBounceBallDelay);
         rigid2D.bodyType = RigidbodyType2D.Dynamic;
 
         float leftDistance = Mathf.Abs(wallPos[0].position.x - transform.position.x);
@@ -516,21 +773,23 @@ public class Slime : Enemy
             rigid2D.velocity = new Vector2(bounceBallShootSpeedX, bounceBallShootSpeedY);
             transform.rotation = Quaternion.Euler(0f, 0f, -45f);
         }
-        
-        
+
+
         rigid2D.gravityScale = bounceBallGravity;
-        
+
         animator.Play("A_Slime_JumpUp");
         isBounceBall = true;
-        yield return new WaitForSeconds(middleBounceBallDelay);
+        yield return new WaitForSeconds(_middleBounceBallDelay);
         spriteRenderer.enabled = false;
+        bounceBall.spriteRenderer.color = spriteRenderer.color;
+        bounceBall.currentColor = spriteRenderer.color;
         bounceBall.gameObject.SetActive(true);
 
         yield return StartCoroutine(BounceBallLoopCoroutine());
         isBounceBall = false;
         currentBounceGround = 0;
 
-        yield return StartCoroutine(DiveTheGround());
+        yield return StartCoroutine(DiveTheGround(_preDiveDelay, _middleDiveDelay, _posDiveDelay));
     }
 
     IEnumerator BounceBallLoopCoroutine()
@@ -549,8 +808,9 @@ public class Slime : Enemy
     }
 
 
-    IEnumerator DiveTheGround()
+    IEnumerator DiveTheGround(float _preDiveDelay, float _middleDiveDelay, float _posDiveDelay)
     {
+        SummonLightBlow(0.5f, transform.position, new Vector2(9f, 1f));
         rigid2D.gravityScale = 0f;
         rigid2D.bodyType = RigidbodyType2D.Static;
 
@@ -558,7 +818,7 @@ public class Slime : Enemy
         spriteRenderer.enabled = true;
         bounceBall.gameObject.SetActive(false);
         animator.Play("A_Slime_BackMove_Down");
-        yield return new WaitForSeconds(preDiveDelay);
+        yield return new WaitForSeconds(_preDiveDelay);
         animator.Play("A_Slime_DiveDown");
 
         yield return StartCoroutine(SlimeMoveY(diveSpeed, originY - 3f));
@@ -571,17 +831,17 @@ public class Slime : Enemy
         effect3.SetDestroy(3f);
         CameraManager.Instance.CameraShake();
 
-        StartCoroutine(SlimeMakeThorn());
+        StartCoroutine(SlimeMakeThorn(thornMakeDelay));
 
-        transform.DOMoveY(originY - downDistance, middleDiveDelay / 2f);
+        transform.DOMoveY(originY - downDistance, _middleDiveDelay / 2f);
         animator.Play("A_Slime_DownIdle");
-        yield return StartCoroutine(SlimeJump(middleDiveDelay / 2f, posDiveDelay));
+        yield return StartCoroutine(SlimeJump(_middleDiveDelay / 2f, _posDiveDelay));
     }
 
     IEnumerator SlimeMoveY(float _speed, float targetY)
     {
         Vector2 startPos = transform.position;
-        Vector2 targetPos = new Vector2(startPos.x, targetY);
+        Vector2 targetPos = new(startPos.x, targetY);
         float closeEnough = 0.3f;
 
         while (Vector2.Distance(transform.position, targetPos) > closeEnough)
@@ -591,7 +851,7 @@ public class Slime : Enemy
         }
     }
 
-    IEnumerator SlimeMakeThorn()
+    IEnumerator SlimeMakeThorn(float _thornMakeDelay)
     {
         int thornCount = 0;
         Vector3 spawnPosition = transform.position;
@@ -612,12 +872,10 @@ public class Slime : Enemy
             rightThorn.StartMakeThorn();
 
             thornCount++;
-            yield return new WaitForSeconds(thornMakeDelay); // 딜레이 적용
+            yield return new WaitForSeconds(_thornMakeDelay); // 딜레이 적용
         }
     }
     #endregion
-
-
 
     private void OnDrawGizmos()
     {

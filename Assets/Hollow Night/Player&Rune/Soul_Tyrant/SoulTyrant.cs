@@ -108,6 +108,7 @@ public class SoulTyrant : Enemy
 
     protected override void Start()
     {
+        base.Start();
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
         targetObject = PlayerCoroutine.Instance.gameObject;
@@ -139,7 +140,16 @@ public class SoulTyrant : Enemy
         base.OnTriggerStay2D(collision);
     }
 
-    
+    public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.Hit(_damage, _hitDir, _audioSource);
+
+        // maxHP와 HP의 비율을 계산
+        float healthRatio = (float)HP / maxHP;
+        Debug.Log(healthRatio);
+        // currentColor를 조정
+        currentColor = new Color(1f, healthRatio, healthRatio, 1f);
+    }
 
     IEnumerator StartAppear()
     {
@@ -445,7 +455,7 @@ public class SoulTyrant : Enemy
     void AppearBoss()
     {
         SummonTeleportEffect();
-        spriteRenderer.color = Color.white;
+        spriteRenderer.color = currentColor;
         m_collider2D.enabled = true;
     }
 

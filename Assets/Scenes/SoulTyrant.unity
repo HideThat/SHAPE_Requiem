@@ -689,7 +689,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
       propertyPath: HP
-      value: 1
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 6337703496446039475, guid: eb8a8b32096de994aae62a89c3fedd3e, type: 3}
       propertyPath: rigid2D
@@ -7098,6 +7098,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   HP: 300
+  maxHP: 0
   damage: 1
   m_collider2D: {fileID: 957027527}
   spriteRenderer: {fileID: 957027523}

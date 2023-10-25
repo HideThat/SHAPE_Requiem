@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="False">
+    <ui:VisualElement style="height: 50px; width: 640px; background-color: rgba(176, 97, 97, 0); justify-content: flex-end; align-items: stretch; flex-direction: row; left: 0; top: 0; right: 0; bottom: 0;">
+        <ui:Button text="Button" display-tooltip-when-elided="true" style="width: 152px; -unity-text-align: middle-center; white-space: normal; background-image: url(&apos;project://database/Assets/Requiem/Resource/Image/%EC%98%88%EC%8B%9C%20%EC%9D%B4%EB%AF%B8%EC%A7%80%20%EC%97%90%EC%85%8B/PNG/War4/0000.png?fileID=2800000&amp;guid=e9eb419bb26f6d1429015c2aa032af2d&amp;type=3#0000&apos;);" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" style="width: 152px; white-space: normal;" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" style="width: 152px; white-space: normal;" />
+        <ui:Button text="Button" display-tooltip-when-elided="true" style="width: 152px; white-space: normal;" />
+    </ui:VisualElement>
+</ui:UXML>

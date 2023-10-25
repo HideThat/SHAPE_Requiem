@@ -4970,7 +4970,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dd6fd82202dfad44abaae8ea0a25861b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 30
+  HP: 20
   damage: 1
   m_collider2D: {fileID: 9075467187693119358}
   spriteRenderer: {fileID: 9075467187693119346}
@@ -4982,10 +4982,10 @@ MonoBehaviour:
   bloodCount: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  hitClip: {fileID: 0}
+  hitClip: {fileID: 8300000, guid: e1a92e147ed2a9748add82dce4283db6, type: 3}
   runeIn: 0
   rigid: {fileID: 9075467187693119359}
-  maxCollisionCount: 10
+  maxCollisionCount: 5
   hitforce: 20
   rotationSpeed: 300
   particleEffect: {fileID: 1514424335651424341}
@@ -4993,6 +4993,8 @@ MonoBehaviour:
   destroyDelay: 0.25
   isAttacked: 0
   audioSource: {fileID: 1783079861685468289}
+  collisionClip: {fileID: 8300000, guid: 1a03bb4cd9c1b9d429df21ac82cdf3e1, type: 3}
+  destroyClip: {fileID: 8300000, guid: 369f3397e22c97248a0f729b0afa17a4, type: 3}
   currentCollisionCount: 0
 --- !u!95 &3316607273906183815
 Animator:
@@ -5025,7 +5027,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
+  m_PlayOnAwake: 0
   m_Volume: 1
   m_Pitch: 1
   Loop: 0

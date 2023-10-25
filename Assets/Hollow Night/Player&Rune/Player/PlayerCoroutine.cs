@@ -695,8 +695,6 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Debug.Log("单靛 内风凭 角青");
         HP = 0;
         animator.SetTrigger("IsDead");
-        SaveSystem.Instance.playerState.playerDead = true;
-        rigid2D.velocity = Vector2.zero;
         isDead = true;
         Debug.Log(isDead);
         rigid.AddForce(_force * knockbackForce, ForceMode2D.Impulse);

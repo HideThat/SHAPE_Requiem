@@ -4,6 +4,7 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int HP;
+    public int maxHP;
     public int damage; // 적이 입히는 피해량을 저장하는 변수
     public Collider2D m_collider2D; // 적의 충돌체를 저장하는 변수
     public SpriteRenderer spriteRenderer;
@@ -23,6 +24,7 @@ public class Enemy : MonoBehaviour
 
     protected virtual void Start()
     {
+        maxHP = HP;
         currentColor = spriteRenderer.color;
     }
 

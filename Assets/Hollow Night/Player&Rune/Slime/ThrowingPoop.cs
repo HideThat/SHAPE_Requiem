@@ -16,6 +16,8 @@ public class ThrowingPoop : Enemy
     public float destroyDelay = 1f;
     public bool isAttacked = false;
     public AudioSource audioSource;
+    public AudioClip collisionClip;
+    public AudioClip destroyClip;
 
     public int currentCollisionCount = 0;
     Coroutine rotateCoroutine;
@@ -40,6 +42,7 @@ public class ThrowingPoop : Enemy
         {
             currentCollisionCount++;
             rotationSpeed = -rotationSpeed;
+            audioSource.PlayOneShot(collisionClip);
 
             if (maxCollisionCount <= currentCollisionCount)
                 Dead();
@@ -86,6 +89,7 @@ public class ThrowingPoop : Enemy
 
     public IEnumerator DeadCoroutine()
     {
+        audioSource.PlayOneShot(destroyClip);
         animator.Play("A_SlimeBall_Exploded");
         rigid.bodyType = RigidbodyType2D.Kinematic;
         rigid.velocity = Vector2.zero;

@@ -11,7 +11,7 @@ public class BossAppearEffect : MonoBehaviour
 
     Coroutine Loop;
 
-    void Start()
+    public void Start()
     {
         Loop = StartCoroutine(EffectLoop());
         StartCoroutine(DestroyObj());

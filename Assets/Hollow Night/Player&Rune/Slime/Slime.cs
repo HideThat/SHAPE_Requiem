@@ -80,6 +80,8 @@ public class Slime : Enemy
     public Transform[] burstPoint;
     public Collider2D[] smashColliders;
     public int smashColliderIndex = 0;
+    public AudioClip smashReadyClip;
+    public AudioClip smashClip;
 
     [Header("Slime Back Move")]
     public float backMoveDistance = 5f;
@@ -105,12 +107,16 @@ public class Slime : Enemy
     public int maxBounceGround = 0;
     public int currentBounceGround = 0;
     public float bounceBallGravity = 2.5f;
+    public AudioClip collisionClip;
 
     [Header("Dive The Ground")]
     public float preDiveDelay = 0.5f;
     public float middleDiveDelay = 0.5f;
     public float posDiveDelay;
     public float diveSpeed;
+    public AudioClip diveClip;
+    public AudioClip diveDownClip;
+    public AudioClip diveImpactClip;
 
     [Header("SlimeThorn")]
     public Slime_Thorn thornPrefab;
@@ -141,31 +147,37 @@ public class Slime : Enemy
             RaycastHit2D hitMinusX = Physics2D.Raycast(myCircleCollider.bounds.center, Vector2.left, raycastDistanceX + castDistanceX, platformLayerMask);
             RaycastHit2D hitMinusY = Physics2D.Raycast(myCircleCollider.bounds.center, Vector2.down, raycastDistanceY + castDistanceY, platformLayerMask);
 
-            if (hitPlusX)
+            if (hitPlusX && rigid2D.velocity.x > 0f)
             {
                 rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the East");
                 Instantiate(burstEffectPrefab, hitPlusX.point, Quaternion.Euler(-180f, 90f, 0f));
+                voiceSource.PlayOneShot(collisionClip);
+                effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
             }
 
-            if (hitMinusX)
+            if (hitMinusX && rigid2D.velocity.x < 0f)
             {
                 rigid2D.velocity = new Vector2(bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the West");
                 Instantiate(burstEffectPrefab, hitMinusX.point, Quaternion.Euler(0f, 90f, 0f));
+                voiceSource.PlayOneShot(collisionClip);
+                effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
             }
 
-            if (hitMinusY)
+            if (hitMinusY && rigid2D.velocity.y < 0f)
             {
                 rigid2D.velocity = new Vector2(rigid2D.velocity.x, bounceBallShootSpeedY);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 currentBounceGround++;
                 Debug.Log("Hit from the South");
                 Instantiate(burstEffectPrefab, hitMinusY.point, Quaternion.Euler(-90f, 90f, 0f));
+                voiceSource.PlayOneShot(collisionClip);
+                effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
             }
 
@@ -300,7 +312,7 @@ public class Slime : Enemy
         appearSource.PlayOneShot(appearClip);
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
-        FSM_Coroutine = StartCoroutine(FSM_1());
+        //FSM_Coroutine = StartCoroutine(FSM_1());
     }
 
     #region phase1
@@ -682,6 +694,7 @@ public class Slime : Enemy
     IEnumerator SlimeSmash(float _preSmashDelay, float _middleSmashDelay, float _posSmashDelay)
     {
         animator.Play("A_Slime_SmashReady");
+        voiceSource.PlayOneShot(smashReadyClip);
         yield return new WaitForSeconds(_preSmashDelay);
         animator.Play("A_Slime_SmashActive");
         yield return new WaitForSeconds(0.15f);
@@ -692,6 +705,8 @@ public class Slime : Enemy
         effect.SetDestroy(3f);
         effect2.SetDestroy(3f);
 
+        effectSource.PlayOneShot(smashClip);
+        effectSource.PlayOneShot(diveImpactClip);
         CameraManager.Instance.CameraShake();
         yield return new WaitForSeconds(_middleSmashDelay);
         animator.Play("A_Slime_SmashReturn");
@@ -773,7 +788,9 @@ public class Slime : Enemy
             rigid2D.velocity = new Vector2(bounceBallShootSpeedX, bounceBallShootSpeedY);
             transform.rotation = Quaternion.Euler(0f, 0f, -45f);
         }
-
+        Instantiate(burstEffectPrefab, transform.position, Quaternion.Euler(-90f, 90f, 0f));
+        voiceSource.PlayOneShot(collisionClip);
+        effectSource.PlayOneShot(diveImpactClip);
 
         rigid2D.gravityScale = bounceBallGravity;
 
@@ -818,11 +835,15 @@ public class Slime : Enemy
         spriteRenderer.enabled = true;
         bounceBall.gameObject.SetActive(false);
         animator.Play("A_Slime_BackMove_Down");
+        voiceSource.PlayOneShot(diveClip);
         yield return new WaitForSeconds(_preDiveDelay);
+        effectSource.PlayOneShot(diveDownClip);
         animator.Play("A_Slime_DiveDown");
 
         yield return StartCoroutine(SlimeMoveY(diveSpeed, originY - 3f));
 
+        voiceSource.PlayOneShot(smashClip);
+        effectSource.PlayOneShot(diveImpactClip);
         EffectDestroy effect = Instantiate(burstEffectPrefab, new Vector3(transform.position.x, originY, 0f), Quaternion.Euler(-90f, 90f, 0f));
         EffectDestroy effect2 = Instantiate(burstEffectPrefab, new Vector3(transform.position.x - 0.5f, originY, 0f), Quaternion.Euler(-100f, 90f, 30f));
         EffectDestroy effect3 = Instantiate(burstEffectPrefab, new Vector3(transform.position.x + 0.5f, originY, 0f), Quaternion.Euler(-80f, 90f, -30f));

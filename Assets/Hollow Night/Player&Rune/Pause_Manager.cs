@@ -20,28 +20,30 @@ public class Pause_Manager : MonoBehaviour
         else if(!pausePanel.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
         {
             pausePanel.SetActive(true);
-            ResetButtons();
+            ResetUI();
         }
     }
 
-    public void ReStart()
-    {
-        Destroy(PlayerCoroutine.Instance.gameObject);
-        Destroy(CameraManager.Instance.gameObject);
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
-    }
+    
 
     public void Quit()
     {
         Application.Quit();
     }
 
-    public void ResetButtons()
+    public void ResetUI()
     {
         for (int i = 0; i < buttons.Length; i++)
         {
             buttons[i].ResetButton();
+        }
+    }
+
+    public void ResetButtonClick()
+    {
+        for (int i = 0; i < buttons.Length; i++)
+        {
+            buttons[i].ResetButtonTween();
         }
     }
 }

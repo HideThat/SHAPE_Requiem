@@ -41,29 +41,20 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     [Header("Sub Panel")]
     public Image subPanel;
-    public TextMeshProUGUI subPanelText;
-    public Image[] subPanelButtonImages;
-    public TextMeshProUGUI[] subPanelButtonTexts;
     public float panelChangeTime;
 
     Tween subPanelColorTween;
-    Tween subPanelTextColorTween;
-    Tween[] subPanelButtonImageTweens;
-    Tween[] subPanelButtonTextTweens;
 
 
-    private void Start()
+
+    protected virtual void Start()
     {
         textMovePoint = text.rectTransform.anchoredPosition.y - (moveDistance / 2);
         imageMovePoint = buttonImage.rectTransform.anchoredPosition.y - moveDistance;
-        subPanelButtonImageTweens = new Tween[subPanelButtonImages.Length];
-        subPanelButtonTextTweens = new Tween[subPanelButtonTexts.Length];
     }
 
-    public void OnPointerEnter(PointerEventData _eventData)
+    public virtual void OnPointerEnter(PointerEventData _eventData)
     {
-        if (switchToggle != null) switchToggle.StopDisappearToggle();
-
         imageMoveTween?.Kill();
         imageColorTween?.Kill();
         imageMoveTween = buttonImage.rectTransform.DOAnchorPosY(imageMovePoint, moveTime);
@@ -77,14 +68,14 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (switchToggle != null) switchToggle.AppearToggle();
     }
 
-    public void OnPointerClick(PointerEventData _eventData)
+    public virtual void OnPointerClick(PointerEventData _eventData)
     {
         isClicked = !isClicked;
 
         SubPanelAppear(isClicked);
     }
 
-    public void OnPointerExit(PointerEventData _eventData)
+    public virtual void OnPointerExit(PointerEventData _eventData)
     {
         if (!isClicked)
         {
@@ -98,11 +89,11 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
             imageMoveTween = buttonImage.rectTransform.DOAnchorPosY(buttonOrigin.y, moveTime);
             imageColorTween = buttonImage.DOColor(imageOriginColor, moveTime);
 
-            if (switchToggle != null) switchToggle.DisappearToggle();
+            if (switchToggle != null) switchToggle.ResetToggle();
         }
     }
 
-    public void ResetButton()
+    public virtual void ResetButton()
     {
         textMoveTween?.Kill();
         textColorTween?.Kill();
@@ -114,13 +105,12 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         buttonImage.rectTransform.anchoredPosition = imageOrigin;
         buttonImage.color = imageOriginColor;
 
-        if (subPanel != null) subPanel.gameObject.SetActive(false);
         if (switchToggle != null) switchToggle.ResetToggle();
         isClicked = false;
         SubPanelAppear(isClicked);
     }
 
-    public void ResetButtonTween()
+    public virtual void ResetButtonTween()
     {
         textMoveTween?.Kill();
         textColorTween?.Kill();
@@ -138,48 +128,15 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         SubPanelAppear(isClicked);
     }
 
-    public void RestartButtonClick()
-    {
-        if (switchToggle.isOn)
-            ReStart();
-           
-    }
-
-    public void ReStart()
-    {
-        Destroy(PlayerCoroutine.Instance.gameObject);
-        Destroy(CameraManager.Instance.gameObject);
-        Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
-    }
-
-    void SubPanelAppear(bool _active)
+    protected virtual void SubPanelAppear(bool _active)
     {
         if (subPanel == null) return;
-        subPanelColorTween?.Kill();
         if (_active)
         {
             subPanel.gameObject.SetActive(_active);
             subPanel.color = new Color(subPanel.color.r, subPanel.color.g, subPanel.color.b, 0f);
+            subPanelColorTween?.Kill();
             subPanelColorTween = subPanel.DOColor(new Color(subPanel.color.r, subPanel.color.g, subPanel.color.b, 1f), panelChangeTime).SetEase(Ease.Linear);
-
-            subPanelTextColorTween?.Kill();
-            subPanelText.color = new Color(subPanelText.color.r, subPanelText.color.g, subPanelText.color.b, 0f);
-            subPanelTextColorTween = subPanelText.DOColor(new Color(subPanelText.color.r, subPanelText.color.g, subPanelText.color.b, 1f), panelChangeTime);
-
-            for (int i = 0; i < subPanelButtonImages.Length; i++)
-            {
-                subPanelButtonImageTweens[i]?.Kill();
-                subPanelButtonImages[i].color = new Color(subPanelButtonImages[i].color.r, subPanelButtonImages[i].color.g, subPanelButtonImages[i].color.b, 0f);
-                subPanelButtonImageTweens[i] = subPanelButtonImages[i].DOColor(new Color(subPanelButtonImages[i].color.r, subPanelButtonImages[i].color.g, subPanelButtonImages[i].color.b, 1f), panelChangeTime);
-                
-            }
-            for (int i = 0; i < subPanelButtonTexts.Length; i++)
-            {
-                subPanelButtonTextTweens[i]?.Kill();
-                subPanelButtonTexts[i].color = new Color(subPanelButtonTexts[i].color.r, subPanelButtonTexts[i].color.g, subPanelButtonTexts[i].color.b, 0f);
-                subPanelButtonTextTweens[i] = subPanelButtonTexts[i].DOColor(new Color(subPanelButtonTexts[i].color.r, subPanelButtonTexts[i].color.g, subPanelButtonTexts[i].color.b, 1f), panelChangeTime);
-            }
         }
         else
         {

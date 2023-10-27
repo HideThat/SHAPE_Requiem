@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 public class Slime : Enemy
 {
     [Header("Slime")]
+    [SerializeField] bool setDeveloperMode = false;
     [SerializeField] LayerMask player;
     [SerializeField] Animator animator;
     [SerializeField] AudioSource voiceSource;
@@ -187,34 +188,37 @@ public class Slime : Enemy
     bool isChanged = false;
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
-            StartCoroutine(ThrowingPoopTwoTime());
+        if (setDeveloperMode)
+        {
+            if (Input.GetKeyDown(KeyCode.Q))
+                StartCoroutine(ThrowingPoopTwoTime());
 
-        if (Input.GetKeyDown(KeyCode.W))
-            StartCoroutine(SlimeDownAndUp(preDownDelay, middleDownDelay, posDownDelay));
+            if (Input.GetKeyDown(KeyCode.W))
+                StartCoroutine(SlimeDownAndUp(preDownDelay, middleDownDelay, posDownDelay));
 
-        if (Input.GetKeyDown(KeyCode.E))
-            StartCoroutine(SlimeSliding(preDownDelay, slidingSpeed, preJumpDelay, posJumpDelay));
+            if (Input.GetKeyDown(KeyCode.E))
+                StartCoroutine(SlimeSliding(preDownDelay, slidingSpeed, preJumpDelay, posJumpDelay));
 
-        if (Input.GetKeyDown(KeyCode.R))
-            StartCoroutine(SlimeSmash(preSmashDelay, middleSmashDelay, posSmashDelay));
+            if (Input.GetKeyDown(KeyCode.R))
+                StartCoroutine(SlimeSmash(preSmashDelay, middleSmashDelay, posSmashDelay));
 
-        if (Input.GetKeyDown(KeyCode.T))
-            StartCoroutine(SlimeBackMove());
+            if (Input.GetKeyDown(KeyCode.T))
+                StartCoroutine(SlimeBackMove());
 
-        if (Input.GetKeyDown(KeyCode.Y))
-            StartCoroutine(SlimeBounceBall(preBounceBallDelay, middleBounceBallDelay, preDiveDelay, middleDiveDelay, posDiveDelay));
+            if (Input.GetKeyDown(KeyCode.Y))
+                StartCoroutine(SlimeBounceBall(preBounceBallDelay, middleBounceBallDelay, preDiveDelay, middleDiveDelay, posDiveDelay));
 
-        if (Input.GetKeyDown(KeyCode.A))
-            animator.Play("A_Slime_SmashReady");
+            if (Input.GetKeyDown(KeyCode.A))
+                animator.Play("A_Slime_SmashReady");
 
-        if (Input.GetKeyDown(KeyCode.S))
-            animator.Play("A_Slime_SmashActive");
+            if (Input.GetKeyDown(KeyCode.S))
+                animator.Play("A_Slime_SmashActive");
 
-        if (Input.GetKeyDown(KeyCode.D))
-            animator.Play("A_Slime_SmashReturn");
+            if (Input.GetKeyDown(KeyCode.D))
+                animator.Play("A_Slime_SmashReturn");
+        }
 
-        if (HP <= maxHP / 2 && !isChanged)
+        if (HP <= maxHP / 2 && !isChanged && !setDeveloperMode)
         {
             StopAllCoroutines();
             StopCoroutine(FSM_Coroutine);
@@ -312,7 +316,8 @@ public class Slime : Enemy
         appearSource.PlayOneShot(appearClip);
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
-        //FSM_Coroutine = StartCoroutine(FSM_1());
+        if (!setDeveloperMode)
+            FSM_Coroutine = StartCoroutine(FSM_1());
     }
 
     #region phase1
@@ -473,7 +478,8 @@ public class Slime : Enemy
         transform.DOMoveY(originY, changePhaseTime);
         yield return new WaitForSeconds(changePhaseTime);
         appearSource.DOFade(0f, 1f);
-        FSM_Coroutine = StartCoroutine(FSM_2());
+        if (!setDeveloperMode)
+            FSM_Coroutine = StartCoroutine(FSM_2());
     }
 
     #region ThrowingPoop

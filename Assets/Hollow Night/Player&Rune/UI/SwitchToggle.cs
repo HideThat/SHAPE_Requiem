@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
+using static UnityEngine.Rendering.VirtualTexturing.Debugging;
 
 public class SwitchToggle : MonoBehaviour
 {
@@ -21,9 +22,9 @@ public class SwitchToggle : MonoBehaviour
     public Color BG_ChangeColor;
     public Color handle_ChangeColor;
 
-    Color text_OriginColor;
-    Color BG_OriginColor;
-    Color handle_OriginColor;
+    public Color text_OriginColor;
+    public Color BG_OriginColor;
+    public Color handle_OriginColor;
 
     Tween BGColorTween;
     Tween handleMoveTween;
@@ -33,8 +34,6 @@ public class SwitchToggle : MonoBehaviour
     Tween toggleBGColorTween;
     Tween toggleHandleColorTween;
 
-    Coroutine disappearCoroutine;
-
     public bool isOn
     {
         get => toggle.isOn;
@@ -43,18 +42,14 @@ public class SwitchToggle : MonoBehaviour
 
     private void Start()
     {
-        toggle.onValueChanged.AddListener(OnSwitch);
-        text_OriginColor = new Color(text.color.r, text.color.g, text.color.b, 1f);
-        BG_OriginColor = new Color(BG.color.r, BG.color.g, BG.color.b, 1f);
-        handle_OriginColor = new Color(handle.color.r, handle.color.g, handle.color.b, 1f);
+        toggle.onValueChanged.AddListener(SetToggleTween);
         handlePosition = handleRectTransform.anchoredPosition;
-        Debug.Log(handlePosition);
-        SetSwitch(toggle.isOn);
-        Debug.Log(handlePosition);
+        SetToggle(toggle.isOn);
     }
 
-    void OnSwitch(bool _on)
+    public void SetToggleTween(bool _on)
     {
+        isOn = _on;
         // 여기서 토글 핸들이 움직여야 함.
         if (_on)
         {
@@ -78,8 +73,10 @@ public class SwitchToggle : MonoBehaviour
         }
     }
 
-    void SetSwitch(bool _on)
+    public void SetToggle(bool _on)
     {
+        isOn = _on;
+
         if (_on)
         {
             BGColorTween?.Kill();
@@ -110,6 +107,10 @@ public class SwitchToggle : MonoBehaviour
             toggleBGColorTween?.Kill();
             toggleHandleColorTween?.Kill();
 
+            text.color = new Color(text.color.r, text.color.g, text.color.b, 0f);
+            BG.color = new Color(BG.color.r, BG.color.g, BG.color.b, 0f);
+            handle.color = new Color(handle.color.r, handle.color.g, handle.color.b, 0f);
+
             toggle.gameObject.SetActive(true);
             toggleTextColorTween = text.DOColor(new Color(text.color.r, text.color.g, text.color.b, 1f), appearTime);
             toggleBGColorTween = BG.DOColor(new Color(BG.color.r, BG.color.g, BG.color.b, 1f), appearTime);
@@ -117,38 +118,10 @@ public class SwitchToggle : MonoBehaviour
         }
     }
 
-    public void DisappearToggle()
-    {
-        StopDisappearToggle();
-        disappearCoroutine = StartCoroutine(DisappearToggleCoroutine());
-    }
-
-    public void StopDisappearToggle()
-    {
-        if (disappearCoroutine != null) StopCoroutine(disappearCoroutine);
-    }
-
-    IEnumerator DisappearToggleCoroutine()
-    {
-        if (toggle != null)
-        {
-            toggleTextColorTween?.Kill();
-            toggleBGColorTween?.Kill();
-            toggleHandleColorTween?.Kill();
-
-            toggleTextColorTween = text.DOColor(new Color(text.color.r, text.color.g, text.color.b, 0f), disappearTime);
-            toggleBGColorTween = BG.DOColor(new Color(BG.color.r, BG.color.g, BG.color.b, 0f), disappearTime);
-            toggleHandleColorTween = handle.DOColor(new Color(handle.color.r, handle.color.g, handle.color.b, 0f), disappearTime);
-        }
-        yield return new WaitForSeconds(disappearTime);
-        if (toggle != null) toggle.gameObject.SetActive(false);
-    }
-
     public void ResetToggle()
     {
         if (toggle != null)
         {
-            StopDisappearToggle();
             toggleTextColorTween?.Kill();
             toggleBGColorTween?.Kill();
             toggleHandleColorTween?.Kill();
@@ -162,6 +135,6 @@ public class SwitchToggle : MonoBehaviour
 
     private void OnDestroy()
     {
-        toggle.onValueChanged.RemoveListener(OnSwitch);
+        toggle.onValueChanged.RemoveListener(SetToggleTween);
     }
 }

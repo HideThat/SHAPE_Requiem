@@ -28,6 +28,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public Rigidbody2D rigid2D;
 
     [Header("Jump")]
+    public KeyCode jumpKey;
     public EffectDestroy jumpEffect;
     public EffectDestroy doubleJumpEffect;
     public float minJumpSpeed = 2f; // 최대 점프 속도
@@ -48,6 +49,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public AudioClip jumpClip;
 
     [Header("Attack")]
+    public KeyCode attackKey;
     public int damage;
     public float attackSizeX;
     public float attackSizeY;
@@ -70,6 +72,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public AudioClip spiritClip;
 
     [Header("Dash")]
+    public KeyCode dashKey;
     public EffectDestroy dashEffect;
     public bool isDash = false;
     public bool canDash = true;
@@ -118,6 +121,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     void Start()
     {
+        Screen.SetResolution(1920, 1080, FullScreenMode.FullScreenWindow);
         currentScale = transform.localScale;
         playerControlCoroutine = StartCoroutine(PlayerControl());
         groundCheckCoroutine = StartCoroutine(GroundCheck());
@@ -132,11 +136,11 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 Move();
                 JumpController();
 
-                if (Input.GetKeyDown(KeyCode.X) && canAttack)
+                if (Input.GetKeyDown(attackKey) && canAttack)
                     StartCoroutine(Attack());
 
                 // 대쉬
-                if (canDash && Input.GetKeyDown(KeyCode.C))
+                if (canDash && Input.GetKeyDown(dashKey))
                     yield return DashCoroutine();
             }
 
@@ -234,7 +238,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     #region Jump_System
     private void JumpController()
     {
-        if (Input.GetKeyDown(KeyCode.Z) && !isJump)
+        if (Input.GetKeyDown(jumpKey) && !isJump)
         {
             //StopCoroutine(groundCheckCoroutine);
 
@@ -293,7 +297,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     private bool ShouldEndJump()
     {
-        return jumpPressTime >= timeToReachMaxSpeed || Input.GetKeyUp(KeyCode.Z);
+        return jumpPressTime >= timeToReachMaxSpeed || Input.GetKeyUp(jumpKey);
     }
 
     IEnumerator JumpDown()

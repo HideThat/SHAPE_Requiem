@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Audio;
 
 public class Sound_Manager : Singleton<Sound_Manager>
 {
@@ -9,8 +10,12 @@ public class Sound_Manager : Singleton<Sound_Manager>
     public AudioClip[] SoulTyrant_BGM;
     public float fadeOutTime = 2.0f; // 페이드 아웃하는데 걸리는 시간 (초)
 
-    [Header("Effect")]
-    public AudioSource[] effectSources;
+    [Header("Mixer")]
+    public AudioMixer masterMixer;
+    public AudioMixerGroup masterGroup;
+    public AudioMixerGroup BGM_Group;
+    public AudioMixerGroup SFX_Group;
+
 
     public void PlayBGM(int index)
     {
@@ -45,5 +50,38 @@ public class Sound_Manager : Singleton<Sound_Manager>
         _audioSource.volume = startVolume; // 볼륨을 원래대로 복구
 
         yield return null;
+    }
+
+    public float GetMasterMixerVolume()
+    {
+        masterMixer.GetFloat(masterGroup.name, out float volume);
+        return Mathf.Pow(10, volume / 20);
+    }
+
+    public float GetBGM_MixerVolume()
+    {
+        masterMixer.GetFloat(BGM_Group.name, out float volume);
+        return Mathf.Pow(10, volume / 20);
+    }
+
+    public float GetEffectMixerVolume()
+    {
+        masterMixer.GetFloat(SFX_Group.name, out float volume);
+        return Mathf.Pow(10, volume / 20);
+    }
+
+    public void SetMasterMixerVolume(float _value)
+    {
+        masterMixer.SetFloat(masterGroup.name, Mathf.Log10(_value) * 20);
+    }
+
+    public void SetBGM_MixerVolume(float _value)
+    {
+        masterMixer.SetFloat(BGM_Group.name, Mathf.Log10(_value) * 20);
+    }
+
+    public void SetEffectMixerVolume(float _value)
+    {
+        masterMixer.SetFloat(SFX_Group.name, Mathf.Log10(_value) * 20);
     }
 }

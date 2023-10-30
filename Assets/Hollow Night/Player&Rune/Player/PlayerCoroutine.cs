@@ -12,7 +12,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public Animator animator;
     [SerializeField] Collider2D m_collider;
     [SerializeField] Rigidbody2D rigid;
-    [SerializeField] bool canControl = true;
+    [SerializeField] public bool canControl = true;
     [SerializeField] AudioSource playerVoiceSource;
 
     [Header("Move")]

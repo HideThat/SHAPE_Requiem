@@ -19,6 +19,10 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public Color textChangeColor;
     public Color imageChangeColor;
     public bool isClicked;
+    public AudioSource buttonEffectSource;
+    public AudioClip mainButtonOnMouseClip;
+    public AudioClip buttonClickClip;
+    public AudioClip slideClip;
 
     public Color textOriginColor;
     public Color imageOriginColor;
@@ -65,6 +69,8 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         textMoveTween = text.rectTransform.DOAnchorPosY(textMovePoint, moveTime);
         text.DOColor(textChangeColor, moveTime);
 
+        buttonEffectSource.PlayOneShot(mainButtonOnMouseClip);
+
         if (switchToggle != null) switchToggle.AppearToggle();
     }
 
@@ -72,6 +78,7 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     {
         isClicked = !isClicked;
 
+        buttonEffectSource.PlayOneShot(buttonClickClip);
         SubPanelAppear(isClicked);
     }
 
@@ -126,6 +133,25 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (switchToggle != null) switchToggle.ResetToggle();
         isClicked = false;
         SubPanelAppear(isClicked);
+    }
+
+    public EventTrigger.Entry SetButtonClickEventSound()
+    {
+        EventTrigger.Entry entry = new EventTrigger.Entry();
+        entry.eventID = EventTriggerType.PointerClick;
+        entry.callback.AddListener(delegate { PlayButtonClickSound(); });
+
+        return entry;
+    }
+
+    public void PlayButtonClickSound()
+    {
+        buttonEffectSource.PlayOneShot(buttonClickClip);
+    }
+
+    public void PlayButtonClickSound2()
+    {
+        buttonEffectSource.PlayOneShot(slideClip);
     }
 
     protected virtual void SubPanelAppear(bool _active)

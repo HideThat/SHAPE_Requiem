@@ -5,7 +5,6 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using Unity.VisualScripting;
 
 public class OptionButton : PauseUIButton
 {
@@ -17,28 +16,20 @@ public class OptionButton : PauseUIButton
 
     [Header("Video Option")]
     public TMP_Dropdown resolutionDropdown;
-    public List<Resolution> resolutions = new List<Resolution>();
+    public List<Resolution> resolutions = new();
     public int resolutionDropdownIndex;
     public SwitchToggle fullScreenToggle;
-    FullScreenMode screenMode = FullScreenMode.FullScreenWindow;
-    public int currentDropdownIndex;
 
     [Header("Sound Option")]
+    public Slider Master_Slider;
     public Slider BGM_Slider;
     public Slider effect_Slider;
-    public SwitchToggle muteToggle;
-    public float currentBGM_Volume;
-    public float currentEffectVolume;
 
     [Header("Key Setting Option")]
     public TextMeshProUGUI jumpKeyText;
     public TextMeshProUGUI attackKeyText;
     public TextMeshProUGUI dashKeyText;
     public GameObject keyInputPanel;
-
-    public KeyCode currentJumpKey;
-    public KeyCode currentAttackKey;
-    public KeyCode currentDashKey;
 
     protected override void Start()
     {
@@ -49,14 +40,14 @@ public class OptionButton : PauseUIButton
         SetFullScreenToggle();
 
         InitResolutionDropdown();
-        currentDropdownIndex = resolutionDropdown.value;
 
-        BGM_Slider.value = Sound_Manager.Instance.BGMaudioSource.volume;
-        currentBGM_Volume = Sound_Manager.Instance.BGMaudioSource.volume;
-        effect_Slider.value = Sound_Manager.Instance.effectSources[0].volume;
-        currentEffectVolume = Sound_Manager.Instance.effectSources[0].volume;
+        Master_Slider.value = Sound_Manager.Instance.GetMasterMixerVolume();
+        BGM_Slider.value = Sound_Manager.Instance.GetBGM_MixerVolume();
+        effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
 
-        BGM_Slider.onValueChanged.AddListener(delegate { SetAudioSource(); });
+        Master_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
+        BGM_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
+        effect_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
     }
 
     void InitResolutionDropdown()
@@ -75,8 +66,10 @@ public class OptionButton : PauseUIButton
 
         foreach (Resolution item in resolutions)
         {
-            TMP_Dropdown.OptionData option = new TMP_Dropdown.OptionData();
-            option.text = $"{item.width} x {item.height} {item.refreshRate}hz";
+            TMP_Dropdown.OptionData option = new()
+            {
+                text = $"{item.width} x {item.height} {item.refreshRate}hz"
+            };
             resolutionDropdown.options.Add(option);
 
             if (item.width == Screen.width && item.height == Screen.height)
@@ -141,7 +134,7 @@ public class OptionButton : PauseUIButton
     {
         SetResolution();
         SetResolutionDropdown();
-        SetAudioSource();
+        PlayButtonClickSound();
     }
 
     public void CancleButtonClick()
@@ -161,54 +154,58 @@ public class OptionButton : PauseUIButton
 
     void SetResolutionDropdown()
     {
-        resolutionDropdown.value = currentDropdownIndex;
-        resolutionDropdownIndex = currentDropdownIndex;
+        resolutionDropdown.value = OptionData.Instance.currentDropdownIndex;
+        resolutionDropdownIndex = OptionData.Instance.currentDropdownIndex;
     }
 
     void SetResolution()
     {
         if (fullScreenToggle.isOn)
-            screenMode = FullScreenMode.FullScreenWindow;
+            OptionData.Instance.screenMode = FullScreenMode.FullScreenWindow;
         else
-            screenMode = FullScreenMode.Windowed;
+            OptionData.Instance.screenMode = FullScreenMode.Windowed;
 
-        Screen.SetResolution(resolutions[resolutionDropdownIndex].width, resolutions[resolutionDropdownIndex].height, screenMode);
-        currentDropdownIndex = resolutionDropdownIndex;
+        Screen.SetResolution(resolutions[resolutionDropdownIndex].width, resolutions[resolutionDropdownIndex].height, OptionData.Instance.screenMode);
+        OptionData.Instance.currentDropdownIndex = resolutionDropdownIndex;
     }
     #endregion
 
     #region Audio Setting
-    void SetAudioSource()
+    void SetAudioMix()
     {
-        Sound_Manager.Instance.BGMaudioSource.volume = BGM_Slider.value;
+        Sound_Manager.Instance.SetMasterMixerVolume(Master_Slider.value);
+        Sound_Manager.Instance.SetBGM_MixerVolume(BGM_Slider.value);
+        Sound_Manager.Instance.SetEffectMixerVolume(effect_Slider.value);
 
-        for (int i = 0; i < Sound_Manager.Instance.effectSources.Length; i++)
-            Sound_Manager.Instance.effectSources[i].volume = effect_Slider.value;
-
-        currentBGM_Volume = BGM_Slider.value;
-        currentEffectVolume = effect_Slider.value;
+        OptionData.Instance.currentMaster_Volume = Sound_Manager.Instance.GetMasterMixerVolume();
+        OptionData.Instance.currentBGM_Volume = Sound_Manager.Instance.GetBGM_MixerVolume();
+        OptionData.Instance.currentEffectVolume = Sound_Manager.Instance.GetEffectMixerVolume();
     }
 
     void SetAudioSlider()
     {
-        BGM_Slider.value = currentBGM_Volume;
-        effect_Slider.value = currentEffectVolume;
+        Master_Slider.value = Sound_Manager.Instance.GetMasterMixerVolume();
+        BGM_Slider.value = Sound_Manager.Instance.GetBGM_MixerVolume();
+        effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
     }
     #endregion
 
     #region Key Setting
     public void JumpKeySetting()
     {
+        PlayButtonClickSound();
         StartCoroutine(WaitForKeyInput(SetJumpKey));
     }
 
     public void AttackKeySetting()
     {
+        PlayButtonClickSound();
         StartCoroutine(WaitForKeyInput(SetAttackKey));
     }
 
     public void DashKeySetting()
     {
+        PlayButtonClickSound();
         StartCoroutine(WaitForKeyInput(SetDashKey));
     }
 
@@ -235,6 +232,7 @@ public class OptionButton : PauseUIButton
     private IEnumerator WaitForKeyInput(System.Action<KeyCode> _setKeyAction)
     {
         keyInputPanel.SetActive(true);
+        PlayerCoroutine.Instance.canControl = false;
         while (true)
         {
             foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
@@ -245,6 +243,7 @@ public class OptionButton : PauseUIButton
                     {
                         _setKeyAction(keyCode);
                         keyInputPanel.SetActive(false);
+                        PlayerCoroutine.Instance.canControl = true;
                         yield break;
                     }
                 }

@@ -14,6 +14,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     [SerializeField] Rigidbody2D rigid;
     [SerializeField] public bool canControl = true;
     [SerializeField] AudioSource playerVoiceSource;
+    [SerializeField] EffectDestroy lightBlowPrefab;
 
     [Header("Move")]
     public float playerSpeed;
@@ -86,10 +87,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public AudioClip dashClip;
 
     [Header("HP")]
+    public GameObject deadUI;
     public SpriteRenderer spriteRenderer;
     public int HP;
     public int maxHP; // 최대 체력
     public bool isHit = false; // 맞음 판정
+    public bool isThornHit = false; // 맞음 판정
     public float hitTime;
     public float verticalDistance; // 세로 충돌 체크 거리
     public float horizontalDistance; // 가로 충돌 체크 거리
@@ -121,6 +124,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     void Start()
     {
+        jumpKey = OptionData.Instance.currentJumpKey;
+        attackKey = OptionData.Instance.currentAttackKey;
+        dashKey = OptionData.Instance.currentDashKey;
         Screen.SetResolution(1920, 1080, FullScreenMode.FullScreenWindow);
         currentScale = transform.localScale;
         playerControlCoroutine = StartCoroutine(PlayerControl());
@@ -172,9 +178,20 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Gizmos.DrawWireCube(downBoxPos, new(downAttackSizeX, downAttackSizeY));
     }
 
-    
+    public void PlayerDiappear()
+    {
+        SummonLightBlow(0.5f, transform.position, new Vector2(2f, 2f));
+        Destroy(gameObject);
+    }
 
-
+    void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)
+    {
+        EffectDestroy effect = Instantiate(lightBlowPrefab);
+        effect.transform.position = _point;
+        effect.transform.localScale = _size;
+        effect.SetFade(_time);
+        effect.SetDestroy(_time);
+    }
 
     #region Move_System
     void Move()
@@ -628,6 +645,21 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         }
     }
 
+    public void HitAniway(Vector2 _player, Vector2 _enemy, int _damage)
+    {
+        moveAudioSource.PlayOneShot(hitClip);
+
+        rigid.velocity = Vector2.zero;
+
+        Vector2 _force;
+        if (_player.x < _enemy.x)
+            _force = new Vector2(-0.5f, 0.5f);
+        else
+            _force = new Vector2(0.5f, 0.5f);
+
+        StartCoroutine(HitCoroutine(_damage, _force));
+    }
+
     IEnumerator HitCoroutine(int _damage, Vector2 _force)
     {
         if (playerControlCoroutine != null)
@@ -665,7 +697,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
                 timeTween = DOTween.To(() => Time.timeScale, x => Time.timeScale = x, originalTimeScale, 0.3f);
                 canvasHitEffect.DOColor(Color.clear, 0.5f).OnComplete(() =>
                 {
-                    if (HP == 2)
+                    if (HP == 1)
                     {
                         if (playerPinchCoroutine != null) StopCoroutine(playerPinchCoroutine);
                         playerPinchCoroutine = StartCoroutine(PlayerPinch());
@@ -720,6 +752,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
             });
 
         yield return new WaitForSeconds(2f);
+        deadUI.SetActive(true);
     }
 
     IEnumerator PlayerPinch()
@@ -729,7 +762,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         while (true)
         {
             pinchTween = canvasHitEffect.DOColor(Color.red, 1.5f);
-            
+
             yield return new WaitForSeconds(1.5f);
 
             pinchTween = canvasHitEffect.DOColor(Color.clear, 1.5f);

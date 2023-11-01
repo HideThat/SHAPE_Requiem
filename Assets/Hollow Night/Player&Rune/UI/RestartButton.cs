@@ -9,12 +9,13 @@ using UnityEngine.UI;
 
 public class RestartButton : PauseUIButton, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public string firstSceneName;
 
     public TextMeshProUGUI[] subPanelTexts;
     public Image[] subPanelButtonImages;
     public TextMeshProUGUI[] subPanelButtonTexts;
 
-    
+
     Tween[] subPanelTextColorTweens;
     Tween[] subPanelButtonImageTweens;
     Tween[] subPanelButtonTextTweens;
@@ -30,14 +31,7 @@ public class RestartButton : PauseUIButton, IPointerEnterHandler, IPointerExitHa
 
     public override void OnPointerClick(PointerEventData _eventData)
     {
-        if (!switchToggle.isOn)
-        {
-            base.OnPointerClick(_eventData);
-        }
-        else
-        {
-            ReStart();
-        }
+        base.OnPointerClick(_eventData);
     }
 
     public override void OnPointerEnter(PointerEventData _eventData)
@@ -64,8 +58,9 @@ public class RestartButton : PauseUIButton, IPointerEnterHandler, IPointerExitHa
     {
         Destroy(PlayerCoroutine.Instance.gameObject);
         Destroy(CameraManager.Instance.gameObject);
+        Destroy(Timer.Instance.gameObject);
         Time.timeScale = 1f;
-        SceneManager.LoadScene(0);
+        SceneChangeManager.Instance.SceneChange(firstSceneName);
     }
 
     protected override void SubPanelAppear(bool _active)

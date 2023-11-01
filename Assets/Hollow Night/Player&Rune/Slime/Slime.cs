@@ -28,6 +28,9 @@ public class Slime : Enemy
     public float changePhaseTime;
     public float changeDelay = 0.75f;
 
+    [Header("Scene Change Torch")]
+    public SceneChangeTorch torch;
+
     [Header("Throwing Poop")]
     public ThrowingPoop fakePoop;
     public ThrowingPoop poopPrefab;
@@ -292,7 +295,7 @@ public class Slime : Enemy
         yield return new WaitForSeconds(_delay / 2);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(2f, 2f));
-
+        torch.TorchMove(4f);
 
         Destroy(gameObject);
     }

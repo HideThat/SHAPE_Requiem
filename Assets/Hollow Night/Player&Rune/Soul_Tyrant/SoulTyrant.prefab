@@ -20,7 +20,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5387441692909150006
 Transform:
   m_ObjectHideFlags: 0
@@ -68,6 +68,7 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   hitClip: {fileID: 8300000, guid: 26bb6495aae9f4a4ea403f6b63fd22ce, type: 3}
   runeIn: 0
+  setDeveloperMode: 0
   player:
     serializedVersion: 2
     m_Bits: 8
@@ -86,6 +87,7 @@ MonoBehaviour:
   radius: 5
   currentPosition: {x: 0, y: 0}
   isDead: 0
+  torch: {fileID: 0}
   teleportPointList:
   - {fileID: 0}
   - {fileID: 0}
@@ -163,7 +165,7 @@ MonoBehaviour:
   downStroke_Wait: {fileID: 5387441692964655695}
   downStroke_Active: {fileID: 8191773267080062267, guid: 49029f1e03003544ba3b2465d799b027, type: 3}
   downStroke_Fake: {fileID: 6132460153838695762, guid: 34f778b94caedd144bd8fe7fd5d7784e, type: 3}
-  downstrokePositionY: 6.5
+  downstrokePositionY: 7
   downstrokeMoveDistance: 9
   downstrokeMoveSpeed: 30
   waitDownstroke: 1

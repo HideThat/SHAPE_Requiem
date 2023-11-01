@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using UnityEngine.InputSystem.EnhancedTouch;
 
 
 // 1. 구체 발사
@@ -32,6 +33,9 @@ public class SoulTyrant : Enemy
     
     public Vector2 currentPosition;
     public bool isDead = false;
+
+    [Header("Scene Change Torch")]
+    public SceneChangeTorch torch;
 
     [Header("Random Teleport")]
     public List<Transform> teleportPointList;
@@ -662,7 +666,7 @@ public class SoulTyrant : Enemy
         yield return new WaitForSeconds(_delay);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(2f, 2f));
-        
+        torch.TorchMove(4f);
 
         Destroy(gameObject);
     }

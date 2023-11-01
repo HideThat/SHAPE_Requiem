@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using DG.Tweening;
 using UnityEngine.UI;
+using System.Transactions;
 
-public class Pause_Manager : MonoBehaviour
+public class Pause_Manager : Singleton<Pause_Manager>
 {
     public GameObject pausePanel;
     public PauseUIButton[] buttons;

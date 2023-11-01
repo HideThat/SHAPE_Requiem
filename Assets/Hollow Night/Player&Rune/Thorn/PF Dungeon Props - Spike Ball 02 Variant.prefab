@@ -1,0 +1,160 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &379464601064202819
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 390456860282783827, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_Name
+      value: PF Dungeon Props - Spike Ball 02 Variant
+      objectReference: {fileID: 0}
+    - target: {fileID: 390456860282783827, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 390456860282783827, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_TagString
+      value: Enemy
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 3.4066
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 3.4066
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 3.4066
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -13.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -3.57
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6265670936862214329, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8930051543745126958, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+      propertyPath: m_SortingOrder
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+--- !u!1 &13246337713793552 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 390456860282783827, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+  m_PrefabInstance: {fileID: 379464601064202819}
+  m_PrefabAsset: {fileID: 0}
+--- !u!50 &225846840
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13246337713793552}
+  m_BodyType: 2
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
+--- !u!58 &225846839
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13246337713793552}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.38
+--- !u!114 &7793480340681028691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 13246337713793552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8606ee0fa809f6644b392934e36b0861, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HP: 0
+  maxHP: 0
+  damage: 1
+  m_collider2D: {fileID: 225846839}
+  spriteRenderer: {fileID: 9127049988665180269}
+  bloodPrefab: {fileID: 4040198546950883084, guid: 33678a82f80a26948b7100f3c437d288, type: 3}
+  minBloodSize: 0
+  maxBloodSize: 0
+  minBloodForce: 0
+  maxBloodForce: 0
+  bloodCount: 0
+  hitColor: {r: 1, g: 1, b: 1, a: 1}
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
+  hitClip: {fileID: 8300000, guid: d1f775793baf31d43a3cd9ddff0f7ca8, type: 3}
+  runeIn: 0
+  returnPoint: {x: 0, y: 0}
+  fadeoutTime: 1
+  fadeInTime: 0.2
+--- !u!212 &9127049988665180269 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8930051543745126958, guid: 1abe683ad08b41b43b86ba30de32ba21, type: 3}
+  m_PrefabInstance: {fileID: 379464601064202819}
+  m_PrefabAsset: {fileID: 0}

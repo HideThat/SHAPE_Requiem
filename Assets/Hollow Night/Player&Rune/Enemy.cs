@@ -39,6 +39,12 @@ public class Enemy : MonoBehaviour
             collision.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
     }
 
+    protected virtual void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.transform.CompareTag("Player"))
+            collision.transform.GetComponent<PlayerCoroutine>().Hit(collision.transform.position, transform.position, damage);
+    }
+
     public virtual void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         HP -= _damage;

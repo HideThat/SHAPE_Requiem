@@ -48,6 +48,8 @@ public class OptionButton : PauseUIButton
         Master_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
         BGM_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
         effect_Slider.onValueChanged.AddListener(delegate { SetAudioMix(); });
+
+        SetKeyText();
     }
 
     void InitResolutionDropdown()
@@ -94,6 +96,7 @@ public class OptionButton : PauseUIButton
             SetFullScreenToggle();
             SetResolutionDropdown();
             SetAudioSlider();
+            SetKeyText();
             keyInputPanel.SetActive(false);
 
             for (int i = 0; i < subPanelButtonImages.Length; i++)
@@ -191,6 +194,13 @@ public class OptionButton : PauseUIButton
     #endregion
 
     #region Key Setting
+    public void SetKeyText()
+    {
+        jumpKeyText.text = OptionData.Instance.currentJumpKey.ToString();
+        attackKeyText.text = OptionData.Instance.currentAttackKey.ToString();
+        dashKeyText.text = OptionData.Instance.currentDashKey.ToString();
+    }
+
     public void JumpKeySetting()
     {
         PlayButtonClickSound();
@@ -213,18 +223,21 @@ public class OptionButton : PauseUIButton
     private void SetJumpKey(KeyCode _key)
     {
         PlayerCoroutine.Instance.jumpKey = _key;
+        OptionData.Instance.currentJumpKey = _key;
         jumpKeyText.text = _key.ToString();
     }
 
     private void SetAttackKey(KeyCode _key)
     {
         PlayerCoroutine.Instance.attackKey = _key;
+        OptionData.Instance.currentAttackKey = _key;
         attackKeyText.text = _key.ToString();
     }
 
     void SetDashKey(KeyCode _key)
     {
         PlayerCoroutine.Instance.dashKey = _key;
+        OptionData.Instance.currentDashKey = _key;
         dashKeyText.text = _key.ToString();
     }
 
@@ -232,7 +245,6 @@ public class OptionButton : PauseUIButton
     private IEnumerator WaitForKeyInput(System.Action<KeyCode> _setKeyAction)
     {
         keyInputPanel.SetActive(true);
-        PlayerCoroutine.Instance.canControl = false;
         while (true)
         {
             foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
@@ -243,7 +255,6 @@ public class OptionButton : PauseUIButton
                     {
                         _setKeyAction(keyCode);
                         keyInputPanel.SetActive(false);
-                        PlayerCoroutine.Instance.canControl = true;
                         yield break;
                     }
                 }

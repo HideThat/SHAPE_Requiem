@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4433773409113298701}
   - component: {fileID: 4433773409113298690}
   - component: {fileID: 7227787501680022679}
+  - component: {fileID: 504581827}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -66,7 +67,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c78397bc36105f944beb824bd0f915e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BGMaudioSource: {fileID: 7657036055851059798, guid: 850c21600074f154db3e2c16408dde65, type: 3}
+  BGMaudioSource: {fileID: 8455404962895179781}
   SoulTyrant_BGM:
   - {fileID: 8300000, guid: 427e7963d6cc586418b02ce0858e5672, type: 3}
   - {fileID: 8300000, guid: d9b5a4463003bd449a85f899f98c5f0e, type: 3}
@@ -76,6 +77,20 @@ MonoBehaviour:
   masterGroup: {fileID: 24300002, guid: bb4c72bdf558826459d6f8950188731a, type: 2}
   BGM_Group: {fileID: 5521372515451138258, guid: bb4c72bdf558826459d6f8950188731a, type: 2}
   SFX_Group: {fileID: -8079587725694479632, guid: bb4c72bdf558826459d6f8950188731a, type: 2}
+--- !u!114 &504581827
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433773409113298691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 470f732cb14d9884c8a8258751704486, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  waitTime: 1.5
+  loadingSceneName: LoadingScene
 --- !u!1001 &2239665304863865427
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -87,6 +102,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: BGM_Source
       objectReference: {fileID: 0}
+    - target: {fileID: 7657036055851059798, guid: 850c21600074f154db3e2c16408dde65, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 427e7963d6cc586418b02ce0858e5672, type: 3}
     - target: {fileID: 7657036055851059798, guid: 850c21600074f154db3e2c16408dde65, type: 3}
       propertyPath: m_PlayOnAwake
       value: 1
@@ -140,5 +159,10 @@ PrefabInstance:
 --- !u!4 &8455404962895179780 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7657036055851059799, guid: 850c21600074f154db3e2c16408dde65, type: 3}
+  m_PrefabInstance: {fileID: 2239665304863865427}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &8455404962895179781 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 7657036055851059798, guid: 850c21600074f154db3e2c16408dde65, type: 3}
   m_PrefabInstance: {fileID: 2239665304863865427}
   m_PrefabAsset: {fileID: 0}

@@ -11,7 +11,7 @@ using UnityEngine.SceneManagement;
 public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
     [Header("Main Button")]
-    public Button button; // 이벤트가 실행될 버튼
+    public Button button; // 이벤트가 실행될 버튼들
     public TextMeshProUGUI text; // 버튼의 텍스트
     public Image buttonImage;
     public float moveDistance; // 버튼과 텍스트가 움직일 거리
@@ -22,7 +22,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public AudioSource buttonEffectSource;
     public AudioClip mainButtonOnMouseClip;
     public AudioClip buttonClickClip;
-    public AudioClip slideClip;
 
     public Color textOriginColor;
     public Color imageOriginColor;
@@ -39,9 +38,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     Tween textColorTween;
     Tween imageMoveTween;
     Tween imageColorTween;
-
-    [Header("Skip Toggle")]
-    public SwitchToggle switchToggle;
 
     [Header("Sub Panel")]
     public Image subPanel;
@@ -70,34 +66,28 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         text.DOColor(textChangeColor, moveTime);
 
         buttonEffectSource.PlayOneShot(mainButtonOnMouseClip);
-
-        if (switchToggle != null) switchToggle.AppearToggle();
     }
 
     public virtual void OnPointerClick(PointerEventData _eventData)
     {
-        isClicked = !isClicked;
+        Pause_Manager.Instance.ResetButtonClick();
 
+        isClicked = !isClicked;
         buttonEffectSource.PlayOneShot(buttonClickClip);
         SubPanelAppear(isClicked);
     }
 
     public virtual void OnPointerExit(PointerEventData _eventData)
     {
-        if (!isClicked)
-        {
-            textMoveTween?.Kill();
-            textColorTween?.Kill();
-            textMoveTween = text.rectTransform.DOAnchorPosY(textOrigin.y, moveTime);
-            textColorTween = text.DOColor(textOriginColor, moveTime);
+        textMoveTween?.Kill();
+        textColorTween?.Kill();
+        textMoveTween = text.rectTransform.DOAnchorPosY(textOrigin.y, moveTime);
+        textColorTween = text.DOColor(textOriginColor, moveTime);
 
-            imageMoveTween?.Kill();
-            imageColorTween?.Kill();
-            imageMoveTween = buttonImage.rectTransform.DOAnchorPosY(buttonOrigin.y, moveTime);
-            imageColorTween = buttonImage.DOColor(imageOriginColor, moveTime);
-
-            if (switchToggle != null) switchToggle.ResetToggle();
-        }
+        imageMoveTween?.Kill();
+        imageColorTween?.Kill();
+        imageMoveTween = buttonImage.rectTransform.DOAnchorPosY(buttonOrigin.y, moveTime);
+        imageColorTween = buttonImage.DOColor(imageOriginColor, moveTime);
     }
 
     public virtual void ResetButton()
@@ -112,7 +102,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         buttonImage.rectTransform.anchoredPosition = imageOrigin;
         buttonImage.color = imageOriginColor;
 
-        if (switchToggle != null) switchToggle.ResetToggle();
         isClicked = false;
         SubPanelAppear(isClicked);
     }
@@ -130,7 +119,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         imageColorTween = buttonImage.DOColor(imageOriginColor, moveTime);
 
         if (subPanel != null) subPanel.gameObject.SetActive(false);
-        if (switchToggle != null) switchToggle.ResetToggle();
         isClicked = false;
         SubPanelAppear(isClicked);
     }
@@ -147,11 +135,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     public void PlayButtonClickSound()
     {
         buttonEffectSource.PlayOneShot(buttonClickClip);
-    }
-
-    public void PlayButtonClickSound2()
-    {
-        buttonEffectSource.PlayOneShot(slideClip);
     }
 
     protected virtual void SubPanelAppear(bool _active)

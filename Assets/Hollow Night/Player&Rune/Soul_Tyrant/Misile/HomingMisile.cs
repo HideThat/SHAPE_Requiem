@@ -52,11 +52,6 @@ public class HomingMisile : Enemy
         continuousForce = _continuousForce;
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        
-    }
-
     protected override void OnTriggerStay2D(Collider2D collision)
     {
         if (collision.CompareTag("Player") || collision.CompareTag("Platform"))
@@ -96,6 +91,13 @@ public class HomingMisile : Enemy
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         base.Hit(_damage, _hitDir, _audioSource);
+
+        rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
+    }
+
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.UpAttackHit(_damage, _hitDir, _audioSource);
 
         rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
     }

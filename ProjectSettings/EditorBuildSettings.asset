@@ -5,13 +5,28 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
+  - enabled: 1
     path: Assets/Hollow Night/Player&Rune/Scenes/Title.unity
     guid: 74106b814d39ea542a172b8400277243
   - enabled: 1
-    path: Assets/Hollow Night/Player&Rune/Scenes/CrazyMonk.unity
-    guid: f00d313d4d6039d45b711e34533ae024
-  - enabled: 0
+    path: Assets/Hollow Night/Player&Rune/Scenes/Tutorial.unity
+    guid: 2d163081eacb5694eb9cb2c24ec0cf65
+  - enabled: 1
+    path: Assets/Hollow Night/Player&Rune/Scenes/Tutorial2.unity
+    guid: 425b7ef87a93a474ab8b7cd38da23732
+  - enabled: 1
+    path: Assets/Hollow Night/Player&Rune/Scenes/Tutorial3.unity
+    guid: 54ee7bf9c3f3f264e92fcd53d627bb89
+  - enabled: 1
     path: Assets/Hollow Night/Player&Rune/Scenes/Slime.unity
     guid: 12b734ded55be6a489f1fd19bbbe871c
+  - enabled: 1
+    path: Assets/Hollow Night/Player&Rune/Scenes/CrazyMonk.unity
+    guid: f00d313d4d6039d45b711e34533ae024
+  - enabled: 1
+    path: Assets/Hollow Night/Player&Rune/Scenes/LoadingScene.unity
+    guid: fb569de1840a1034982b077bb66a03c4
+  - enabled: 1
+    path: Assets/Hollow Night/Player&Rune/Scenes/Clear.unity
+    guid: 13b5195bc6f19204cbc3cc4e69c8136e
   m_configObjects: {}

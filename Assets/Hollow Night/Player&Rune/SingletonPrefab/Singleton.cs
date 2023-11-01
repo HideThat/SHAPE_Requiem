@@ -15,7 +15,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
                 instance = (T)FindObjectOfType(typeof(T));
                 if (instance == null)
                 {
-                    GameObject obj = new GameObject(typeof(T).Name);
+                    GameObject obj = new(typeof(T).Name);
                     instance = obj.AddComponent<T>();
                 }
             }
@@ -28,12 +28,21 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour
         if (instance == null)
         {
             instance = this as T;
-            DontDestroyOnLoad(this.gameObject);
+            MoveToRootAndDontDestroy(this.gameObject);
         }
         else if (instance != this)
         {
             Debug.Log("오브젝트 삭제");
             Destroy(gameObject);
         }
+    }
+
+    private void MoveToRootAndDontDestroy(GameObject obj)
+    {
+        while (obj.transform.parent != null)
+        {
+            obj = obj.transform.parent.gameObject;
+        }
+        DontDestroyOnLoad(obj);
     }
 }

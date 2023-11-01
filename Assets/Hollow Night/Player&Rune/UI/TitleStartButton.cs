@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.SceneManagement;
 
 public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
@@ -12,11 +11,6 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
     protected override void Start()
     {
         base.Start();
-    }
-
-    void Update()
-    {
-        
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -40,6 +34,6 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
 
     public void GoToScene(string _sceneName)
     {
-        SceneManager.LoadScene(_sceneName);
+        SceneChangeManager.Instance.SceneChange(firstSceneName);
     }
 }

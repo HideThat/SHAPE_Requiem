@@ -53,6 +53,8 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
         Master_Slider.onValueChanged.AddListener((value) => SetAudioMix());
         BGM_Slider.onValueChanged.AddListener((value) => SetAudioMix());
         effect_Slider.onValueChanged.AddListener((value) => SetAudioMix());
+
+        SetKeyText();
     }
 
     public void OnPointerEnter(PointerEventData eventData)
@@ -119,6 +121,7 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
             SetAudioSlider();
             SubPanelImageAppearTween();
             SubPanelTextAppearTween();
+            SetKeyText();
         }
         else
         {
@@ -218,6 +221,13 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
     #endregion
 
     #region Key Setting
+    public void SetKeyText()
+    {
+        jumpKeyText.text = OptionData.Instance.currentJumpKey.ToString();
+        attackKeyText.text = OptionData.Instance.currentAttackKey.ToString();
+        dashKeyText.text = OptionData.Instance.currentDashKey.ToString();
+    }
+
     public void JumpKeySetting()
     {
         StartCoroutine(WaitForKeyInput(SetJumpKey));
@@ -236,19 +246,19 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
     // 키 입력을 받으면 변수에 저장해주는 함수
     private void SetJumpKey(KeyCode _key)
     {
-        PlayerCoroutine.Instance.jumpKey = _key;
+        OptionData.Instance.currentJumpKey = _key;
         jumpKeyText.text = _key.ToString();
     }
 
     private void SetAttackKey(KeyCode _key)
     {
-        PlayerCoroutine.Instance.attackKey = _key;
+        OptionData.Instance.currentAttackKey = _key;
         attackKeyText.text = _key.ToString();
     }
 
     void SetDashKey(KeyCode _key)
     {
-        PlayerCoroutine.Instance.dashKey = _key;
+        OptionData.Instance.currentDashKey = _key;
         dashKeyText.text = _key.ToString();
     }
 
@@ -256,7 +266,6 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
     private IEnumerator WaitForKeyInput(System.Action<KeyCode> _setKeyAction)
     {
         keyInputPanel.SetActive(true);
-        PlayerCoroutine.Instance.canControl = false;
         while (true)
         {
             foreach (KeyCode keyCode in System.Enum.GetValues(typeof(KeyCode)))
@@ -267,7 +276,6 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
                     {
                         _setKeyAction(keyCode);
                         keyInputPanel.SetActive(false);
-                        PlayerCoroutine.Instance.canControl = true;
                         yield break;
                     }
                 }

@@ -10,6 +10,8 @@ using UnityEngine.SceneManagement;
 
 public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public PauseUI_MenuNavigation menuNavigation;
+
     [Header("Main Button")]
     public Button button; // 이벤트가 실행될 버튼들
     public TextMeshProUGUI text; // 버튼의 텍스트
@@ -53,7 +55,16 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         imageMovePoint = buttonImage.rectTransform.anchoredPosition.y - moveDistance;
     }
 
+    #region Point Event ----------------------------------------------------------------------------------------------------------------
     public virtual void OnPointerEnter(PointerEventData _eventData)
+    {
+        if (menuNavigation.moveMouse)
+        {
+            OnPointerEnter();
+        }
+    }
+
+    public virtual void OnPointerEnter()
     {
         imageMoveTween?.Kill();
         imageColorTween?.Kill();
@@ -70,6 +81,11 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public virtual void OnPointerClick(PointerEventData _eventData)
     {
+        OnPointerClick();
+    }
+
+    public virtual void OnPointerClick()
+    {
         Pause_Manager.Instance.ResetButtonClick();
 
         isClicked = !isClicked;
@@ -78,6 +94,16 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
     }
 
     public virtual void OnPointerExit(PointerEventData _eventData)
+    {
+        if (menuNavigation.moveMouse)
+        {
+            menuNavigation.selectedIndex = -1;
+            OnPointerExit();
+        }
+
+    }
+
+    public virtual void OnPointerExit()
     {
         textMoveTween?.Kill();
         textColorTween?.Kill();
@@ -89,6 +115,7 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         imageMoveTween = buttonImage.rectTransform.DOAnchorPosY(buttonOrigin.y, moveTime);
         imageColorTween = buttonImage.DOColor(imageOriginColor, moveTime);
     }
+    #endregion ----------------------------------------------------------------------------------------------------------------
 
     public virtual void ResetButton()
     {
@@ -121,6 +148,7 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (subPanel != null) subPanel.gameObject.SetActive(false);
         isClicked = false;
         SubPanelAppear(isClicked);
+        Pause_Manager.Instance.CloseUI();
     }
 
     public EventTrigger.Entry SetButtonClickEventSound()
@@ -142,6 +170,8 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (subPanel == null) return;
         if (_active)
         {
+            menuNavigation.subPanelOpen = true;
+            menuNavigation.canMove = false;
             subPanel.gameObject.SetActive(_active);
             subPanel.color = new Color(subPanel.color.r, subPanel.color.g, subPanel.color.b, 0f);
             subPanelColorTween?.Kill();
@@ -150,6 +180,9 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         else
         {
             subPanel.gameObject.SetActive(_active);
+            menuNavigation.canMove = true;
+            menuNavigation.subPanelOpen = false;
+            menuNavigation.ButtonChange();
         }
     }
 }

@@ -105,7 +105,6 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     public Coroutine hitCoroutine;
     public EffectDestroy hitEffect;
     public Image canvasHitEffect;
-    public float invincibleTime = 2.0f; // 무적 시간
     public float knockbackForce = 10.0f; // 뒤로 밀리는 힘
     public Tween timeTween;
     public Tween pinchTween;
@@ -178,9 +177,19 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         Gizmos.DrawWireCube(downBoxPos, new(downAttackSizeX, downAttackSizeY));
     }
 
-    public void PlayerDiappear()
+    public void PlayerDisappear(float _delaytime)
     {
+        StopAllCoroutines();
+        StartCoroutine(PlayerDisappearCoroutine(_delaytime));
+    }
+
+    IEnumerator PlayerDisappearCoroutine(float _delaytime)
+    {
+        canControl = false;
         SummonLightBlow(0.5f, transform.position, new Vector2(2f, 2f));
+        spriteRenderer.color = Color.clear;
+
+        yield return new WaitForSeconds(_delaytime);
         Destroy(gameObject);
     }
 
@@ -677,6 +686,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         if (HP > 0)
         {
             isHit = true;
+            if (hitCoroutine != null) StopCoroutine(hitCoroutine);
             hitCoroutine = StartCoroutine(HitEffet());
             StartCoroutine(FinishHitEffect());
         }

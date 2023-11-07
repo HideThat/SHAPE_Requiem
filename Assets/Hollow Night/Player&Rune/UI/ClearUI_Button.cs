@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public class ClearUI_Button : MonoBehaviour, IPointerExitHandler, IPointerEnterHandler, IPointerClickHandler
 {
@@ -19,10 +20,17 @@ public class ClearUI_Button : MonoBehaviour, IPointerExitHandler, IPointerEnterH
     public AudioClip buttonHoverClip;
     public AudioClip buttonClickClip;
 
+    public UnityEvent myEvent;
+
     Tween imageTween;
     Tween textTween;
 
     public void OnPointerEnter(PointerEventData eventData)
+    {
+        OnPointerEnter();
+    }
+
+    public void OnPointerEnter()
     {
         imageTween?.Kill();
         textTween?.Kill();
@@ -34,10 +42,21 @@ public class ClearUI_Button : MonoBehaviour, IPointerExitHandler, IPointerEnterH
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        OnPointerClick();
+    }
+
+    public void OnPointerClick()
+    {
         audioSource.PlayOneShot(buttonClickClip);
+        myEvent.Invoke();
     }
 
     public void OnPointerExit(PointerEventData eventData)
+    {
+        OnPointerExit();
+    }
+
+    public void OnPointerExit()
     {
         imageTween?.Kill();
         textTween?.Kill();

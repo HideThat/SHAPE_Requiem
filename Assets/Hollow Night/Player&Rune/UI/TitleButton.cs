@@ -5,9 +5,13 @@ using UnityEngine.UI;
 using TMPro;
 using DG.Tweening;
 using UnityEngine.Experimental.GlobalIllumination;
+using UnityEngine.EventSystems;
 
-public class TitleButton : MonoBehaviour
+public class TitleButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public TitleMenuNavigation menuNavigation;
+
+    public Button button;
     public Image[] images;
     public TextMeshProUGUI[] texts;
     public float appearTime;
@@ -29,6 +33,41 @@ public class TitleButton : MonoBehaviour
         imageTweens = new Tween[images.Length];
         textTweens = new Tween[texts.Length];
     }
+
+    #region Pointer Event
+    public virtual void OnPointerEnter(PointerEventData eventData)
+    {
+        OnPointerEnter();
+        menuNavigation.ButtonChange();
+    }
+
+    public virtual void OnPointerEnter()
+    {
+
+    }
+
+    public virtual void OnPointerClick(PointerEventData eventData)
+    {
+        OnPointerClick();
+    }
+
+    public virtual void OnPointerClick()
+    {
+
+    }
+
+    public virtual void OnPointerExit(PointerEventData eventData)
+    {
+        OnPointerExit();
+        menuNavigation.selectedIndex = -1;
+        menuNavigation.ButtonChange();
+    }
+
+    public virtual void OnPointerExit()
+    {
+
+    }
+    #endregion
 
     public void AppearImages(bool _appear)
     {

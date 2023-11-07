@@ -24,22 +24,23 @@ public class GoToTitleButton : PauseUIButton
         subPanelButtonTextTweens = new Tween[subPanelButtonTexts.Length];
     }
 
-    #region Button Event
-    public override void OnPointerClick(PointerEventData _eventData)
+    #region Point Event ====================================================================================================================================
+    public override void OnPointerEnter()
     {
-        base.OnPointerClick(_eventData);
+        menuNavigation.selectedIndex = 2;
+        base.OnPointerEnter();
     }
 
-    public override void OnPointerEnter(PointerEventData _eventData)
+    public override void OnPointerClick()
     {
-        base.OnPointerEnter(_eventData);
+        base.OnPointerClick();
     }
 
-    public override void OnPointerExit(PointerEventData _eventData)
+    public override void OnPointerExit()
     {
-        base.OnPointerExit(_eventData);
+        base.OnPointerExit();
     }
-    #endregion
+    #endregion =============================================================================================================================================
 
 
     public override void ResetButton()

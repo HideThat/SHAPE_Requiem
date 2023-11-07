@@ -32,7 +32,7 @@ public class Slime : Enemy
     public SceneChangeTorch torch;
 
     [Header("Throwing Poop")]
-    public ThrowingPoop fakePoop;
+    public GameObject fakePoop;
     public ThrowingPoop poopPrefab;
     public Transform[] poopPoints;
     public int poopPointIndex = 0;
@@ -48,6 +48,8 @@ public class Slime : Enemy
     public AudioClip throwPoopClip;
     public Transform[] swingPoint;
     public EffectDestroy swingTrail;
+    public GameObject[] throwingPoopColliders;
+    public int throwingPoopColliderIndex = 0;
 
     [Header("Slime Down And Up")]
     public Collider2D downHornCollider;
@@ -82,7 +84,7 @@ public class Slime : Enemy
     public float posSmashDelay = 1f;
     public EffectDestroy burstEffectPrefab;
     public Transform[] burstPoint;
-    public Collider2D[] smashColliders;
+    public GameObject[] smashColliders;
     public int smashColliderIndex = 0;
     public AudioClip smashReadyClip;
     public AudioClip smashClip;
@@ -221,10 +223,13 @@ public class Slime : Enemy
                 animator.Play("A_Slime_SmashReturn");
         }
 
-        if (HP <= maxHP / 2 && !isChanged && !setDeveloperMode)
+        if (HP <= maxHP / 2 && !isChanged)
         {
             StopAllCoroutines();
-            StopCoroutine(FSM_Coroutine);
+            DisappearFakePoop();
+            OffSlimeSmashCollider();
+            OffSlimeThrowingPoopCollider();
+            if (FSM_Coroutine != null) StopCoroutine(FSM_Coroutine);
             StartCoroutine(ChangePhase());
             isChanged = true;
         }
@@ -233,13 +238,6 @@ public class Slime : Enemy
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         base.Hit(_damage, _hitDir, _audioSource);
-
-        // maxHP와 HP의 비율을 계산
-        float healthRatio = (float)HP / maxHP; // 예를 들어, maxHP가 100이고 HP가 90이면 0.9가 됩니다.
-        Debug.Log(healthRatio);
-        // currentColor를 조정
-        // 1 - healthRatio를 하면, HP가 줄어들 때 값이 증가합니다. 예를 들어, healthRatio가 0.9면 1 - 0.9 = 0.1이 됩니다.
-        currentColor = new Color(1f, healthRatio, healthRatio, 1f);
     }
 
     public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
@@ -480,10 +478,36 @@ public class Slime : Enemy
 
         transform.DOMoveY(originY, changePhaseTime);
         yield return new WaitForSeconds(changePhaseTime);
+        OffSlimeSmashCollider();
         appearSource.DOFade(0f, 1f);
         if (!setDeveloperMode)
             FSM_Coroutine = StartCoroutine(FSM_2());
     }
+
+    int index = 2;
+    bool isIncreasing = true;
+    public void ChangePhaseColliderChange()
+    {
+        int beforeIndex = index;
+
+        if (isIncreasing)
+        {
+            index++;
+            if (index == 4)
+                isIncreasing = false;
+        }
+        else
+        {
+            index--;
+            if (index == 2)
+                isIncreasing = true;
+        }
+
+        m_collider2D.enabled = false;
+        smashColliders[beforeIndex].SetActive(false);
+        smashColliders[index].SetActive(true);
+    }
+
 
     #region ThrowingPoop
     IEnumerator ThrowingPoopTwoTime()
@@ -500,7 +524,7 @@ public class Slime : Enemy
             transform.localScale = new Vector3(1f, 1f, 1f);
 
         animator.Play("A_Slime_ThrowReady");
-        fakePoop.gameObject.SetActive(true);
+        fakePoop.SetActive(true);
         // 똥 만드는 애니매이션 실행
         EffectDestroy effect = Instantiate(swingTrail, swingPoint[0].position, Quaternion.identity);
         yield return new WaitForSeconds(_preDelay);
@@ -523,9 +547,10 @@ public class Slime : Enemy
         float dirY = Random.Range(shootY_Min, shootY_Max);
 
         poop.rigid.velocity = new Vector2(dirX, dirY).normalized * shootPower;
-        fakePoop.gameObject.SetActive(false);
+        fakePoop.SetActive(false);
         poopPointIndex = 0;
         yield return new WaitForSeconds(0.2f);
+        OffSlimeThrowingPoopCollider();
         animator.Play("A_Slime_Idle");
         yield return new WaitForSeconds(_posDelay);
     }
@@ -540,6 +565,47 @@ public class Slime : Enemy
             fakePoop.transform.position = poopPoints[poopPointIndex].position;
         }
     }
+
+    void DisappearFakePoop()
+    {
+        poopPointIndex = 0;
+        fakePoop.transform.position = poopPoints[poopPointIndex].position;
+        fakePoop.SetActive(false);
+    }
+
+    public void OnThrowingPoopCollider()
+    {
+        if (throwingPoopColliderIndex != 0)
+            throwingPoopColliders[throwingPoopColliderIndex - 1].SetActive(false);
+
+        m_collider2D.enabled = false;
+        throwingPoopColliders[throwingPoopColliderIndex++].SetActive(true);
+
+        if (throwingPoopColliderIndex > throwingPoopColliders.Length)
+        {
+            throwingPoopColliderIndex = 0;
+            OffSlimeThrowingPoopCollider();
+        }
+    }
+
+    Coroutine OffThrowingColliderCoroutine;
+    public void OffSlimeThrowingPoopCollider()
+    {
+        if (OffThrowingColliderCoroutine != null) StopCoroutine(OffThrowingColliderCoroutine);
+        OffThrowingColliderCoroutine = StartCoroutine(OffSlimeThrowingPoopColliderCoroutine());
+    }
+
+    IEnumerator OffSlimeThrowingPoopColliderCoroutine()
+    {
+        throwingPoopColliderIndex = 0;
+        yield return new WaitForSeconds(0.1f);
+
+        m_collider2D.enabled = true;
+
+        foreach (var item in throwingPoopColliders)
+            item.SetActive(false);
+    }
+
     #endregion
 
     #region DownAndUp
@@ -720,23 +786,40 @@ public class Slime : Enemy
         yield return new WaitForSeconds(_middleSmashDelay);
         animator.Play("A_Slime_SmashReturn");
         yield return new WaitForSeconds(_posSmashDelay);
+        OffSlimeSmashCollider();
         animator.Play("A_Slime_Idle");
     }
 
     public void OnSlimeSmashCollider()
     {
         if (smashColliderIndex != 0)
-            smashColliders[smashColliderIndex - 1].enabled = false;
+            smashColliders[smashColliderIndex - 1].SetActive(false);
 
         m_collider2D.enabled = false;
-        smashColliders[smashColliderIndex++].enabled = true;
+        smashColliders[smashColliderIndex++].SetActive(true);
 
-        if (smashColliders.Length == smashColliderIndex)
+        if (smashColliderIndex > smashColliders.Length)
         {
-            m_collider2D.enabled = true;
-            smashColliders[smashColliderIndex - 1].enabled = false;
             smashColliderIndex = 0;
+            OffSlimeSmashCollider();
         }
+    }
+
+    Coroutine offSlimeSmashColliderCoroutine;
+    void OffSlimeSmashCollider()
+    {
+        if (offSlimeSmashColliderCoroutine != null) StopCoroutine(offSlimeSmashColliderCoroutine);
+        offSlimeSmashColliderCoroutine = StartCoroutine(OffSlimeSmashColliderCoroutine());
+    }
+
+    IEnumerator OffSlimeSmashColliderCoroutine()
+    {
+        smashColliderIndex = 0;
+        yield return new WaitForSeconds(0.1f);
+
+        m_collider2D.enabled = true;
+        foreach (var item in smashColliders)
+            item.SetActive(false);
     }
     #endregion
 

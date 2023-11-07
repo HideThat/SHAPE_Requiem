@@ -52,6 +52,30 @@ public class OptionButton : PauseUIButton
         SetKeyText();
     }
 
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SubPanelAppear(false);
+    }
+
+    #region Point Event ====================================================================================================================================
+    public override void OnPointerEnter()
+    {
+        menuNavigation.selectedIndex = 1;
+        base.OnPointerEnter();
+    }
+
+    public override void OnPointerClick()
+    {
+        base.OnPointerClick();
+    }
+
+    public override void OnPointerExit()
+    {
+        base.OnPointerExit();
+    }
+    #endregion =============================================================================================================================================
+
     void InitResolutionDropdown()
     {
         int optionValue = 0;

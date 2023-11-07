@@ -12,17 +12,28 @@ public class SceneChangeTorch : Enemy
     public GameObject burstEffect;
     public AudioSource audioSource;
     public AudioClip burstClip;
+    public EffectDestroy lightBlowPrefab;
+    public GameObject[] lantern;
+    public int lanternIndex = 0;
+    public bool isActive = false;
 
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
         base.Hit(_damage, _hitDir, _audioSource);
 
-        // maxHP와 HP의 비율을 계산
-        float healthRatio = (float)HP / maxHP;
-        Debug.Log(healthRatio);
+        if (lanternIndex < lantern.Length)
+            TorchHit();
+    }
 
-        // currentColor를 조정
-        currentColor = new Color(1f, healthRatio, healthRatio, 1f);
+    protected override void OnTriggerStay2D(Collider2D collision)
+    {
+        if (!isActive) base.OnTriggerStay2D(collision);
+    }
+
+    void TorchHit()
+    {
+        SummonLightBlow(0.5f, lantern[lanternIndex].transform.position, new Vector2(1f, 1f));
+        lantern[lanternIndex++].SetActive(true);
     }
 
     public void TorchMove(float _waitTime)
@@ -40,6 +51,9 @@ public class SceneChangeTorch : Enemy
             audioSource.PlayOneShot(burstClip);
             CameraManager.Instance.CameraShake();
         });
+
+        yield return new WaitForSeconds(moveTime + 0.1f);
+        isActive = true;
     }
 
     public override void Dead()
@@ -51,9 +65,26 @@ public class SceneChangeTorch : Enemy
 
     public IEnumerator DeadCoroutine()
     {
-        PlayerCoroutine.Instance.PlayerDiappear();
+        foreach (var item in lantern)
+        {
+            SummonLightBlow(0.5f, item.transform.position, new Vector2(5f, 5f));
+            item.SetActive(false);
+        }
+            
+
+        SummonLightBlow(0.5f, transform.position, new Vector2(5f, 5f));
+        PlayerCoroutine.Instance.PlayerDisappear(2f);
         yield return new WaitForSeconds(2f);
         Destroy(CameraManager.Instance.gameObject);
         SceneChangeManager.Instance.SceneChange(changeSceneName);
+    }
+
+    void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)
+    {
+        EffectDestroy effect = Instantiate(lightBlowPrefab);
+        effect.transform.position = _point;
+        effect.transform.localScale = _size;
+        effect.SetFade(_time);
+        effect.SetDestroy(_time);
     }
 }

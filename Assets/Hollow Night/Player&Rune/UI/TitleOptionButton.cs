@@ -7,7 +7,7 @@ using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
+public class TitleOptionButton : TitleButton
 {
     [Header("Video Option")]
     public TMP_Dropdown resolutionDropdown;
@@ -57,24 +57,39 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
         SetKeyText();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Escape))
+            SubPanelAppear(false);
+    }
+
+    #region Pointer Event
+    public override void OnPointerEnter()
+    {
+        base.OnPointerEnter();
+
         HoverSoundPlay();
         AppearImages(true);
         TextChangeColorTween(true);
+        menuNavigation.selectedIndex = 1;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick()
     {
+        base.OnPointerClick();
+
         ClickSoundPlay();
         SubPanelAppear(true);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit()
     {
+        base.OnPointerExit();
+
         AppearImages(false);
         TextChangeColorTween(false);
     }
+    #endregion
 
     void InitResolutionDropdown()
     {
@@ -115,6 +130,7 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
     {
         if (_active)
         {
+            menuNavigation.canMove = false;
             subPanel.SetActive(_active);
             SetFullScreenToggle();
             SetResolutionDropdown();
@@ -125,6 +141,7 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
         }
         else
         {
+            menuNavigation.canMove = true;
             subPanel.SetActive(_active);
         }
     }
@@ -156,6 +173,7 @@ public class TitleOptionButton : TitleButton, IPointerEnterHandler, IPointerExit
         CancleButtonClick();
         keyInputPanel.SetActive(false);
         subPanel.SetActive(false);
+        menuNavigation.canMove = true;
     }
 
     public void ApplyButtonClick()

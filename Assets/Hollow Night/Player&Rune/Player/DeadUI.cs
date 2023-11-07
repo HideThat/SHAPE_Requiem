@@ -68,7 +68,7 @@ public class DeadUI : MonoBehaviour
     public void Retry()
     {
         Destroy(Timer.Instance.gameObject);
-        PlayerCoroutine.Instance.PlayerDiappear();
+        PlayerCoroutine.Instance.PlayerDisappear(0f);
         Destroy(CameraManager.Instance.gameObject);
         SceneChangeManager.Instance.SceneChange(firstStageSceneName);
     }
@@ -76,7 +76,7 @@ public class DeadUI : MonoBehaviour
     public void GoTitle()
     {
         Destroy(Timer.Instance.gameObject);
-        PlayerCoroutine.Instance.PlayerDiappear();
+        PlayerCoroutine.Instance.PlayerDisappear(0f);
         Destroy(CameraManager.Instance.gameObject);
         SceneChangeManager.Instance.SceneChange(titleSceneName);
     }

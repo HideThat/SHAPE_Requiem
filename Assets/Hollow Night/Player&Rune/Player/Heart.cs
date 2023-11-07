@@ -13,7 +13,7 @@ public class Heart : MonoBehaviour
         if (currentRoutine != null)
             StopCoroutine(currentRoutine);
 
-        StartCoroutine(ShowHeartCoroutine());
+        currentRoutine = StartCoroutine(ShowHeartCoroutine());
     }
 
     public void BreakHeart()
@@ -21,7 +21,7 @@ public class Heart : MonoBehaviour
         if (currentRoutine != null)
             StopCoroutine(currentRoutine);
 
-        StartCoroutine(BreakHeartCoroutine());
+        currentRoutine = StartCoroutine(BreakHeartCoroutine());
     }
 
     IEnumerator ShowHeartCoroutine()

@@ -982,6 +982,7 @@ GameObject:
   - component: {fileID: 331976998}
   - component: {fileID: 331977000}
   - component: {fileID: 331976999}
+  - component: {fileID: 331977001}
   m_Layer: 5
   m_Name: OptionSubPanel
   m_TagString: Untagged
@@ -1066,6 +1067,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 331976997}
   m_CullTransparentMesh: 1
+--- !u!114 &331977001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 331976997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c00241033a4a83438ad5264c375fb4c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buttons:
+  - {fileID: 704379122}
+  - {fileID: 1103178105}
+  selectedIndex: 0
+  canMove: 1
+  moveMouse: 0
 --- !u!1 &363938265
 GameObject:
   m_ObjectHideFlags: 0
@@ -1230,6 +1249,7 @@ GameObject:
   - component: {fileID: 418845508}
   - component: {fileID: 418845507}
   - component: {fileID: 418845506}
+  - component: {fileID: 418845510}
   m_Layer: 5
   m_Name: Canvas
   m_TagString: Untagged
@@ -1324,6 +1344,25 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &418845510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 418845505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 341dfa0c8a3f9b1418cb560406a43059, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  titleButtons:
+  - {fileID: 998952143}
+  - {fileID: 1497761205}
+  - {fileID: 704000338}
+  selectedIndex: -1
+  canMove: 1
+  moveMouse: 0
 --- !u!1 &487900369
 GameObject:
   m_ObjectHideFlags: 0
@@ -2041,6 +2080,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1d457e43d95e2f41ad2bc13fb4d2feb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuNavigation: {fileID: 418845510}
+  button: {fileID: 704000335}
   images:
   - {fileID: 1869584670}
   texts:
@@ -2066,6 +2107,8 @@ GameObject:
   - component: {fileID: 704379121}
   - component: {fileID: 704379120}
   - component: {fileID: 704379119}
+  - component: {fileID: 704379122}
+  - component: {fileID: 704379123}
   m_Layer: 5
   m_Name: "\uC801\uC6A9 \uBC84\uD2BC"
   m_TagString: Untagged
@@ -2188,6 +2231,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 704379117}
   m_CullTransparentMesh: 1
+--- !u!114 &704379122
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704379117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4433dc3208cdbe5488706a00cdb523bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 704379119}
+  image: {fileID: 704379120}
+  text: {fileID: 946214348}
+  myEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1497761205}
+        m_TargetAssemblyTypeName: TitleOptionButton, Assembly-CSharp
+        m_MethodName: ApplyButtonClick
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  changeTime: 0.5
+  isActive: 0
+  imageChangeColor: {r: 0, g: 0, b: 0, a: 1}
+  imageOriginColor: {r: 1, g: 1, b: 1, a: 1}
+  textChangeColor: {r: 1, g: 1, b: 1, a: 1}
+  textOriginColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &704379123
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 704379117}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_EffectDistance: {x: 2, y: 2}
+  m_UseGraphicAlpha: 1
 --- !u!82 &730025486 stripped
 AudioSource:
   m_CorrespondingSourceObject: {fileID: 2963411684035465452, guid: 67e67bb4b2d3c6647a51585238a287df, type: 3}
@@ -3380,7 +3474,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998952138}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -3393,7 +3487,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.000022888, y: -0.000019073}
+  m_AnchoredPosition: {x: 0.000022888002, y: -0.000015258789}
   m_SizeDelta: {x: 269.033, y: 69.1818}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &998952140
@@ -3490,6 +3584,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aeed09366daf1044e85f552cab400020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuNavigation: {fileID: 418845510}
+  button: {fileID: 998952140}
   images:
   - {fileID: 1451738546}
   texts:
@@ -3780,6 +3876,8 @@ GameObject:
   - component: {fileID: 1103178104}
   - component: {fileID: 1103178103}
   - component: {fileID: 1103178102}
+  - component: {fileID: 1103178105}
+  - component: {fileID: 1103178106}
   m_Layer: 5
   m_Name: "\uCDE8\uC18C \uBC84\uD2BC"
   m_TagString: Untagged
@@ -3902,6 +4000,57 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1103178100}
   m_CullTransparentMesh: 1
+--- !u!114 &1103178105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103178100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4433dc3208cdbe5488706a00cdb523bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  button: {fileID: 1103178102}
+  image: {fileID: 1103178103}
+  text: {fileID: 1736598838}
+  myEvent:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1497761205}
+        m_TargetAssemblyTypeName: TitleOptionButton, Assembly-CSharp
+        m_MethodName: ResetButton
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  changeTime: 0.5
+  isActive: 0
+  imageChangeColor: {r: 0, g: 0, b: 0, a: 1}
+  imageOriginColor: {r: 1, g: 1, b: 1, a: 1}
+  textChangeColor: {r: 1, g: 1, b: 1, a: 1}
+  textOriginColor: {r: 0, g: 0, b: 0, a: 1}
+--- !u!114 &1103178106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1103178100}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_EffectColor: {r: 1, g: 1, b: 1, a: 1}
+  m_EffectDistance: {x: 2, y: 2}
+  m_UseGraphicAlpha: 1
 --- !u!1 &1104433313
 GameObject:
   m_ObjectHideFlags: 0
@@ -5817,6 +5966,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81894e326fd532d4695ac98ab4fbf0be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuNavigation: {fileID: 418845510}
+  button: {fileID: 1497761202}
   images:
   - {fileID: 1217253042}
   texts:

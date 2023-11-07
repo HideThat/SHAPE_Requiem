@@ -13,27 +13,34 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
         base.Start();
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
+    public override void OnPointerEnter()
     {
+        base.OnPointerEnter();
+
         HoverSoundPlay();
         AppearImages(true);
         TextChangeColorTween(true);
+        menuNavigation.selectedIndex = 0;
     }
 
-    public void OnPointerClick(PointerEventData eventData)
+    public override void OnPointerClick()
     {
+        base.OnPointerClick();
+
         ClickSoundPlay();
         GoToScene(firstSceneName);
     }
 
-    public void OnPointerExit(PointerEventData eventData)
+    public override void OnPointerExit()
     {
+        base.OnPointerExit();
+
         AppearImages(false);
         TextChangeColorTween(false);
     }
 
     public void GoToScene(string _sceneName)
     {
-        SceneChangeManager.Instance.SceneChange(firstSceneName);
+        SceneChangeManager.Instance.SceneChange(_sceneName);
     }
 }

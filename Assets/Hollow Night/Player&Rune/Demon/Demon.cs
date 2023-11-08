@@ -1,12 +1,7 @@
-using Cinemachine.Utility;
 using DG.Tweening;
-using Mono.Cecil.Cil;
 using System.Collections;
 using System.Collections.Generic;
-using System.Data;
-using System.Net;
 using UnityEngine;
-using UnityEngine.InputSystem.EnhancedTouch;
 
 public class Demon : Enemy
 {

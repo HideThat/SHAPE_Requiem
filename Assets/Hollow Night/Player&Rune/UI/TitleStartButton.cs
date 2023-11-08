@@ -26,7 +26,7 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
     public override void OnPointerClick()
     {
         base.OnPointerClick();
-
+        GameInGameData.Instance.ResetPlayerHP();
         ClickSoundPlay();
         GoToScene(firstSceneName);
     }

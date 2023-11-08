@@ -79,7 +79,10 @@ public class Wendigo : Enemy
     {
         while (true)
         {
-            int i = Random.Range(0, 3);
+            OffMoveCollider();
+            OffAttackCollider();
+
+            int i = Random.Range(0, 6);
 
             switch (i)
             {
@@ -90,6 +93,15 @@ public class Wendigo : Enemy
                     yield return StartCoroutine(Attack(preAttackDelay, postAttackDelay));
                     break;
                 case 2:
+                    yield return StartCoroutine(Attack(preAttackDelay, postAttackDelay));
+                    break;
+                case 3:
+                    yield return StartCoroutine(Attack(preAttackDelay, postAttackDelay));
+                    break;
+                case 4:
+                    yield return StartCoroutine(Stand());
+                    break;
+                case 5:
                     yield return StartCoroutine(Stand());
                     break;
 
@@ -221,6 +233,7 @@ public class Wendigo : Enemy
         else
             transform.localScale = new(-1f, 1f, 1f);
 
+        
         float attackRange = Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(attackDistance.position.x));
         float playerDistance = Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(PlayerCoroutine.Instance.transform.position.x));
         float movePosX;
@@ -272,6 +285,11 @@ public class Wendigo : Enemy
 
     IEnumerator Stand()
     {
+        if (PlayerCoroutine.Instance.transform.position.x <= transform.position.x)
+            transform.localScale = new(1f, 1f, 1f);
+        else
+            transform.localScale = new(-1f, 1f, 1f);
+
         standCollider.gameObject.SetActive(true);
         animator.Play("Wendigo_Stand");
         yield return new WaitForSeconds(1);
@@ -282,6 +300,10 @@ public class Wendigo : Enemy
         base.Dead();
         if (!isDead)
         {
+            OffMoveCollider();
+            OffAttackCollider();
+            standCollider.gameObject.SetActive(true);
+
             isDead = true;
             StopAllCoroutines();
             animator.Play("Wendigo_Dead");
@@ -317,5 +339,30 @@ public class Wendigo : Enemy
         effect.transform.localScale = _size;
         effect.SetFade(_time);
         effect.SetDestroy(_time);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        // 현재 활성화된 움직임 콜라이더를 그립니다.
+        if (moveColliders.Length > 0)
+        {
+            foreach (var collider in moveColliders)
+            {
+                if (collider.gameObject.activeSelf)
+                    Gizmos.DrawWireCube(collider.bounds.center, collider.bounds.size);
+            }
+        }
+
+        // 현재 활성화된 공격 콜라이더를 그립니다.
+        if (attackColliders.Length > 0)
+        {
+            foreach (var collider in attackColliders)
+            {
+                if (collider.gameObject.activeSelf)
+                    Gizmos.DrawWireCube(collider.bounds.center, collider.bounds.size);
+            }
+        }
     }
 }

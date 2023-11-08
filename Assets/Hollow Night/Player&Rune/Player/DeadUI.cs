@@ -70,6 +70,7 @@ public class DeadUI : MonoBehaviour
         Destroy(Timer.Instance.gameObject);
         PlayerCoroutine.Instance.PlayerDisappear(0f);
         Destroy(CameraManager.Instance.gameObject);
+        GameInGameData.Instance.ResetPlayerHP();
         SceneChangeManager.Instance.SceneChange(firstStageSceneName);
     }
 

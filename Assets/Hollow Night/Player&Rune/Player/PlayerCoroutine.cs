@@ -123,6 +123,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     void Start()
     {
+        HP = GameInGameData.Instance.playerCurrentHP;
         jumpKey = OptionData.Instance.currentJumpKey;
         attackKey = OptionData.Instance.currentAttackKey;
         dashKey = OptionData.Instance.currentDashKey;
@@ -676,6 +677,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
         // 1. HP °¨¼Ò
         HP -= _damage;
+        GameInGameData.Instance.playerCurrentHP = HP;
         canControl = false;
         animator.SetTrigger("IsHit");
         float originalTimeScale = Time.timeScale;

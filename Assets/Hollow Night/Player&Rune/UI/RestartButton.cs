@@ -63,6 +63,7 @@ public class RestartButton : PauseUIButton
         Destroy(CameraManager.Instance.gameObject);
         Destroy(Timer.Instance.gameObject);
         Time.timeScale = 1f;
+        GameInGameData.Instance.ResetPlayerHP();
         SceneChangeManager.Instance.SceneChange(firstSceneName);
     }
 

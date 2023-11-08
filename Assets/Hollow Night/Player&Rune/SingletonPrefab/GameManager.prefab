@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4433773409113298690}
   - component: {fileID: 7227787501680022679}
   - component: {fileID: 504581827}
+  - component: {fileID: 5079285272082157158}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -91,6 +92,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waitTime: 1.5
   loadingSceneName: LoadingScene
+--- !u!114 &5079285272082157158
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4433773409113298691}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b8c3417a403ba50459098ac02a932db4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCurrentHP: 5
+  playerMaxHP: 5
 --- !u!1001 &2239665304863865427
 PrefabInstance:
   m_ObjectHideFlags: 0

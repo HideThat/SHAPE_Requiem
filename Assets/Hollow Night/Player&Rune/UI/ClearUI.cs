@@ -75,6 +75,7 @@ public class ClearUI : MonoBehaviour
     public void Retry()
     {
         Destroy(Timer.Instance.gameObject);
+        GameInGameData.Instance.ResetPlayerHP();
         SceneChangeManager.Instance.SceneChange(firstStageSceneName);
     }
 

@@ -158,7 +158,8 @@ public class Slime : Enemy
                 rigid2D.velocity = new Vector2(-bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the East");
-                Instantiate(burstEffectPrefab, hitPlusX.point, Quaternion.Euler(-180f, 90f, 0f));
+                EffectDestroy effect = Instantiate(burstEffectPrefab, hitPlusX.point, Quaternion.Euler(-180f, 90f, 0f));
+                effect.SetDestroy(3f);
                 voiceSource.PlayOneShot(collisionClip);
                 effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
@@ -169,7 +170,8 @@ public class Slime : Enemy
                 rigid2D.velocity = new Vector2(bounceBallShootSpeedX, rigid2D.velocity.y);
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 Debug.Log("Hit from the West");
-                Instantiate(burstEffectPrefab, hitMinusX.point, Quaternion.Euler(0f, 90f, 0f));
+                EffectDestroy effect = Instantiate(burstEffectPrefab, hitMinusX.point, Quaternion.Euler(0f, 90f, 0f));
+                effect.SetDestroy(3f);
                 voiceSource.PlayOneShot(collisionClip);
                 effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
@@ -181,7 +183,8 @@ public class Slime : Enemy
                 bounceBall.rotateSpeed = -bounceBall.rotateSpeed;
                 currentBounceGround++;
                 Debug.Log("Hit from the South");
-                Instantiate(burstEffectPrefab, hitMinusY.point, Quaternion.Euler(-90f, 90f, 0f));
+                EffectDestroy effect = Instantiate(burstEffectPrefab, hitMinusY.point, Quaternion.Euler(-90f, 90f, 0f));
+                effect.SetDestroy(3f);
                 voiceSource.PlayOneShot(collisionClip);
                 effectSource.PlayOneShot(diveImpactClip);
                 CameraManager.Instance.CameraShake();
@@ -195,6 +198,8 @@ public class Slime : Enemy
     {
         if (setDeveloperMode)
         {
+            
+
             if (Input.GetKeyDown(KeyCode.Q))
                 StartCoroutine(ThrowingPoopTwoTime());
 
@@ -254,6 +259,9 @@ public class Slime : Enemy
 
         if (!isDead)
         {
+            OffSlimeSmashCollider();
+            OffSlimeThrowingPoopCollider();
+
             isDead = true;
 
             if (isBounceBall || rigid2D.bodyType == RigidbodyType2D.Dynamic)
@@ -334,8 +342,13 @@ public class Slime : Enemy
 
         while (true)
         {
+            OffSlimeSmashCollider();
+            OffSlimeThrowingPoopCollider();
+
             if (HP < maxHP / 2)
                 break;
+
+            
 
             int rand = Random.Range(0, 8);
 
@@ -396,6 +409,9 @@ public class Slime : Enemy
 
         while (true)
         {
+            OffSlimeSmashCollider();
+            OffSlimeThrowingPoopCollider();
+
             int rand = Random.Range(0, 7);
 
             switch (rand)

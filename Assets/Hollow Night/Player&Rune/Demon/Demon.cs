@@ -14,6 +14,13 @@ public class Demon : Enemy
     public AudioSource voiceSource;
     public AudioSource effectSource;
     public AudioClip appearClip;
+    public AudioClip deadEffectClip;
+    public AudioClip deadVoiceClip;
+    public AudioClip moveStartClip;
+    public AudioClip moveClip;
+    public AudioClip summonReadyClip;
+    public AudioClip summonClip;
+    public AudioClip summonAfterClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] EffectDestroy lightBlowPrefab;
@@ -21,6 +28,8 @@ public class Demon : Enemy
 
     protected override void Start()
     {
+        base.Start();
+
         foreach (var item in MovePoints)
             item.parent = null;
 
@@ -96,7 +105,7 @@ public class Demon : Enemy
             endPoint = MovePoints[0].position;
             isClockwise = -1f;
         }
-
+        voiceSource.PlayOneShot(moveStartClip);
         yield return StartCoroutine(CircleMovement(endPoint, centerPoint, radius, speed, isClockwise));
 
         if (movePointIndex == 0)
@@ -119,6 +128,11 @@ public class Demon : Enemy
 
         while (true)
         {
+            if (!effectSource.isPlaying)
+            {
+                effectSource.PlayOneShot(moveClip);
+            }
+
             // 시계 방향이면 각도를 감소, 반시계 방향이면 각도를 증가
             angle += rotationSpeed * Time.deltaTime;
 
@@ -175,9 +189,10 @@ public class Demon : Enemy
             focus.transform.position = summonPoint.position;
             focus.SetFocusEffect(preSummonDelay, 2.5f);
         }
-
+        effectSource.PlayOneShot(summonReadyClip);
         yield return new WaitForSeconds(preSummonDelay);
-
+        effectSource.PlayOneShot(summonClip);
+        
         // 선택된 포인트마다 동시에 SummonLightBlow 소환
         foreach (Transform summonPoint in selectedPoints)
             SummonLightBlow(0.5f, summonPoint.position, new Vector2(1f, 1f));
@@ -187,8 +202,9 @@ public class Demon : Enemy
             GameObject bat = Instantiate(batPrefab);
             bat.transform.position = summonPoint.position;
         }
-
-        yield return new WaitForSeconds(posSummonDelay);
+        yield return new WaitForSeconds(0.1f);
+        effectSource.PlayOneShot(summonAfterClip);
+        yield return new WaitForSeconds(posSummonDelay - 0.1f);
     }
 
 
@@ -211,13 +227,15 @@ public class Demon : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        Sound_Manager.Instance.PlayBGM(0);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);
         voiceSource.Stop();
+        effectSource.PlayOneShot(deadEffectClip);
+        voiceSource.PlayOneShot(deadVoiceClip);
 
         yield return new WaitForSeconds(_delay);
+        Sound_Manager.Instance.PlayBGM(0);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(3f, 3f));
         torch.TorchMove(4f);

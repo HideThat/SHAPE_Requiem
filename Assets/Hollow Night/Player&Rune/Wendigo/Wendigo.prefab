@@ -58,7 +58,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -1.453485, y: 0.709303}
-      - {x: -2.2384286, y: 0.14290449}
+      - {x: -1.733132, y: 0.1584521}
       - {x: -1.0030668, y: -1.1481637}
       - {x: 2.3674686, y: -0.85111713}
       - {x: 1.3109667, y: 0.98038876}
@@ -410,7 +410,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.7250721, y: 0.927076}
-      - {x: -1.7352983, y: 0.41324332}
+      - {x: -1.3199441, y: 0.41324332}
       - {x: -0.9955574, y: -1.080579}
       - {x: 2.3674686, y: 0.05752176}
       - {x: 1.7239845, y: 1.0254451}
@@ -557,7 +557,7 @@ MonoBehaviour:
   bloodCount: 5
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  hitClip: {fileID: 8300000, guid: 26bb6495aae9f4a4ea403f6b63fd22ce, type: 3}
+  hitClip: {fileID: 8300000, guid: fefddc6c25f38504fb997806b74dcc46, type: 3}
   runeIn: 0
   torch: {fileID: 0}
   setDeveloperMode: 0
@@ -588,14 +588,19 @@ MonoBehaviour:
   - {fileID: 1334471792011528560}
   moveColliderIndex: 0
   attackColliderIndex: 0
-  appearClip: {fileID: 8300000, guid: 1cc07522d2759044eb664e64eb182726, type: 3}
+  appearClip: {fileID: 8300000, guid: 44650906e435e7949ad4e520b69ece97, type: 3}
+  deadEffectClip: {fileID: 8300000, guid: 50e67539ef83e8e488fe56d371598001, type: 3}
+  deadVoiceClip: {fileID: 8300000, guid: 3d15cc4f5cac70049890916cc5cf217a, type: 3}
+  moveClip: {fileID: 8300000, guid: 291cae9e925ef734086616917cbc77ca, type: 3}
+  rushReadyClip: {fileID: 8300000, guid: 761b4eea225ce604b82474c16c3578bf, type: 3}
+  attackClip: {fileID: 8300000, guid: fbb91586a4d2c47479e9d1145da51c00, type: 3}
   appearDelay: 2
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: eca78f989eb17f74692ae5380528b894, type: 3}
   isDead: 0
-  preRushDelay: 3
-  postRushDelay: 3
-  rushSpeed: 10
+  preRushDelay: 2
+  postRushDelay: 2
+  rushSpeed: 11
   rushColor: {r: 1, g: 0, b: 0, a: 1}
   rushPoint:
   - {fileID: 1334471791101120645}
@@ -605,7 +610,7 @@ MonoBehaviour:
   preAttackDelay: 1
   postAttackDelay: 0.5
   attackDistance: {fileID: 1334471791471005329}
-  moveRange: 5
+  moveRange: 4
 --- !u!50 &1334471791404456304
 Rigidbody2D:
   serializedVersion: 4
@@ -693,7 +698,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1334471791471005334}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.48, y: -1.97, z: 0}
+  m_LocalPosition: {x: -2.81, y: -1.97, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1177,7 +1182,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -1.1311262, y: 1.5872169}
-      - {x: -1.7746778, y: 1.0516636}
+      - {x: -1.3949254, y: 1.0753982}
       - {x: 1.4317722, y: -1.0795767}
       - {x: 2.2783053, y: -0.35729063}
       - {x: 1.6470432, y: 0.49342102}
@@ -1303,7 +1308,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.83478904, y: 0.8774269}
-      - {x: -1.680257, y: 0.30430347}
+      - {x: -1.3005047, y: 0.30430347}
       - {x: -0.3574708, y: -1.1548886}
       - {x: 2.212794, y: -0.50141937}
       - {x: 1.9363878, y: 0.99383867}
@@ -1365,7 +1370,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.5042846, y: 1.4737597}
-      - {x: -1.5631586, y: 0.6015785}
+      - {x: -1.4088843, y: 0.6015785}
       - {x: 0.4366598, y: -1.084459}
       - {x: 1.2144132, y: -0.7874124}
       - {x: 1.9543844, y: 0.3178596}
@@ -1558,7 +1563,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -0.8910713, y: 1.491195}
-      - {x: -1.7651782, y: 1.0139595}
+      - {x: -1.5040985, y: 1.0614285}
       - {x: 1.116272, y: -0.9561199}
       - {x: 1.9696637, y: -0.61792123}
       - {x: 1.6607605, y: 0.3699643}
@@ -1620,7 +1625,7 @@ PolygonCollider2D:
   m_Points:
     m_Paths:
     - - {x: -1.3408437, y: 0.8444724}
-      - {x: -1.938052, y: 0.14290449}
+      - {x: -1.6176361, y: 0.3209134}
       - {x: -0.6351056, y: -1.1932201}
       - {x: 1.6390558, y: -0.92621124}
       - {x: 1.9673477, y: 0.3390426}

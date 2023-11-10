@@ -1166,8 +1166,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9338bfa8f3de3a408f252625a508d3d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 500
-  maxHP: 0
+  HP: 300
+  maxHP: 300
   damage: 1
   m_collider2D: {fileID: 76989467787172247}
   spriteRenderer: {fileID: 76989467787172232}
@@ -1179,7 +1179,7 @@ MonoBehaviour:
   bloodCount: 0
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  hitClip: {fileID: 8300000, guid: 5f5fe7c7a61981f46ba619143ca8ecf9, type: 3}
+  hitClip: {fileID: 8300000, guid: fefddc6c25f38504fb997806b74dcc46, type: 3}
   runeIn: 0
   setDeveloperMode: 0
   player:
@@ -1189,8 +1189,8 @@ MonoBehaviour:
   voiceSource: {fileID: 76989467817914518}
   effectSource: {fileID: 76989467314664841}
   appearSource: {fileID: 76989468274751621}
-  appearClip: {fileID: 8300000, guid: 8c095396100ddc448aab1ca0f9c1782b, type: 3}
-  deadClip: {fileID: 8300000, guid: c88de234f3de7b14191c946b39144018, type: 3}
+  appearClip: {fileID: 8300000, guid: 44650906e435e7949ad4e520b69ece97, type: 3}
+  deadClip: {fileID: 8300000, guid: 50e67539ef83e8e488fe56d371598001, type: 3}
   appearEffectManager: {fileID: 76989467787172245}
   DeadEffect: {fileID: 4276443328466573316, guid: 5241d28b1126e7442a4e4697b696dc39, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: eca78f989eb17f74692ae5380528b894, type: 3}

@@ -29723,6 +29723,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5387441692909150007, guid: a17f1eb1f561ab64d973cec112dca8d4, type: 3}
+      propertyPath: HP
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387441692909150007, guid: a17f1eb1f561ab64d973cec112dca8d4, type: 3}
+      propertyPath: maxHP
+      value: 300
+      objectReference: {fileID: 0}
+    - target: {fileID: 5387441692909150007, guid: a17f1eb1f561ab64d973cec112dca8d4, type: 3}
       propertyPath: torch
       value: 
       objectReference: {fileID: 812969266}

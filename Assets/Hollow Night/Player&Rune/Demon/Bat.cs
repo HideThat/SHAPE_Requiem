@@ -11,6 +11,8 @@ public class Bat : Enemy
     public EffectDestroy deadEffect;
     public Rigidbody2D rigid;
     public float pushForce;
+    public AudioSource voiceSource;
+    public AudioClip deadClip;
 
 
     protected override void Start()
@@ -34,13 +36,9 @@ public class Bat : Enemy
     private void FlipScaleIfNeeded()
     {
         if (target.position.x > transform.position.x)
-        {
             transform.localScale = new Vector3(-1f, 1f, 1f);
-        }
         else
-        {
             transform.localScale = new Vector3(1f, 1f, 1f);
-        }
     }
 
     Coroutine recorverCoroutine;
@@ -94,6 +92,21 @@ public class Bat : Enemy
         effect.transform.position = transform.position;
         effect.SetDestroy(0.5f);
 
+        StartCoroutine(DeadCoroutine());
+    }
+
+    IEnumerator DeadCoroutine()
+    {
+        DisAppearBoss();
+        voiceSource.PlayOneShot(deadClip);
+
+        yield return new WaitForSeconds(1f);
         Destroy(gameObject);
+    }
+
+    void DisAppearBoss()
+    {
+        spriteRenderer.color = Color.clear;
+        m_collider2D.enabled = false;
     }
 }

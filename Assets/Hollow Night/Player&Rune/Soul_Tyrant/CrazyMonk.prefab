@@ -66,7 +66,7 @@ MonoBehaviour:
   bloodCount: 5
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  hitClip: {fileID: 8300000, guid: b1f76f3a8e0892946b15912611e81d65, type: 3}
+  hitClip: {fileID: 8300000, guid: fefddc6c25f38504fb997806b74dcc46, type: 3}
   runeIn: 0
   setDeveloperMode: 0
   player:
@@ -76,8 +76,9 @@ MonoBehaviour:
   voiceSource: {fileID: 5387441693998572577}
   effectSource: {fileID: 5387441693310383811}
   appearSource: {fileID: 5387441694594460508}
-  appearClip: {fileID: 8300000, guid: 1cc07522d2759044eb664e64eb182726, type: 3}
-  deadClip: {fileID: 8300000, guid: f9e7805a187733647adbb6bc6c0aa234, type: 3}
+  appearClip: {fileID: 8300000, guid: 44650906e435e7949ad4e520b69ece97, type: 3}
+  deadVoiceClip: {fileID: 8300000, guid: f9e7805a187733647adbb6bc6c0aa234, type: 3}
+  deadEffectClip: {fileID: 8300000, guid: 50e67539ef83e8e488fe56d371598001, type: 3}
   appearEffectManager: {fileID: 5387441692909150011}
   burstEffectPrefab: {fileID: 4108200315019683409, guid: 6ba09e6d544fa3a49962b7c42e81f924, type: 3}
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}

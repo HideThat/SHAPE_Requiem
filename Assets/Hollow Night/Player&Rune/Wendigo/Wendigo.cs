@@ -26,6 +26,11 @@ public class Wendigo : Enemy
     public int moveColliderIndex = 0;
     public int attackColliderIndex = 0;
     public AudioClip appearClip;
+    public AudioClip deadEffectClip;
+    public AudioClip deadVoiceClip;
+    public AudioClip moveClip;
+    public AudioClip rushReadyClip;
+    public AudioClip attackClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] EffectDestroy lightBlowPrefab;
@@ -33,6 +38,8 @@ public class Wendigo : Enemy
 
     protected override void Start()
     {
+        base.Start();
+
         foreach (var item in rushPoint)
             item.parent = null;
 
@@ -130,6 +137,7 @@ public class Wendigo : Enemy
 
 
         animator.Play("Wendigo_RushReady");
+        voiceSource.PlayOneShot(rushReadyClip);
         standCollider.gameObject.SetActive(false);
         moveColliders[3].gameObject.SetActive(true);
         spriteRenderer.DOColor(rushColor, _preDelay);
@@ -161,6 +169,11 @@ public class Wendigo : Enemy
 
         while (Mathf.Abs(transform.position.x - _end.x) > 0.01f) // x축에 대한 허용 오차만 확인
         {
+            if (!effectSource.isPlaying)
+            {
+                effectSource.PlayOneShot(moveClip);
+            }
+
             // 방향은 x축만 고려
             Vector3 direction = (_end - transform.position).normalized;
             float step = _speed * Time.deltaTime;
@@ -233,9 +246,9 @@ public class Wendigo : Enemy
         else
             transform.localScale = new(-1f, 1f, 1f);
 
-        
-        float attackRange = Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(attackDistance.position.x));
-        float playerDistance = Mathf.Abs(Mathf.Abs(transform.position.x) - Mathf.Abs(PlayerCoroutine.Instance.transform.position.x));
+
+        float attackRange = Vector2.Distance(transform.position, attackDistance.position);
+        float playerDistance = Vector2.Distance(transform.position, PlayerCoroutine.Instance.transform.position);
         float movePosX;
         if (attackRange < playerDistance)
         {
@@ -254,11 +267,18 @@ public class Wendigo : Enemy
 
         standCollider.gameObject.SetActive(false);
         animator.Play("Wendigo_Attack");
+        StartCoroutine(PlayAttackClip());
         yield return new WaitForSeconds(_preDelay);
         OffAttackCollider();
         standCollider.gameObject.SetActive(true);
         animator.Play("Wendigo_Stand");
         yield return new WaitForSeconds(_posDelay);
+    }
+
+    IEnumerator PlayAttackClip()
+    {
+        yield return new WaitForSeconds(0.25f);
+        voiceSource.PlayOneShot(attackClip);
     }
 
 
@@ -292,6 +312,7 @@ public class Wendigo : Enemy
 
         standCollider.gameObject.SetActive(true);
         animator.Play("Wendigo_Stand");
+        voiceSource.PlayOneShot(rushReadyClip);
         yield return new WaitForSeconds(1);
     }
 
@@ -318,13 +339,15 @@ public class Wendigo : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        Sound_Manager.Instance.PlayBGM(0);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);
         voiceSource.Stop();
+        voiceSource.PlayOneShot(deadVoiceClip);
+        effectSource.PlayOneShot(deadEffectClip);
 
         yield return new WaitForSeconds(_delay);
+        Sound_Manager.Instance.PlayBGM(0);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(3f, 3f));
         torch.TorchMove(4f);

@@ -54,4 +54,9 @@ public class EffectDestroy : MonoBehaviour
     {
         transform.DOScale(0f, _time);
     }
+
+    public void SetRolling(float _time)
+    {
+        transform.DORotate(new(0f, 0f, -360f), _time, RotateMode.FastBeyond360);
+    }
 }

@@ -21,7 +21,8 @@ public class SoulTyrant : Enemy
     [SerializeField] AudioSource effectSource;
     [SerializeField] AudioSource appearSource;
     [SerializeField] AudioClip appearClip;
-    [SerializeField] AudioClip deadClip;
+    [SerializeField] AudioClip deadVoiceClip;
+    [SerializeField] AudioClip deadEffectClip;
     [SerializeField] BossAppearEffect appearEffectManager;
 
     [SerializeField] EffectDestroy burstEffectPrefab;
@@ -373,7 +374,7 @@ public class SoulTyrant : Enemy
         }
     }
 
-
+    Hulauf lastHulauf;
     IEnumerator SphereHulaufPingPongPattern(float _preDelay, float _posDelay)
     {
         
@@ -391,7 +392,8 @@ public class SoulTyrant : Enemy
         PlaceTeleportTrail(point1, point2);
         Transform rushEnd = hulaufShootList.Find(t => t != rushStart);
         RotateBasedOnTargets(rushStart, rushEnd);
-        Hulauf hulauf = Instantiate<Hulauf>(hulaufPrefab, transform);
+        Hulauf hulauf = Instantiate(hulaufPrefab, transform);
+        lastHulauf = hulauf;
         if (rushStart == hulaufShootList[0])
             hulauf.rotationSpeed = -hulauf.rotationSpeed;
         hulauf.transform.position = transform.position;
@@ -645,7 +647,10 @@ public class SoulTyrant : Enemy
             isDead = true;
             StopAllCoroutines();
             animator.Play("Soul_Tyrant_Dead");
-            
+            if (lastHulauf != null)
+            {
+                Destroy(lastHulauf.gameObject);
+            }
             CameraManager.Instance.StopShake();
             CameraManager.Instance.CameraShake(5f, 8f, 1f);
 
@@ -656,14 +661,15 @@ public class SoulTyrant : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        Sound_Manager.Instance.PlayBGM(0);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);
         voiceSource.Stop();
-        voiceSource.PlayOneShot(deadClip);
+        voiceSource.PlayOneShot(deadVoiceClip);
+        effectSource.PlayOneShot(deadEffectClip);
 
         yield return new WaitForSeconds(_delay);
+        Sound_Manager.Instance.PlayBGM(0);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(2f, 2f));
         torch.TorchMove(4f);

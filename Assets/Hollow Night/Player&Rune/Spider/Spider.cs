@@ -23,6 +23,9 @@ public class Spider : Enemy
     public Collider2D[] attackColliders;
     public int attackColliderIndex = 0;
     public AudioClip appearClip;
+    public AudioClip deadClip;
+    public AudioClip moveClip;
+    public AudioClip attackClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] EffectDestroy lightBlowPrefab;
@@ -37,6 +40,7 @@ public class Spider : Enemy
 
     protected override void Start()
     {
+        base.Start();
         StartCoroutine(StartAppear());
     }
 
@@ -98,6 +102,11 @@ public class Spider : Enemy
 
         while (Mathf.Abs(transform.position.x - _end.x) > 0.01f) // x축에 대한 허용 오차만 확인
         {
+            if (!effectSource.isPlaying)
+            {
+                effectSource.PlayOneShot(moveClip);
+            }
+
             // 방향은 x축만 고려
             Vector3 direction = (_end - transform.position).normalized;
             float step = _speed * Time.deltaTime;
@@ -150,6 +159,7 @@ public class Spider : Enemy
 
         standCollider.gameObject.SetActive(false);
         animator.Play("A_Spider_Attack");
+        voiceSource.PlayOneShot(attackClip);
 
         if (transform.localScale.x > 0)
             movePosX -= 2f;
@@ -200,7 +210,7 @@ public class Spider : Enemy
             isDead = true;
             StopAllCoroutines();
             animator.Play("A_Spider_Dead");
-
+            effectSource.PlayOneShot(deadClip);
             CameraManager.Instance.StopShake();
             CameraManager.Instance.CameraShake(5f, 8f, 1f);
 
@@ -211,13 +221,13 @@ public class Spider : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        Sound_Manager.Instance.PlayBGM(0);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);
         voiceSource.Stop();
 
         yield return new WaitForSeconds(_delay);
+        Sound_Manager.Instance.PlayBGM(0);
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(3f, 3f));
         torch.TorchMove(4f);

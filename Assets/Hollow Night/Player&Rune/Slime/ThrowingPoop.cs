@@ -86,6 +86,15 @@ public class ThrowingPoop : Enemy
         base.Hit(_damage, _hitDir, _audioSource);
     }
 
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        Vector2 dir = (transform.position - PlayerCoroutine.Instance.transform.position).normalized;
+        dir *= hitforce;
+        rigid.velocity = new Vector2(rigid.velocity.x + dir.x, rigid.velocity.y + dir.y);
+        isAttacked = true;
+        base.Hit(_damage, _hitDir, _audioSource);
+    }
+
     public IEnumerator DeadCoroutine()
     {
         audioSource.PlayOneShot(destroyClip);

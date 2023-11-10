@@ -25,6 +25,14 @@ public class SceneChangeTorch : Enemy
             TorchHit();
     }
 
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.UpAttackHit(_damage, _hitDir, _audioSource);
+
+        if (lanternIndex < lantern.Length)
+            TorchHit();
+    }
+
     protected override void OnTriggerStay2D(Collider2D collision)
     {
         if (!isActive) base.OnTriggerStay2D(collision);

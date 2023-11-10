@@ -180,7 +180,7 @@ MonoBehaviour:
   bloodCount: 5
   hitColor: {r: 1, g: 0, b: 0, a: 1}
   currentColor: {r: 1, g: 1, b: 1, a: 1}
-  hitClip: {fileID: 8300000, guid: 26bb6495aae9f4a4ea403f6b63fd22ce, type: 3}
+  hitClip: {fileID: 8300000, guid: fefddc6c25f38504fb997806b74dcc46, type: 3}
   runeIn: 0
   torch: {fileID: 0}
   setDeveloperMode: 0
@@ -188,7 +188,14 @@ MonoBehaviour:
   appearSource: {fileID: 9060761640349778970}
   voiceSource: {fileID: 5052990907456763829}
   effectSource: {fileID: 7378527226876793462}
-  appearClip: {fileID: 8300000, guid: 1cc07522d2759044eb664e64eb182726, type: 3}
+  appearClip: {fileID: 8300000, guid: 44650906e435e7949ad4e520b69ece97, type: 3}
+  deadEffectClip: {fileID: 8300000, guid: 50e67539ef83e8e488fe56d371598001, type: 3}
+  deadVoiceClip: {fileID: 8300000, guid: 2c4da04cc42bc0f48bf7a1e2d7bdb569, type: 3}
+  moveStartClip: {fileID: 8300000, guid: 18c2c2dce7c8b404c96f83cca79d96a3, type: 3}
+  moveClip: {fileID: 8300000, guid: caea2fb878898e642aece9a1627a1e75, type: 3}
+  summonReadyClip: {fileID: 8300000, guid: 6e741782d93ef564eabf21047860fd60, type: 3}
+  summonClip: {fileID: 8300000, guid: 5526537f3d07a22438493417d8d60bf7, type: 3}
+  summonAfterClip: {fileID: 8300000, guid: 686ddb10a35ee484893a1a724a7074f0, type: 3}
   appearDelay: 2.5
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: eca78f989eb17f74692ae5380528b894, type: 3}

@@ -6,6 +6,8 @@ using DG.Tweening;
 public class SceneChangeTorch : Enemy
 {
     [Header("Torch")]
+    public bool SceneChangeMode = true;
+    public string bossName;
     public Vector2 movePoint;
     public float moveTime;
     public string changeSceneName;
@@ -84,7 +86,13 @@ public class SceneChangeTorch : Enemy
         PlayerCoroutine.Instance.PlayerDisappear(2f);
         yield return new WaitForSeconds(2f);
         Destroy(CameraManager.Instance.gameObject);
-        SceneChangeManager.Instance.SceneChange(changeSceneName);
+
+        if (SceneChangeMode)
+            SceneChangeManager.Instance.SceneChange(changeSceneName);
+        else
+        {
+
+        }
     }
 
     void SummonLightBlow(float _time, Vector2 _point, Vector2 _size)

@@ -15,6 +15,17 @@ public class BossData
     public bool isCleared;
     public float[] GetStarStandards;
 
+    public void ChangeBossData(string _ClearTime, float _clearTimeSec, bool _isCleared)
+    {
+        ClearTime = _ClearTime;
+        clearTimeSec = _clearTimeSec;
+
+        if (_isCleared)
+            isCleared = true;
+
+        GetStarFunc();
+    }
+
     public void GetStarFunc()
     {
         if (isCleared)
@@ -64,6 +75,7 @@ public class GameInGameData : Singleton<GameInGameData>
     [Header("Player Data")]
     public int playerCurrentHP;
     public int playerMaxHP;
+    public string currentStageBossName;
 
     [Header("Boss Data")]
     public Stage1_Data stage1_Data = new();
@@ -112,6 +124,31 @@ public class GameInGameData : Singleton<GameInGameData>
         else
         {
             Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+        }
+    }
+
+    public void ChangeBossData(string _ClearTime, float _clearTimeSec, bool _isCleared)
+    {
+        if (bossDataDictionary.TryGetValue(currentStageBossName, out BossData bossData))
+        {
+            bossData.ChangeBossData(_ClearTime, _clearTimeSec, _isCleared);
+        }
+        else
+        {
+            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+        }
+    }
+
+    public int GetStarCount()
+    {
+        if (bossDataDictionary.TryGetValue(currentStageBossName, out BossData bossData))
+        {
+            return bossData.GetStar;
+        }
+        else
+        {
+            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+            return 0;
         }
     }
 }

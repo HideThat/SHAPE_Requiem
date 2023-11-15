@@ -45,4 +45,16 @@ public class Timer : Singleton<Timer>
             yield return null;
         }
     }
+
+    public string OutTimeFormat()
+    {
+        int minutes = (int)elapsedTime / 60;
+        float seconds = elapsedTime % 60;
+        return string.Format("{0:D2}:{1:00.00}", minutes, seconds);
+    }
+
+    public float OutTimeFloat()
+    {
+        return elapsedTime;
+    }
 }

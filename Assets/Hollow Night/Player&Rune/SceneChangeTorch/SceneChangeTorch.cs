@@ -7,7 +7,6 @@ public class SceneChangeTorch : Enemy
 {
     [Header("Torch")]
     public bool SceneChangeMode = true;
-    public string bossName;
     public Vector2 movePoint;
     public float moveTime;
     public string changeSceneName;
@@ -91,7 +90,10 @@ public class SceneChangeTorch : Enemy
             SceneChangeManager.Instance.SceneChange(changeSceneName);
         else
         {
-
+            GameInGameData.Instance.ChangeBossData(Timer.Instance.OutTimeFormat(), Timer.Instance.OutTimeFloat(), true);
+            StageClearUI.Instance.OpenStageClearUI(Timer.Instance.OutTimeFormat(), GameInGameData.Instance.currentStageBossName);
+            // ΩÃ±€≈Ê ∞¥√º ªË¡¶
+            Destroy(Timer.Instance.gameObject);
         }
     }
 

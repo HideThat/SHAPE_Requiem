@@ -27,10 +27,7 @@ public class ClearUI : MonoBehaviour
 
     void Start()
     {
-        int minutes = (int)Timer.Instance.elapsedTime / 60;
-        float seconds = Timer.Instance.elapsedTime % 60;
-        string timeDisplay = string.Format("{0:D2}:{1:00.00}", minutes, seconds);
-        timer.text = timeDisplay;
+        timer.text = Timer.Instance.OutTimeFormat();
 
         panel.color = new Color(panel.color.r, panel.color.g, panel.color.b, 0f);
 

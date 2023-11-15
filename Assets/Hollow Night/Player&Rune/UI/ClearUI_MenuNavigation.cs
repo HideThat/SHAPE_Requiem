@@ -39,7 +39,6 @@ public class ClearUI_MenuNavigation : MonoBehaviour
         else if (Input.GetKeyDown(OptionData.Instance.currentJumpKey) || Input.GetKeyDown(KeyCode.Return) && selectedIndex != -1)
         {
             ClickButton(clearButtons[selectedIndex]);
-
         }
     }
 
@@ -72,8 +71,6 @@ public class ClearUI_MenuNavigation : MonoBehaviour
             beforeIndex = selectedIndex;
         }
         else
-        {
             ExitButton(clearButtons[beforeIndex]);
-        }
     }
 }

@@ -5,6 +5,8 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
+
+
 public class StageCard : MonoBehaviour
 {
     public string BossName;
@@ -32,6 +34,7 @@ public class StageCard : MonoBehaviour
 
     public void GoToScene()
     {
+        GameInGameData.Instance.currentStageBossName = BossName;
         SceneChangeManager.Instance.SceneChange(SceneName);
     }
 }

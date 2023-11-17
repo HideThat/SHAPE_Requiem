@@ -13,16 +13,21 @@ public class StageCard : MonoBehaviour
     public string SceneName;
     public string ClearTime;
     public int GetStar;
+    public int starNeedToOpen;
+    [SerializeField] GameObject LockPanel;
     [SerializeField] TextMeshProUGUI clearTimeText;
     [SerializeField] TextMeshProUGUI BossNameText;
+    [SerializeField] TextMeshProUGUI totalStarText;
     [SerializeField] Image[] stars;
 
     void Start()
     {
         GameInGameData.Instance.ChangeStageCard(this);
+        if (starNeedToOpen <= GameInGameData.Instance.totalStar) LockPanel.SetActive(false);
         BossNameText.text = BossName;
 
         clearTimeText.text = ClearTime;
+        totalStarText.text = $"¡Ú X {starNeedToOpen}";
 
         for (int i = 0; i < stars.Length; i++)
         {
@@ -34,7 +39,8 @@ public class StageCard : MonoBehaviour
 
     public void GoToScene()
     {
+        if (starNeedToOpen > GameInGameData.Instance.totalStar) return;
         GameInGameData.Instance.currentStageBossName = BossName;
-        SceneChangeManager.Instance.SceneChange(SceneName);
+        SceneChangeManager.Instance.SceneChangeNoDoor(SceneName);
     }
 }

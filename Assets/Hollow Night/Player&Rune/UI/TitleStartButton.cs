@@ -41,6 +41,6 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
 
     public void GoToScene(string _sceneName)
     {
-        SceneChangeManager.Instance.SceneChange(_sceneName);
+        SceneChangeManager.Instance.SceneChangeNoDoor(_sceneName);
     }
 }

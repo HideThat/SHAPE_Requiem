@@ -2,11 +2,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class BossData
 {
     public string BossName;
+    public Sprite BossImage;
     public string SceneName;
     public string ClearTime;
     public float clearTimeSec;
@@ -78,6 +78,7 @@ public class GameInGameData : Singleton<GameInGameData>
     public string currentStageBossName;
 
     [Header("Boss Data")]
+    public int totalStar;
     public Stage1_Data stage1_Data = new();
     public Stage2_Data stage2_Data = new();
     public Stage3_Data stage3_Data = new();
@@ -132,6 +133,7 @@ public class GameInGameData : Singleton<GameInGameData>
         if (bossDataDictionary.TryGetValue(currentStageBossName, out BossData bossData))
         {
             bossData.ChangeBossData(_ClearTime, _clearTimeSec, _isCleared);
+            CalculateTotalStars();
         }
         else
         {
@@ -149,6 +151,28 @@ public class GameInGameData : Singleton<GameInGameData>
         {
             Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
             return 0;
+        }
+    }
+
+    public void CalculateTotalStars()
+    {
+        totalStar = 0;
+        foreach (var bossData in bossDataDictionary.Values)
+        {
+            totalStar += bossData.GetStar;
+        }
+    }
+
+    public Sprite GetBossImage()
+    {
+        if (bossDataDictionary.TryGetValue(currentStageBossName, out BossData bossData))
+        {
+            return bossData.BossImage;
+        }
+        else
+        {
+            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+            return null;
         }
     }
 }

@@ -46,6 +46,7 @@ public class StageClearUI : Singleton<StageClearUI>
 
         clearTimeText.text = _clearTime;
         bossNameText.text = _bossName;
+        bossImage.sprite = GameInGameData.Instance.GetBossImage();
         StartCoroutine(GetStarCoroutine());
     }
 
@@ -85,7 +86,7 @@ public class StageClearUI : Singleton<StageClearUI>
     public void RestartButtonClick()
     {
         ClosStageClearUI();
-        SceneChangeManager.Instance.SceneChange(GameInGameData.Instance.currentStageBossName);
+        SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentStageBossName);
     }
 
     public void QuitButtonClick()

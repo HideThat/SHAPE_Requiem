@@ -9,6 +9,8 @@ using UnityEngine.Events;
 
 public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public AudioSource audioSource;
+    public AudioClip buttonHoverClip;
     public Button button;
     public Image image;
     public TextMeshProUGUI text;
@@ -21,11 +23,14 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public bool isActive;
 
+    public Color buttonChangeColor;
+    public Color buttonOriginColor;
     public Color imageChangeColor;
     public Color imageOriginColor;
     public Color textChangeColor;
     public Color textOriginColor;
 
+    Tween buttonTween;
     Tween imageTween;
     Tween textTween;
 
@@ -37,11 +42,14 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public virtual void OnPointerEnter()
     {
+        buttonTween?.Kill();
         imageTween?.Kill();
         textTween?.Kill();
 
+        buttonTween = button.image.DOColor(buttonChangeColor, changeTime);
         imageTween = image.DOColor(imageChangeColor, changeTime);
         textTween = text.DOColor(textChangeColor, changeTime);
+        audioSource.PlayOneShot(buttonHoverClip);
     }
 
     public virtual void OnPointerClick(PointerEventData eventData)
@@ -62,9 +70,11 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public virtual void OnPointerExit()
     {
+        buttonTween?.Kill();
         imageTween?.Kill();
         textTween?.Kill();
 
+        buttonTween = button.image.DOColor(buttonOriginColor, changeTime);
         imageTween = image.DOColor(imageOriginColor, changeTime);
         textTween = text.DOColor(textOriginColor, changeTime);
     }

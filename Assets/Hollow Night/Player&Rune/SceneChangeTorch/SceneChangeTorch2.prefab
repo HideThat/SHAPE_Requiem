@@ -119,12 +119,15 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   hitClip: {fileID: 8300000, guid: 03057ca16ff2477499a87a3eda231dfe, type: 3}
   runeIn: 0
+  SceneChangeMode: 1
   movePoint: {x: 0, y: 0}
   moveTime: 0.25
   changeSceneName: 
   burstEffect: {fileID: 5646658170159578767}
   audioSource: {fileID: 5645565713346711797}
   burstClip: {fileID: 8300000, guid: a0d0792fdd460b749b2ece392f1edfcb, type: 3}
+  lantonClip: {fileID: 8300000, guid: cf28eed3f1aed204c892eb4eee3b867b, type: 3}
+  disappearClip: {fileID: 8300000, guid: fbc78d62ade7de74285209f16b664aaa, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: eca78f989eb17f74692ae5380528b894, type: 3}
   lantern:
   - {fileID: 1819645625977605033}

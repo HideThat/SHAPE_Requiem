@@ -13,6 +13,8 @@ public class SceneChangeTorch : Enemy
     public GameObject burstEffect;
     public AudioSource audioSource;
     public AudioClip burstClip;
+    public AudioClip lantonClip;
+    public AudioClip disappearClip;
     public EffectDestroy lightBlowPrefab;
     public GameObject[] lantern;
     public int lanternIndex = 0;
@@ -43,6 +45,7 @@ public class SceneChangeTorch : Enemy
     {
         SummonLightBlow(0.5f, lantern[lanternIndex].transform.position, new Vector2(1f, 1f));
         lantern[lanternIndex++].SetActive(true);
+        audioSource.PlayOneShot(lantonClip);
     }
 
     public void TorchMove(float _waitTime)
@@ -78,6 +81,7 @@ public class SceneChangeTorch : Enemy
         {
             SummonLightBlow(0.5f, item.transform.position, new Vector2(5f, 5f));
             item.SetActive(false);
+            audioSource.PlayOneShot(disappearClip);
         }
             
 

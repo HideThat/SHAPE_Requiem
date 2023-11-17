@@ -375,7 +375,11 @@ public class Sorcerer : Enemy
         SummonLightBlow(1f, transform.position, new Vector2(3f, 3f));
         DisAppearBoss();
         SummonGhost();
+        SummonGhost();
+        SummonGhost();
         SummonSkeletons();
+        SummonSkullMisile();
+        SummonSkullMisile();
         SummonSkullMisile();
         yield return new WaitForSeconds(summonTime+0.1f);
 

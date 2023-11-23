@@ -16,6 +16,9 @@ public class Sorcerer : Enemy
     public AudioSource effectSource;
     public AudioClip appearClip;
     public AudioClip deadEffectClip;
+    public AudioClip ChargeClip;
+    public AudioClip MoveClip;
+    public AudioClip DeadClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] EffectDestroy lightBlowPrefab;
@@ -120,6 +123,7 @@ public class Sorcerer : Enemy
     IEnumerator SpellCast(float _preDelay, float _posDelay, Action _spell)
     {
         animator.Play("A_Sorcerer_SpellCast");
+        effectSource.PlayOneShot(ChargeClip);
         yield return new WaitForSeconds(_preDelay);
         animator.Play("A_Sorcerer_SpellFire");
         _spell.Invoke();
@@ -161,6 +165,7 @@ public class Sorcerer : Enemy
         Vector2 point1 = transform.position;
         PerformTeleport(GetRandomTeleportPoint());
         Vector2 point2 = transform.position;
+        effectSource.PlayOneShot(MoveClip);
         SummonTeleportEffect();
         PlaceTeleportTrail(point1, point2);
         yield return new WaitForSeconds(_posDelay);
@@ -363,7 +368,8 @@ public class Sorcerer : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-        
+
+        voiceSource.PlayOneShot(DeadClip);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
         effect.SetDestroy(15f);

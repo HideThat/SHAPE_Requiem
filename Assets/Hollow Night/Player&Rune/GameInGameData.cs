@@ -70,6 +70,18 @@ public class BigSlimeData : BossData { }
 [Serializable]
 public class SorcererData : BossData { }
 
+[Serializable]
+public class BossRelayLevelData_1 : BossData { }
+
+[Serializable]
+public class BossRelayLevelData_2 : BossData { }
+
+[Serializable]
+public class BossRelayLevelData_3 : BossData { }
+
+[Serializable]
+public class TowerBossData : BossData { }
+
 public class GameInGameData : Singleton<GameInGameData>
 {
     [Header("Player Data")]
@@ -88,6 +100,10 @@ public class GameInGameData : Singleton<GameInGameData>
     public CrazyMonkData crazyMonkData = new();
     public BigSlimeData bigSlimeData = new();
     public SorcererData sorcererData = new();
+    public BossRelayLevelData_1 bossRelayLevelData_1 = new();
+    public BossRelayLevelData_2 bossRelayLevelData_2 = new();
+    public BossRelayLevelData_3 bossRelayLevelData_3 = new();
+    public TowerBossData towerBossData = new();
 
     private Dictionary<string, BossData> bossDataDictionary;
 
@@ -106,6 +122,10 @@ public class GameInGameData : Singleton<GameInGameData>
             { stage1_Data.BossName, stage1_Data},
             { stage2_Data.BossName, stage2_Data},
             { stage3_Data.BossName, stage3_Data},
+            { bossRelayLevelData_1.BossName, bossRelayLevelData_1},
+            { bossRelayLevelData_2.BossName, bossRelayLevelData_2},
+            { bossRelayLevelData_3.BossName, bossRelayLevelData_3},
+            { towerBossData.BossName, towerBossData}
         };
     }
 

@@ -1466,6 +1466,46 @@ MonoBehaviour:
     - 150
     - 180
     - 240
+  bossRelayLevelData_1:
+    BossName: Level_1
+    BossImage: {fileID: 0}
+    SceneName: Level_1
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  bossRelayLevelData_2:
+    BossName: Level_2
+    BossImage: {fileID: 0}
+    SceneName: Level_2
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  bossRelayLevelData_3:
+    BossName: Relay_Level_3
+    BossImage: {fileID: 0}
+    SceneName: Relay_Level_3
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  towerBossData:
+    BossName: TheTower
+    BossImage: {fileID: 0}
+    SceneName: TheTower
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
 --- !u!1 &4962922719722030721
 GameObject:
   m_ObjectHideFlags: 0

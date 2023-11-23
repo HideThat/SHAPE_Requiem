@@ -7,6 +7,10 @@ public class Skull_Misile : Enemy
     [Header("Skull Mislie")]
     public float speed;
     public Transform target;
+    public AudioSource effectSource;
+    public AudioSource voiceSource;
+    public AudioClip summonClip;
+    public AudioClip moveClip;
     public EffectDestroy deadEffect;
     public float correctionFactor = 1.0f; // 보정값을 조절할 변수를 추가합니다.
 
@@ -17,6 +21,7 @@ public class Skull_Misile : Enemy
         target = PlayerCoroutine.Instance.transform;
         StartCoroutine(RotateToTarget());
         StartCoroutine(MoveToTarget());
+        voiceSource.PlayOneShot(summonClip);
     }
 
     IEnumerator RotateToTarget()
@@ -27,6 +32,9 @@ public class Skull_Misile : Enemy
             Vector3 targetPosition = target.position;
             targetPosition.z = transform.position.z; // 오브젝트와 타겟의 Z 위치를 일치시킵니다.
 
+            if (!effectSource.isPlaying)
+                effectSource.PlayOneShot(moveClip);
+            
             // 오브젝트가 타겟을 향하도록 회전합니다.
             Vector3 direction = (targetPosition - transform.position).normalized;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;

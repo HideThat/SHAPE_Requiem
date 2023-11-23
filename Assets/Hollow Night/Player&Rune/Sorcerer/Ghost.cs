@@ -8,6 +8,10 @@ public class Ghost : Enemy
     public GameObject hand;
     public float handPosY;
     public EffectDestroy deadEffect;
+    public AudioSource voiceSource;
+    public AudioSource effectSource;
+    public AudioClip summonClip;
+    public AudioClip chargeClip;
     public Transform target;
     public Animator animator;
     public float preSummonHandDelay;
@@ -17,6 +21,7 @@ public class Ghost : Enemy
     {
         base.Start();
         target = PlayerCoroutine.Instance.transform;
+        voiceSource.PlayOneShot(summonClip);
         StartCoroutine(FlipScaleIfNeeded());
         StartCoroutine(FSM());
     }

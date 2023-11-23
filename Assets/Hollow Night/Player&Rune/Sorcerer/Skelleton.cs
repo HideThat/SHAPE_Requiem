@@ -8,12 +8,17 @@ public class Skelleton : Enemy
     public Vector2 target;
     public float speed;
     public float waitTime;
+    public AudioSource voiceSource;
+    public AudioSource effectSource;
+    public AudioClip summonClip;
+    public AudioClip moveClip;
     public Animator animator;
     public AnimationClip disappearAni;
     protected override void Start()
     {
         base.Start();
         m_collider2D.enabled = false;
+        effectSource.PlayOneShot(summonClip);
         StartCoroutine(MoveToTarget());
     }
 
@@ -29,6 +34,9 @@ public class Skelleton : Enemy
 
             // target 방향으로 이동
             transform.position += targetDirection * speed * Time.deltaTime;
+
+            if (!voiceSource.isPlaying)
+                voiceSource.PlayOneShot(moveClip);
 
             // 만약 target에 충분히 가까워졌다면
             if (Vector3.Distance(transform.position, target) < 0.1f)

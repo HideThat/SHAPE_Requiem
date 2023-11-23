@@ -6,11 +6,15 @@ using TMPro;
 using UnityEngine.EventSystems;
 using DG.Tweening;
 using UnityEngine.Events;
+using Unity.VisualScripting;
 
 public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
+    public string moveSceneName;
+    public GameObject controlObj;
     public AudioSource audioSource;
     public AudioClip buttonHoverClip;
+    public AudioClip buttonClickClip;
     public Button button;
     public Image image;
     public TextMeshProUGUI text;
@@ -47,9 +51,13 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         textTween?.Kill();
 
         buttonTween = button.image.DOColor(buttonChangeColor, changeTime);
-        imageTween = image.DOColor(imageChangeColor, changeTime);
-        textTween = text.DOColor(textChangeColor, changeTime);
-        audioSource.PlayOneShot(buttonHoverClip);
+        if (image != null)
+            imageTween = image.DOColor(imageChangeColor, changeTime);
+        if (text != null)
+            textTween = text.DOColor(textChangeColor, changeTime);
+
+        if (audioSource != null)
+            audioSource.PlayOneShot(buttonHoverClip);
     }
 
     public virtual void OnPointerClick(PointerEventData eventData)
@@ -60,6 +68,7 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public virtual void OnPointerClick()
     {
+        audioSource.PlayOneShot(buttonClickClip);
         myEvent.Invoke();
     }
 
@@ -78,5 +87,42 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
         imageTween = image.DOColor(imageOriginColor, changeTime);
         textTween = text.DOColor(textOriginColor, changeTime);
     }
+
+    public void OnPointerExitNoTween()
+    {
+        buttonTween?.Kill();
+        imageTween?.Kill();
+        textTween?.Kill();
+
+        button.image.color = buttonOriginColor;
+        image.color = imageOriginColor;
+        text.color = textOriginColor;
+    }
     #endregion
+
+    public void GoToTitleNoDoor()
+    {
+        SceneChangeManager.Instance.SceneChangeNoDoor("Title");
+    }
+
+    public void GoToSceneNoDoor()
+    {
+        SceneChangeManager.Instance.SceneChangeNoDoor(moveSceneName);
+    }
+
+    public void CloseObj()
+    {
+        OnPointerExit();
+        controlObj.SetActive(false);
+    }
+
+    public void OpenObj()
+    {
+        controlObj.SetActive(true);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
 }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[Serializable]
 public class BossData
 {
     public string BossName;
@@ -43,67 +44,42 @@ public class BossData
     }
 }
 
-[Serializable]
-public class Stage1_Data : BossData { }
-
-[Serializable]
-public class Stage2_Data : BossData { }
-
-[Serializable]
-public class Stage3_Data : BossData { }
-
-[Serializable]
-public class SpiderData : BossData { }
-
-[Serializable]
-public class WendigoData : BossData { }
-
-[Serializable]
-public class DemonData : BossData { }
-
-[Serializable]
-public class CrazyMonkData : BossData { }
-
-[Serializable]
-public class BigSlimeData : BossData { }
-
-[Serializable]
-public class SorcererData : BossData { }
-
-[Serializable]
-public class BossRelayLevelData_1 : BossData { }
-
-[Serializable]
-public class BossRelayLevelData_2 : BossData { }
-
-[Serializable]
-public class BossRelayLevelData_3 : BossData { }
-
-[Serializable]
-public class TowerBossData : BossData { }
-
 public class GameInGameData : Singleton<GameInGameData>
 {
     [Header("Player Data")]
     public int playerCurrentHP;
     public int playerMaxHP;
     public string currentStageBossName;
+    public string currentSceneName;
+    public string beforeSceneName;
 
     [Header("Boss Data")]
     public int totalStar;
-    public Stage1_Data stage1_Data = new();
-    public Stage2_Data stage2_Data = new();
-    public Stage3_Data stage3_Data = new();
-    public SpiderData spiderData = new();
-    public WendigoData wendigoData = new();
-    public DemonData demonData = new();
-    public CrazyMonkData crazyMonkData = new();
-    public BigSlimeData bigSlimeData = new();
-    public SorcererData sorcererData = new();
-    public BossRelayLevelData_1 bossRelayLevelData_1 = new();
-    public BossRelayLevelData_2 bossRelayLevelData_2 = new();
-    public BossRelayLevelData_3 bossRelayLevelData_3 = new();
-    public TowerBossData towerBossData = new();
+    public BossData stage1_Data = new();
+    public BossData stage2_Data = new();
+    public BossData stage3_Data = new();
+    public BossData spiderData = new();
+    public BossData wendigoData = new();
+    public BossData demonData = new();
+    public BossData crazyMonkData = new();
+    public BossData bigSlimeData = new();
+    public BossData sorcererData = new();
+    public BossData bossRelayLevelData_1 = new();
+    public BossData bossRelayLevelData_2 = new();
+    public BossData bossRelayLevelData_3 = new();
+    public BossData towerBossData = new();
+    public BossData stage1_HardData = new();
+    public BossData stage2_HardData = new();
+    public BossData stage3_HardData = new();
+    public BossData spider_HardData = new();
+    public BossData wendigo_HardData = new();
+    public BossData demon_HardData = new();
+    public BossData crazyMonk_HardData = new();
+    public BossData bigSlime_HardData = new();
+    public BossData sorcerer_HardData = new();
+    public BossData bossRelayLevelHardData_1 = new();
+    public BossData bossRelayLevelHardData_2 = new();
+    public BossData bossRelayLevelHardData_3 = new();
 
     private Dictionary<string, BossData> bossDataDictionary;
 
@@ -125,13 +101,30 @@ public class GameInGameData : Singleton<GameInGameData>
             { bossRelayLevelData_1.BossName, bossRelayLevelData_1},
             { bossRelayLevelData_2.BossName, bossRelayLevelData_2},
             { bossRelayLevelData_3.BossName, bossRelayLevelData_3},
-            { towerBossData.BossName, towerBossData}
+            { towerBossData.BossName, towerBossData},
+            { stage1_HardData.BossName, stage1_HardData},
+            { stage2_HardData.BossName, stage2_HardData},
+            { stage3_HardData.BossName, stage3_HardData},
+            { spider_HardData.BossName, spider_HardData},
+            { wendigo_HardData.BossName, wendigo_HardData},
+            { demon_HardData.BossName, demon_HardData},
+            { crazyMonk_HardData.BossName, crazyMonk_HardData},
+            { bigSlime_HardData.BossName, bigSlime_HardData},
+            { sorcerer_HardData.BossName, sorcerer_HardData},
+            { bossRelayLevelHardData_1.BossName, bossRelayLevelHardData_1},
+            { bossRelayLevelHardData_2.BossName, bossRelayLevelHardData_2},
+            { bossRelayLevelHardData_3.BossName, bossRelayLevelHardData_3}
         };
     }
 
     public void ResetPlayerHP()
     {
         playerCurrentHP = playerMaxHP;
+    }
+
+    public void SetPlayerHP(int _hp)
+    {
+        playerCurrentHP = _hp;
     }
 
     public void ChangeStageCard(StageCard _card)

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class DeadUI : MonoBehaviour
@@ -21,11 +22,14 @@ public class DeadUI : MonoBehaviour
     public float waitTime;
     public float changeTime;
 
-    public string firstStageSceneName;
-    public string titleSceneName;
+    public string currentSceneName;
+    public string beforeSceneName;
 
     void Start()
     {
+        currentSceneName = GameInGameData.Instance.currentSceneName;
+        beforeSceneName = GameInGameData.Instance.beforeSceneName;
+
         panel.color = new Color(panel.color.r, panel.color.g, panel.color.b, 0f);
 
         foreach (var item in images)
@@ -71,7 +75,7 @@ public class DeadUI : MonoBehaviour
         PlayerCoroutine.Instance.PlayerDisappear(0f);
         Destroy(CameraManager.Instance.gameObject);
         GameInGameData.Instance.ResetPlayerHP();
-        SceneChangeManager.Instance.SceneChange(firstStageSceneName);
+        SceneChangeManager.Instance.SceneChange(currentSceneName);
     }
 
     public void GoTitle()
@@ -79,6 +83,6 @@ public class DeadUI : MonoBehaviour
         Destroy(Timer.Instance.gameObject);
         PlayerCoroutine.Instance.PlayerDisappear(0f);
         Destroy(CameraManager.Instance.gameObject);
-        SceneChangeManager.Instance.SceneChange(titleSceneName);
+        SceneChangeManager.Instance.SceneChange(beforeSceneName);
     }
 }

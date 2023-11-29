@@ -15,6 +15,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     [SerializeField] public bool canControl = true;
     [SerializeField] AudioSource playerVoiceSource;
     [SerializeField] EffectDestroy lightBlowPrefab;
+    [SerializeField] public bool setHardMode;
 
     [Header("Move")]
     public float playerSpeed;
@@ -123,6 +124,9 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     void Start()
     {
+        if (setHardMode)
+            GameInGameData.Instance.SetPlayerHP(0);
+
         HP = GameInGameData.Instance.playerCurrentHP;
         jumpKey = OptionData.Instance.currentJumpKey;
         attackKey = OptionData.Instance.currentAttackKey;

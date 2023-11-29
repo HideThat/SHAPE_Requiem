@@ -125,4 +125,9 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
     {
         Application.Quit();
     }
+
+    public void Restart()
+    {
+        SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentSceneName);
+    }
 }

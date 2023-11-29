@@ -10,6 +10,7 @@ public class SwitchToggle : MonoBehaviour
 {
 
     public Toggle toggle;
+    public TextMeshProUGUI valueText;
     public AudioSource toggleAudioSource;
     public AudioClip toggleOnClip;
     public AudioClip toggleOffClip;
@@ -64,6 +65,7 @@ public class SwitchToggle : MonoBehaviour
             handleMoveTween = handle.rectTransform.DOAnchorPos(-handlePosition, 0.5f).SetEase(Ease.InOutBack);
             handleColorTween = handle.DOColor(handle_ChangeColor, 0.5f).SetEase(Ease.InOutBack);
             toggleAudioSource.PlayOneShot(toggleOnClip);
+            valueText.text = "On";
         }
         else
         {
@@ -75,6 +77,7 @@ public class SwitchToggle : MonoBehaviour
             handleMoveTween = handle.rectTransform.DOAnchorPos(handlePosition, 0.5f).SetEase(Ease.InOutBack);
             handleColorTween = handle.DOColor(handle_OriginColor, 0.5f).SetEase(Ease.InOutBack);
             toggleAudioSource.PlayOneShot(toggleOffClip);
+            valueText.text = "Off";
         }
     }
 
@@ -90,6 +93,7 @@ public class SwitchToggle : MonoBehaviour
             handleMoveTween = handle.rectTransform.DOAnchorPos(-handlePosition, 0.1f);
             BG.color = BG_ChangeColor;
             handle.color = handle_ChangeColor;
+            valueText.text = "On";
         }
         else
         {
@@ -100,6 +104,7 @@ public class SwitchToggle : MonoBehaviour
             BG.color = BG_OriginColor;
             handleMoveTween = handle.rectTransform.DOAnchorPos(handlePosition, 0.1f);
             handle.color = handle_OriginColor;
+            valueText.text = "Off";
         }
         
     }

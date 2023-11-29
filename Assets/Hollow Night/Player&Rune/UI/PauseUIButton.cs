@@ -86,8 +86,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
 
     public virtual void OnPointerClick()
     {
-        Pause_Manager.Instance.ResetButtonClick();
-
         isClicked = !isClicked;
         buttonEffectSource.PlayOneShot(buttonClickClip);
         SubPanelAppear(isClicked);
@@ -148,7 +146,6 @@ public class PauseUIButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHa
         if (subPanel != null) subPanel.gameObject.SetActive(false);
         isClicked = false;
         SubPanelAppear(isClicked);
-        Pause_Manager.Instance.CloseUI();
     }
 
     public EventTrigger.Entry SetButtonClickEventSound()

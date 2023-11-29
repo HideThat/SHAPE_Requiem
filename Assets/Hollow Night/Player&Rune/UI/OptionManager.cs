@@ -1,3 +1,4 @@
+using DanielLochner.Assets.SimpleScrollSnap;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -7,29 +8,23 @@ using UnityEngine.UI;
 
 public class OptionManager : MonoBehaviour
 {
-    public delegate void DisActiveOptionButtons();
-    public static event DisActiveOptionButtons disactiveOptionButtonEvent;
-
-    public static void TriggerDisactiveOptionButton()
-    {
-        if (disactiveOptionButtonEvent != null)
-        {
-            disactiveOptionButtonEvent();
-        }
-    }
-
     // 하위 객체들을 관리하는 클래스 생성
 
     [Header("Video Option")]
-    public TMP_Dropdown resolutionDropdown;
+    public SimpleScrollSnap resolutionScrollSnap;
     public List<Resolution> resolutions = new();
+    public List<TextMeshProUGUI> resolutionTexts = new();
+    public TextMeshProUGUI resolutionTextPrefab;
     public int resolutionDropdownIndex;
     public SwitchToggle fullScreenToggle;
 
     [Header("Sound Option")]
     public Slider Master_Slider;
     public Slider BGM_Slider;
-    public Slider effect_Slider;
+    public Slider Effect_Slider;
+    public TextMeshProUGUI Master_Text;
+    public TextMeshProUGUI BGM_Text;
+    public TextMeshProUGUI Effect_Text;
 
     [Header("Key Setting Option")]
     public TextMeshProUGUI jumpKeyText;
@@ -39,49 +34,58 @@ public class OptionManager : MonoBehaviour
 
     private void Start()
     {
+        SetAudioSlider();
         SetFullScreenToggle();
 
-        InitResolutionDropdown();
+        InitResolutionScrollSnap();
 
         Master_Slider.value = Sound_Manager.Instance.GetMasterMixerVolume();
         BGM_Slider.value = Sound_Manager.Instance.GetBGM_MixerVolume();
-        effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
+        Effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
 
         Master_Slider.onValueChanged.AddListener((value) => SetAudioMix());
         BGM_Slider.onValueChanged.AddListener((value) => SetAudioMix());
-        effect_Slider.onValueChanged.AddListener((value) => SetAudioMix());
+        Effect_Slider.onValueChanged.AddListener((value) => SetAudioMix());
 
         SetKeyText();
     }
 
-    void InitResolutionDropdown()
+    private void Update()
     {
-        int optionValue = 0;
+        if (fullScreenToggle.isOn)
+            OptionData.Instance.screenMode = FullScreenMode.FullScreenWindow;
+        else
+            OptionData.Instance.screenMode = FullScreenMode.Windowed;
+    }
 
-        for (int i = 0; i < Screen.resolutions.Length; i++)
+    void InitResolutionScrollSnap()
+    {
+        // 사용 가능한 해상도 목록을 초기화
+        resolutions.Clear();
+        foreach (var res in Screen.resolutions)
         {
-            if (Screen.resolutions[i].width == 1920 && Screen.resolutions[i].height == 1080)
-            {
-                resolutions.Add(Screen.resolutions[i]);
-            }
+            if (res.width == 1920 && res.height == 1080)
+                resolutions.Add(res);
         }
 
-        resolutionDropdown.options.Clear();
-
-        foreach (Resolution item in resolutions)
+        // TextMeshProUGUI 객체를 생성 및 설정
+        resolutionTexts.Clear();
+        foreach (var res in resolutions)
         {
-            TMP_Dropdown.OptionData option = new()
-            {
-                text = $"{item.width} x {item.height} {item.refreshRate}hz"
-            };
-            resolutionDropdown.options.Add(option);
-
-            if (item.width == Screen.width && item.height == Screen.height)
-                resolutionDropdown.value = optionValue;
-            optionValue++;
+            var resolutionText = Instantiate(resolutionTextPrefab, resolutionScrollSnap.Content);
+            resolutionText.text = $"{res.width} x {res.height}";
+            resolutionTexts.Add(resolutionText);
         }
-        resolutionDropdown.RefreshShownValue();
-        resolutionDropdown.onValueChanged.AddListener(delegate { ResolutionDropdownIndexChange(resolutionDropdown.value); });
+
+        // 현재 해상도에 맞는 인덱스 찾기
+        var currentResolution = Screen.currentResolution;
+        resolutionDropdownIndex = resolutions.FindIndex(res => res.width == currentResolution.width && res.height == currentResolution.height);
+
+        // SimpleScrollSnap의 중앙 패널 설정
+        if (resolutionDropdownIndex != -1)
+        {
+            resolutionScrollSnap.GoToPanel(resolutionDropdownIndex);
+        }
     }
 
     public void ResolutionDropdownIndexChange(int _x)
@@ -120,7 +124,6 @@ public class OptionManager : MonoBehaviour
 
     void SetResolutionDropdown()
     {
-        resolutionDropdown.value = OptionData.Instance.currentDropdownIndex;
         resolutionDropdownIndex = OptionData.Instance.currentDropdownIndex;
     }
 
@@ -141,7 +144,11 @@ public class OptionManager : MonoBehaviour
     {
         Sound_Manager.Instance.SetMasterMixerVolume(Master_Slider.value);
         Sound_Manager.Instance.SetBGM_MixerVolume(BGM_Slider.value);
-        Sound_Manager.Instance.SetEffectMixerVolume(effect_Slider.value);
+        Sound_Manager.Instance.SetEffectMixerVolume(Effect_Slider.value);
+
+        Master_Text.text = ((int)(Master_Slider.value * 10)).ToString();
+        BGM_Text.text = ((int)(BGM_Slider.value * 10)).ToString();
+        Effect_Text.text = ((int)(Effect_Slider.value * 10)).ToString();
 
         OptionData.Instance.currentMaster_Volume = Sound_Manager.Instance.GetMasterMixerVolume();
         OptionData.Instance.currentBGM_Volume = Sound_Manager.Instance.GetBGM_MixerVolume();
@@ -152,7 +159,7 @@ public class OptionManager : MonoBehaviour
     {
         Master_Slider.value = Sound_Manager.Instance.GetMasterMixerVolume();
         BGM_Slider.value = Sound_Manager.Instance.GetBGM_MixerVolume();
-        effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
+        Effect_Slider.value = Sound_Manager.Instance.GetEffectMixerVolume();
     }
     #endregion
 

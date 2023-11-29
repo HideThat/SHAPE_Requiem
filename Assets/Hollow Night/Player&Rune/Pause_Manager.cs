@@ -9,54 +9,38 @@ using System.Transactions;
 public class Pause_Manager : Singleton<Pause_Manager>
 {
     public GameObject pausePanel;
-    public PauseUIButton[] buttons;
-    public PauseUI_MenuNavigation menuNavigation;
     
     void Update()
     {
         if (pausePanel.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
         {
-            CloseUI();
+            Time.timeScale = 1f;
+            pausePanel.SetActive(false);
         }
         else if(!pausePanel.activeInHierarchy && Input.GetKeyDown(KeyCode.Escape))
         {
+            Time.timeScale = 0f;
             pausePanel.SetActive(true);
             PlayerCoroutine.Instance.canControl = false;
-            ResetUI();
         }
     }
 
-    
+    public void MoveTitle()
+    {
+        Time.timeScale = 1f;
+        pausePanel.SetActive(false);
+        SceneChangeManager.Instance.SceneChangeNoDoor("Title");
+    }
+
+    public void Restart()
+    {
+        Time.timeScale = 1f;
+        pausePanel.SetActive(false);
+        SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentSceneName);
+    }
 
     public void Quit()
     {
         Application.Quit();
-    }
-
-    public void ResetUI()
-    {
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            buttons[i].ResetButton();
-        }
-        menuNavigation.canMove = true;
-        menuNavigation.moveMouse = false;
-        menuNavigation.selectedIndex = 0;
-        menuNavigation.ButtonChange();
-    }
-
-    public void ResetButtonClick()
-    {
-        for (int i = 0; i < buttons.Length; i++)
-        {
-            buttons[i].ResetButton();
-        }
-    }
-
-    public void CloseUI()
-    {
-        pausePanel.SetActive(false);
-        PlayerCoroutine.Instance.canControl = true;
-        menuNavigation.canMove = false;
     }
 }

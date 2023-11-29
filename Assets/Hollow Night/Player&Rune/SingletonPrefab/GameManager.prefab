@@ -724,8 +724,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4433dc3208cdbe5488706a00cdb523bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSceneName: 
+  controlObj: {fileID: 0}
   audioSource: {fileID: 0}
   buttonHoverClip: {fileID: 0}
+  buttonClickClip: {fileID: 0}
   button: {fileID: 7677984572542876910}
   image: {fileID: 6399139541972801692}
   text: {fileID: 1679463448642997383}
@@ -973,7 +976,8 @@ MonoBehaviour:
   - {fileID: 1271901406582228339}
   - {fileID: 5108787777547525515}
   - {fileID: 3533000287469938149}
-  titleSceneName: Title
+  currentSceneName: 
+  beforeSceneName: 
 --- !u!1 &3914708090015239941
 GameObject:
   m_ObjectHideFlags: 0
@@ -985,7 +989,6 @@ GameObject:
   - component: {fileID: 5291318236003921669}
   - component: {fileID: 163939273009813068}
   - component: {fileID: 5287437741335149042}
-  - component: {fileID: 1821960328}
   m_Layer: 0
   m_Name: Panel
   m_TagString: Untagged
@@ -1061,23 +1064,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &1821960328
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3914708090015239941}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5f609b7b08b3f64eab63ba7e476f0ad, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  buttons:
-  - {fileID: 6402257805873820097}
-  - {fileID: 6649583548353061532}
-  selectedIndex: -1
-  moveMouse: 0
 --- !u!1 &4001739075099375285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1339,6 +1325,8 @@ MonoBehaviour:
   playerCurrentHP: 5
   playerMaxHP: 5
   currentStageBossName: 
+  currentSceneName: 
+  beforeSceneName: 
   totalStar: 0
   stage1_Data:
     BossName: Stage1
@@ -1487,9 +1475,9 @@ MonoBehaviour:
     isCleared: 0
     GetStarStandards: []
   bossRelayLevelData_3:
-    BossName: Relay_Level_3
+    BossName: Level_3
     BossImage: {fileID: 0}
-    SceneName: Relay_Level_3
+    SceneName: Level_3
     ClearTime: 
     clearTimeSec: 0
     GetStar: 0
@@ -1499,7 +1487,163 @@ MonoBehaviour:
   towerBossData:
     BossName: TheTower
     BossImage: {fileID: 0}
-    SceneName: TheTower
+    SceneName: Tower_1
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  stage1_HardData:
+    BossName: Stage1_Hard
+    BossImage: {fileID: 21300000, guid: 60d04ca68a2be624ba45f8ceb4843dfe, type: 3}
+    SceneName: Stage1_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 12
+    - 15
+    - 20
+    - 30
+  stage2_HardData:
+    BossName: Stage2_Hard
+    BossImage: {fileID: 21300000, guid: 8402c763427714e4c9e053b11d999a27, type: 3}
+    SceneName: Stage2_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 10
+    - 12
+    - 15
+    - 20
+  stage3_HardData:
+    BossName: Stage3_Hard
+    BossImage: {fileID: 21300000, guid: a274d188a00999b49999be5dfd63d201, type: 3}
+    SceneName: Stage3_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 10
+    - 12
+    - 15
+    - 20
+  spider_HardData:
+    BossName: Spider_Hard
+    BossImage: {fileID: 21300000, guid: aae38256c7941694d8eb0684baa086cd, type: 3}
+    SceneName: Spider_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 22
+    - 25
+    - 30
+    - 40
+  wendigo_HardData:
+    BossName: Wendigo_Hard
+    BossImage: {fileID: 21300000, guid: 25494bd6ff5c43b488b7fc584e5610a6, type: 3}
+    SceneName: Wendigo_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 28
+    - 32
+    - 50
+    - 70
+  demon_HardData:
+    BossName: Demon_Hard
+    BossImage: {fileID: 21300000, guid: 36c8eb5c7490b834e9bf88fe76c7f65b, type: 3}
+    SceneName: Demon_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 25
+    - 30
+    - 40
+    - 60
+  crazyMonk_HardData:
+    BossName: CrazyMonk_Hard
+    BossImage: {fileID: 21300000, guid: 72a492c28afa21544846ebf672a56851, type: 3}
+    SceneName: CrazyMonk_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 60
+    - 90
+    - 120
+    - 180
+  bigSlime_HardData:
+    BossName: BigSlime_Hard
+    BossImage: {fileID: 21300000, guid: 51e7f79756eb4ad4bad9e31dd227798a, type: 3}
+    SceneName: Slime_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 40
+    - 60
+    - 80
+    - 120
+  sorcerer_HardData:
+    BossName: Sorcerer_Hard
+    BossImage: {fileID: 21300000, guid: 247ada8388b16bf4284d948fc905d8f5, type: 3}
+    SceneName: Sorcerer_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards:
+    - 110
+    - 150
+    - 180
+    - 240
+  bossRelayLevelHardData_1:
+    BossName: Relay Hard Level 1
+    BossImage: {fileID: 0}
+    SceneName: Level_1_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  bossRelayLevelHardData_2:
+    BossName: Relay Hard Level 2
+    BossImage: {fileID: 0}
+    SceneName: Level_2_Hard
+    ClearTime: 
+    clearTimeSec: 0
+    GetStar: 0
+    isOpened: 0
+    isCleared: 0
+    GetStarStandards: []
+  bossRelayLevelHardData_3:
+    BossName: Relay Hard Level 3
+    BossImage: {fileID: 0}
+    SceneName: Level_3_Hard
     ClearTime: 
     clearTimeSec: 0
     GetStar: 0
@@ -1654,8 +1798,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4433dc3208cdbe5488706a00cdb523bf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveSceneName: 
+  controlObj: {fileID: 0}
   audioSource: {fileID: 0}
   buttonHoverClip: {fileID: 0}
+  buttonClickClip: {fileID: 0}
   button: {fileID: 9183217425527985897}
   image: {fileID: 1355209779911845273}
   text: {fileID: 1843370308519025774}

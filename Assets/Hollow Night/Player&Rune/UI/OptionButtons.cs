@@ -18,8 +18,6 @@ public class OptionButtons : MonoBehaviour
 
     public Button myButton;
     public ButtonType buttonType;
-    public Image[] images;
-    public TextMeshProUGUI[] texts;
     public OptionButtons parentButton;
     public bool isActive;
     [Range(0f,1f)] public float changeAlpha;
@@ -32,8 +30,6 @@ public class OptionButtons : MonoBehaviour
     public Toggle switchToggle;
     public SimpleScrollSnap scrollSnap;
 
-    Color[] imageOriginColors;
-    Color[] textOriginColors;
     // 활성화 상태
     // 비활성화 상태가 있음
     // 마우스클릭시 활성화함
@@ -41,15 +37,7 @@ public class OptionButtons : MonoBehaviour
     // 활성화 시 부모객체를 제외한 나머지 객체들을 비활성화
     private void Start()
     {
-        OptionManager.disactiveOptionButtonEvent += ButtonDisActive;
         myButton.onClick.AddListener(OnPointerClick);
-        imageOriginColors = new Color[images.Length];
-        textOriginColors = new Color[texts.Length];
-
-        for (int i = 0; i < images.Length; i++)
-            imageOriginColors[i] = images[i].color;
-        for (int i = 0; i < texts.Length; i++)
-            textOriginColors[i] = texts[i].color;
     }
 
     private void LateUpdate()
@@ -103,13 +91,7 @@ public class OptionButtons : MonoBehaviour
     void OnPointerClick()
     {
         if (isActive) return;
-        AllButtonDisActive();
         SetButtonActive();
-    }
-
-    void AllButtonDisActive()
-    {
-        OptionManager.TriggerDisactiveOptionButton();
     }
 
     public void SetButtonActive()
@@ -121,10 +103,6 @@ public class OptionButtons : MonoBehaviour
         if (optionButton != null)
             optionButton.ParentButtonActive();
 
-        for (int i = 0; i < images.Length; i++)
-            images[i].color = new(imageOriginColors[i].r, imageOriginColors[i].g, imageOriginColors[i].b, changeAlpha);
-        for (int i = 0; i < texts.Length; i++)
-            texts[i].color = new(textOriginColors[i].r, textOriginColors[i].g, textOriginColors[i].b, changeAlpha);
 
         audioSource.PlayOneShot(hoverClip);
     }
@@ -132,11 +110,6 @@ public class OptionButtons : MonoBehaviour
     public void ParentButtonActive()
     {
         isActive = true;
-
-        for (int i = 0; i < images.Length; i++)
-            images[i].color = new(imageOriginColors[i].r, imageOriginColors[i].g, imageOriginColors[i].b, changeAlpha);
-        for (int i = 0; i < texts.Length; i++)
-            texts[i].color = new(textOriginColors[i].r, textOriginColors[i].g, textOriginColors[i].b, changeAlpha);
     }
 
     void ButtonDisActive()
@@ -145,9 +118,5 @@ public class OptionButtons : MonoBehaviour
 
         foreach (var item in HT_Buttons)
             item.OnPointerExitNoTween();
-        for (int i = 0; i < images.Length; i++)
-            images[i].color = imageOriginColors[i];
-        for (int i = 0; i < texts.Length; i++)
-            texts[i].color = textOriginColors[i];
     }
 }

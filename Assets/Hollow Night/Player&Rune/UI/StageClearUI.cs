@@ -17,7 +17,8 @@ public class StageClearUI : Singleton<StageClearUI>
     public Button ReStartButton;
     public Button QuitButton;
     public Image[] stars;
-    public string titleSceneName;
+    public string currentSceneName;
+    public string beforeSceneName;
 
     Color[] imageCurrentColors;
     Color[] textCurrentColors;
@@ -86,12 +87,12 @@ public class StageClearUI : Singleton<StageClearUI>
     public void RestartButtonClick()
     {
         ClosStageClearUI();
-        SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentStageBossName);
+        SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentSceneName);
     }
 
     public void QuitButtonClick()
     {
         ClosStageClearUI();
-        SceneChangeManager.Instance.SceneChange(titleSceneName);
+        SceneChangeManager.Instance.SceneChange(beforeSceneName);
     }
 }

@@ -17,7 +17,11 @@ public class Sorcerer : Enemy
     public AudioClip appearClip;
     public AudioClip deadEffectClip;
     public AudioClip ChargeClip;
-    public AudioClip MoveClip;
+    public AudioClip MoveEffectClip;
+    public AudioClip MoveVoiceClip;
+    public AudioClip SpellEffectClip;
+    public AudioClip SpellGhostClip;
+    public AudioClip SpellSkullsClip;
     public AudioClip DeadClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
@@ -125,12 +129,13 @@ public class Sorcerer : Enemy
         animator.Play("A_Sorcerer_SpellCast");
         effectSource.PlayOneShot(ChargeClip);
         yield return new WaitForSeconds(_preDelay);
+        effectSource.Stop();
+        effectSource.PlayOneShot(SpellEffectClip);
         animator.Play("A_Sorcerer_SpellFire");
         _spell.Invoke();
         yield return new WaitForSeconds(_posDelay / 2);
         animator.Play("A_Sorcerer_Stand");
         yield return new WaitForSeconds(_posDelay / 2);
-
         yield return StartCoroutine(RandomTeleport(preTeleportDelay, posTeleportDelay));
     }
 
@@ -152,7 +157,6 @@ public class Sorcerer : Enemy
     public float posTeleportDelay;
     public EffectDestroy teleportEffect;
     public EffectDestroy teleportTrailPrefab;
-    public AudioClip[] randomTeleportClip;
     public List<Transform> teleportPointList;
     public List<Transform> teleportPoint_SkyList;
     public float radius = 5f;
@@ -165,7 +169,7 @@ public class Sorcerer : Enemy
         Vector2 point1 = transform.position;
         PerformTeleport(GetRandomTeleportPoint());
         Vector2 point2 = transform.position;
-        effectSource.PlayOneShot(MoveClip);
+        voiceSource.PlayOneShot(MoveEffectClip);
         SummonTeleportEffect();
         PlaceTeleportTrail(point1, point2);
         yield return new WaitForSeconds(_posDelay);
@@ -205,7 +209,6 @@ public class Sorcerer : Enemy
     public void PerformTeleport(Transform teleportPoint)
     {
         int rand = UnityEngine.Random.Range(0, 3);
-        voiceSource.PlayOneShot(randomTeleportClip[rand]);
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
@@ -286,7 +289,9 @@ public class Sorcerer : Enemy
         EffectDestroy effect = Instantiate(summonCirclePrefab);
         effect.transform.position = point;
         effect.SetRolling(summonTime);
-        yield return new WaitForSeconds(summonTime);
+        yield return new WaitForSeconds(summonTime/2);
+        voiceSource.PlayOneShot(SpellGhostClip);
+        yield return new WaitForSeconds(summonTime/2);
         SummonLightBlow(0.2f, point, new(0.5f, 0.5f));
         effect.SetDisappear(0.5f);
         effect.SetDestroy(0.5f);
@@ -339,7 +344,9 @@ public class Sorcerer : Enemy
         effect1.SetRolling(summonTime);
         effect2.transform.position = point2;
         effect2.SetRolling(summonTime);
-        yield return new WaitForSeconds(summonTime);
+        yield return new WaitForSeconds(summonTime / 2);
+        voiceSource.PlayOneShot(SpellSkullsClip);
+        yield return new WaitForSeconds(summonTime / 2);
         effect1.SetDisappear(0.5f);
         effect1.SetDestroy(0.5f);
         effect2.SetDisappear(0.5f);

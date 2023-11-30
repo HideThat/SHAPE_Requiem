@@ -3065,11 +3065,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2680737057981070281, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 111.41
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2680737057981070281, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 38.855
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 2680737057981070281, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_AnchoredPosition.x
@@ -3077,10 +3077,30 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737057981070281, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.000022531
+      value: -33.8
       objectReference: {fileID: 0}
     - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 3ffda7c5dd3062e46845092c04792f24, type: 3}
+    - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: m_FillAmount
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: m_FillMethod
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737057981070282, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: m_FillOrigin
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983090, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
@@ -3193,7 +3213,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: imageChangeColor.a
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: imageOriginColor.a

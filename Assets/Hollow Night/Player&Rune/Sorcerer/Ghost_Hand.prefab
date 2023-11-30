@@ -31,7 +31,8 @@ Transform:
   m_LocalPosition: {x: -6.67, y: -0.7, z: 0}
   m_LocalScale: {x: 2, y: 2, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 1375919992137300079}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -117,6 +118,7 @@ MonoBehaviour:
   waitTime: 1
   animator: {fileID: 8472426789882884199}
   deadEffect: {fileID: 6904852969649960132, guid: 10e756667a03ecb46ad5a41ae2cccad5, type: 3}
+  target: {fileID: 0}
 --- !u!61 &6075894777263285789
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -163,3 +165,77 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
+--- !u!1001 &6022760868065149000
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7891077023952677621}
+    m_Modifications:
+    - target: {fileID: 4651403574391486502, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_Name
+      value: SorcererEffectSource
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486520, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: Loop
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486520, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 9fada614744602e4f9725346a1b4eb86, type: 3}
+    - target: {fileID: 4651403574391486520, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+--- !u!4 &1375919992137300079 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+  m_PrefabInstance: {fileID: 6022760868065149000}
+  m_PrefabAsset: {fileID: 0}

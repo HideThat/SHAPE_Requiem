@@ -32596,11 +32596,31 @@ PrefabInstance:
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: MoveClip
       value: 
-      objectReference: {fileID: 8300000, guid: f7236bba95aee304192b4fe24d693f1b, type: 3}
+      objectReference: {fileID: 8300000, guid: 4c97f01bee105954782367446143e201, type: 3}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: ChargeClip
       value: 
-      objectReference: {fileID: 8300000, guid: a09bcaf2d31c15148abd00707c175363, type: 3}
+      objectReference: {fileID: 8300000, guid: 094dffb5874d7364f954c7ade51120d0, type: 3}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: MoveVoiceClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 4209fb8493f91cb4480fad4a3c6cdb89, type: 3}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: MoveEffectClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 4c97f01bee105954782367446143e201, type: 3}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: SpellGhostClip
+      value: 
+      objectReference: {fileID: 8300000, guid: ed3871c0b41861d4295fcaf5d3b20183, type: 3}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: SpellEffectClip
+      value: 
+      objectReference: {fileID: 8300000, guid: d17a6672fd8409b4b8442f92cf450265, type: 3}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: SpellSkullsClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 6012c3399c3202a48a0af09d2b013488, type: 3}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: teleportPointList.Array.data[0]
       value: 

@@ -29,7 +29,8 @@ Transform:
   m_LocalPosition: {x: 14.89, y: -25.39, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 8484776219462731200}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -103,3 +104,73 @@ MonoBehaviour:
   smallerTime: 0
   effectAudioSource: {fileID: 0}
   effectClip: {fileID: 0}
+--- !u!1001 &3833374638475591143
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 7410333081184765768}
+    m_Modifications:
+    - target: {fileID: 4651403574391486502, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_Name
+      value: SorcererEffectSource
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4651403574391486520, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: 85f79c20e7d6c4f4ba1d343a435ad9d6, type: 3}
+    - target: {fileID: 4651403574391486520, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+--- !u!4 &8484776219462731200 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4651403574391486503, guid: 4bf6d48fd7e9c494085b3cf189e2c68a, type: 3}
+  m_PrefabInstance: {fileID: 3833374638475591143}
+  m_PrefabAsset: {fileID: 0}

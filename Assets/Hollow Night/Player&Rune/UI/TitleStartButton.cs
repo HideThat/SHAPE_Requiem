@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 
 public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public string firstSceneName;
+    public SceneName firstSceneName;
 
     protected override void Start()
     {
@@ -40,7 +40,7 @@ public class TitleStartButton : TitleButton, IPointerEnterHandler, IPointerExitH
         TextChangeColorTween(false);
     }
 
-    public void GoToScene(string _sceneName)
+    public void GoToScene(SceneName _sceneName)
     {
         SceneChangeManager.Instance.SceneChangeNoDoor(_sceneName);
     }

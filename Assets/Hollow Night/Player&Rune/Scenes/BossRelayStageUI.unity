@@ -358,11 +358,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983091, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 0.000022888002
+      value: 580
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983091, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -485
+      value: -420
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983091, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -378,7 +378,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: moveSceneName
-      value: ModeChoice
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058441335507, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: m_text
@@ -1040,6 +1040,10 @@ PrefabInstance:
       value: Level_3
       objectReference: {fileID: 0}
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
+      propertyPath: bossName
+      value: 12
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: SceneName
       value: 
       objectReference: {fileID: 0}
@@ -1626,6 +1630,10 @@ PrefabInstance:
       value: TheTower
       objectReference: {fileID: 0}
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
+      propertyPath: bossName
+      value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: SceneName
       value: 
       objectReference: {fileID: 0}
@@ -2161,6 +2169,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1678368082}
   m_CullTransparentMesh: 0
+--- !u!1001 &1686358949
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2393348883183908489, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_Name
+      value: OptionApplyObj
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_RootOrder
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 655.6525
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 473.6398
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -35.22432
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8854188740307900920, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5b000910dca54a043a1dcddbadbdc84c, type: 3}
 --- !u!1001 &1730422465
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2191,6 +2256,10 @@ PrefabInstance:
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: BossName
       value: Level_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
+      propertyPath: bossName
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: SceneName
@@ -2488,6 +2557,10 @@ PrefabInstance:
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: BossName
       value: Level_2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
+      propertyPath: bossName
+      value: 11
       objectReference: {fileID: 0}
     - target: {fileID: 2560098149746255750, guid: 130496ed0869c5d4da8e67c3dd3925df, type: 3}
       propertyPath: SceneName
@@ -2902,122 +2975,6 @@ PrefabInstance:
     - target: {fileID: 4433773409113298701, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.SceneName
-      value: Tower_1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.BossName
-      value: Level_3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.SceneName
-      value: Level_3
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_1.BossName
-      value: Level_1_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_2.BossName
-      value: Level_2_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_3.BossName
-      value: Level_3_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_1.SceneName
-      value: Level_1_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_2.SceneName
-      value: Level_2_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelHardData_3.SceneName
-      value: Level_3_Hard
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.GetStarStandards.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.GetStarStandards.Array.data[0]
-      value: 230
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.GetStarStandards.Array.data[1]
-      value: 250
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.GetStarStandards.Array.data[2]
-      value: 280
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: towerBossData.GetStarStandards.Array.data[3]
-      value: 320
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_1.GetStarStandards.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.GetStarStandards.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_1.GetStarStandards.Array.data[0]
-      value: 35
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_1.GetStarStandards.Array.data[1]
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_1.GetStarStandards.Array.data[2]
-      value: 60
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_1.GetStarStandards.Array.data[3]
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[0]
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[1]
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[2]
-      value: 150
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[3]
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.GetStarStandards.Array.data[0]
-      value: 160
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.GetStarStandards.Array.data[1]
-      value: 180
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.GetStarStandards.Array.data[2]
-      value: 220
-      objectReference: {fileID: 0}
-    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
-      propertyPath: bossRelayLevelData_3.GetStarStandards.Array.data[3]
-      value: 240
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}

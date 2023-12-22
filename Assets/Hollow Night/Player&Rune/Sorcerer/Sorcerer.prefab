@@ -126,9 +126,13 @@ MonoBehaviour:
   effectSource: {fileID: 5590851838521524772}
   appearClip: {fileID: 8300000, guid: 44650906e435e7949ad4e520b69ece97, type: 3}
   deadEffectClip: {fileID: 8300000, guid: 50e67539ef83e8e488fe56d371598001, type: 3}
-  ChargeClip: {fileID: 0}
-  MoveClip: {fileID: 0}
-  DeadClip: {fileID: 0}
+  ChargeClip: {fileID: 8300000, guid: 094dffb5874d7364f954c7ade51120d0, type: 3}
+  MoveEffectClip: {fileID: 8300000, guid: 4c97f01bee105954782367446143e201, type: 3}
+  MoveVoiceClip: {fileID: 8300000, guid: 4209fb8493f91cb4480fad4a3c6cdb89, type: 3}
+  SpellEffectClip: {fileID: 8300000, guid: d17a6672fd8409b4b8442f92cf450265, type: 3}
+  SpellGhostClip: {fileID: 8300000, guid: ed3871c0b41861d4295fcaf5d3b20183, type: 3}
+  SpellSkullsClip: {fileID: 8300000, guid: 6012c3399c3202a48a0af09d2b013488, type: 3}
+  DeadClip: {fileID: 8300000, guid: 72b00ef053928c64c8cf6528826ff9ce, type: 3}
   appearDelay: 2.5
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: d8e9774cf3f8a8f4b9fc230d276c3df8, type: 3}

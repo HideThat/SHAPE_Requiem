@@ -7,6 +7,8 @@ public class Skull_Misile : Enemy
     [Header("Skull Mislie")]
     public float speed;
     public Transform target;
+    public Rigidbody2D rigid;
+    public float pushForce;
     public AudioSource effectSource;
     public AudioSource voiceSource;
     public AudioClip summonClip;
@@ -55,6 +57,20 @@ public class Skull_Misile : Enemy
 
             yield return null;
         }
+    }
+
+    public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.Hit(_damage, _hitDir, _audioSource);
+
+        rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
+    }
+
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        base.UpAttackHit(_damage, _hitDir, _audioSource);
+
+        rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
     }
 
     public override void Dead()

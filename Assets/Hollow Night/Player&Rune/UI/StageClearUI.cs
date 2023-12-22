@@ -17,11 +17,14 @@ public class StageClearUI : Singleton<StageClearUI>
     public Button ReStartButton;
     public Button QuitButton;
     public Image[] stars;
-    public string currentSceneName;
-    public string beforeSceneName;
+    public Image cannotImage;
+    public TextMeshProUGUI cannotText;
 
     Color[] imageCurrentColors;
     Color[] textCurrentColors;
+
+    public Color cannotImageChangeColor;
+    public Color cannotTextChangeColor;
 
     protected override void Awake()
     {
@@ -36,17 +39,17 @@ public class StageClearUI : Singleton<StageClearUI>
             textCurrentColors[i] = texts[i].color;
     }
 
-    public void OpenStageClearUI(string _clearTime, string _bossName)
+    public void OpenStageClearUI(string _clearTime, BossName _bossName)
     {
         panel.SetActive(true);
-
+        GameInGameData.Instance.SaveData();
         for (int i = 0; i < images.Length; i++)
             images[i].DOColor(imageCurrentColors[i], 0.5f);
         for (int i = 0; i < texts.Length; i++)
             texts[i].DOColor(textCurrentColors[i], 0.5f);
 
         clearTimeText.text = _clearTime;
-        bossNameText.text = _bossName;
+        bossNameText.text = _bossName.ToString();
         bossImage.sprite = GameInGameData.Instance.GetBossImage();
         StartCoroutine(GetStarCoroutine());
     }
@@ -86,13 +89,51 @@ public class StageClearUI : Singleton<StageClearUI>
 
     public void RestartButtonClick()
     {
+        GameInGameData.Instance.ResetPlayerHP();
         ClosStageClearUI();
+        
         SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentSceneName);
+    }
+
+    Coroutine cannotPanelCoroutine;
+    public void NextButtonClick()
+    {
+        GameInGameData.Instance.ResetPlayerHP();
+        ClosStageClearUI();
+
+        if (GameInGameData.Instance.totalStar < GameInGameData.Instance.GetBossData(GameInGameData.Instance.GetNextBossName()).starNeedToOpen || GameInGameData.Instance.GetNextBossName() == BossName.None)
+        {
+            if (cannotPanelCoroutine != null)
+                StopCoroutine(cannotPanelCoroutine);
+
+            cannotPanelCoroutine = StartCoroutine(CannotPanelOpenCoroutine());
+        }
+        else
+        {
+            GameInGameData.Instance.currentStageBossName = GameInGameData.Instance.GetNextBossName();
+            GameInGameData.Instance.currentSceneName = GameInGameData.Instance.GetBossData(GameInGameData.Instance.currentStageBossName).SceneName;
+            SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.currentSceneName);
+        }
     }
 
     public void QuitButtonClick()
     {
         ClosStageClearUI();
-        SceneChangeManager.Instance.SceneChange(beforeSceneName);
+        SceneChangeManager.Instance.SceneChange(GameInGameData.Instance.beforeSceneName);
+    }
+
+    Tween cannotImageColorTween;
+    Tween cannotTextColorTween;
+    IEnumerator CannotPanelOpenCoroutine()
+    {
+        cannotImage.color = cannotImageChangeColor;
+        cannotText.color = cannotTextChangeColor;
+
+        cannotImageColorTween?.Kill();
+        cannotTextColorTween?.Kill();
+        cannotImageColorTween = cannotImage.DOColor(Color.clear, 0.5f);
+        cannotTextColorTween = cannotText.DOColor(Color.clear, 0.5f);
+
+        yield return new WaitForSeconds(0.5f);
     }
 }

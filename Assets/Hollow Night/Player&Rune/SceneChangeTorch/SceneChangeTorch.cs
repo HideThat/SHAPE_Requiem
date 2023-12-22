@@ -9,7 +9,7 @@ public class SceneChangeTorch : Enemy
     public bool SceneChangeMode = true;
     public Vector2 movePoint;
     public float moveTime;
-    public string changeSceneName;
+    public SceneName changeSceneName;
     public GameObject burstEffect;
     public AudioSource audioSource;
     public AudioClip burstClip;

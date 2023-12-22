@@ -2,16 +2,71 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum BossName
+{
+    None,
+    Stage1,
+    Stage2,
+    Stage3,
+    Spider,
+    Wendigo,
+    Demon,
+    CrazyMonk,
+    BigSlime,
+    Sorcerer,
+    Level_1,
+    Level_2,
+    Level_3,
+    TheTower
+}
+public enum SceneName
+{
+    None,
+    Title,
+    OptionScene,
+    ModeChoice,
+    SingleStageUI,
+    BossRelayStageUI,
+
+    Stage1,
+    Stage2,
+    Stage3,
+    Spider,
+    Wendigo,
+    Demon,
+    CrazyMonk,
+    Slime,
+    Sorcerer,
+    Level_1,
+    Level_1_1,
+    Level_1_2,
+    Level_2,
+    Level_2_1,
+    Level_2_2,
+    Level_3,
+    Level_3_1,
+    Level_3_2,
+    Tower_1,
+    Tower_2,
+    Tower_3,
+    Tower_4,
+    Tower_5,
+    Tower_6
+}
 
 [Serializable]
 public class BossData
 {
-    public string BossName;
+    public BossName BossName; // 이넘으로 교체
     public Sprite BossImage;
-    public string SceneName;
+    public SceneName SceneName; // 이넘으로 교체
+    public BossName NextBossName; // 이넘으로 교체
     public string ClearTime;
     public float clearTimeSec;
     public int GetStar;
+    public int starNeedToOpen;
     public bool isOpened;
     public bool isCleared;
     public float[] GetStarStandards;
@@ -49,11 +104,14 @@ public class GameInGameData : Singleton<GameInGameData>
     [Header("Player Data")]
     public int playerCurrentHP;
     public int playerMaxHP;
-    public string currentStageBossName;
-    public string currentSceneName;
-    public string beforeSceneName;
+
+    [Header("Scene Data")]
+    public BossName currentStageBossName;
+    public SceneName currentSceneName;
+    public SceneName beforeSceneName;
 
     [Header("Boss Data")]
+    [Header("Single Stage")]
     public int totalStar;
     public BossData stage1_Data = new();
     public BossData stage2_Data = new();
@@ -64,30 +122,24 @@ public class GameInGameData : Singleton<GameInGameData>
     public BossData crazyMonkData = new();
     public BossData bigSlimeData = new();
     public BossData sorcererData = new();
+    [Header("Boss Relay Stage")]
     public BossData bossRelayLevelData_1 = new();
     public BossData bossRelayLevelData_2 = new();
     public BossData bossRelayLevelData_3 = new();
     public BossData towerBossData = new();
-    public BossData stage1_HardData = new();
-    public BossData stage2_HardData = new();
-    public BossData stage3_HardData = new();
-    public BossData spider_HardData = new();
-    public BossData wendigo_HardData = new();
-    public BossData demon_HardData = new();
-    public BossData crazyMonk_HardData = new();
-    public BossData bigSlime_HardData = new();
-    public BossData sorcerer_HardData = new();
-    public BossData bossRelayLevelHardData_1 = new();
-    public BossData bossRelayLevelHardData_2 = new();
-    public BossData bossRelayLevelHardData_3 = new();
 
-    private Dictionary<string, BossData> bossDataDictionary;
+    private Dictionary<BossName, BossData> bossDataDictionary;
+
+    public Dictionary<BossName, BossData> BossDataDictionary
+    {
+        get { return bossDataDictionary; }
+    }
 
     protected override void Awake()
     {
         base.Awake();
 
-        bossDataDictionary = new Dictionary<string, BossData>
+        bossDataDictionary = new Dictionary<BossName, BossData>
         {
             { spiderData.BossName, spiderData },
             { wendigoData.BossName, wendigoData },
@@ -101,20 +153,10 @@ public class GameInGameData : Singleton<GameInGameData>
             { bossRelayLevelData_1.BossName, bossRelayLevelData_1},
             { bossRelayLevelData_2.BossName, bossRelayLevelData_2},
             { bossRelayLevelData_3.BossName, bossRelayLevelData_3},
-            { towerBossData.BossName, towerBossData},
-            { stage1_HardData.BossName, stage1_HardData},
-            { stage2_HardData.BossName, stage2_HardData},
-            { stage3_HardData.BossName, stage3_HardData},
-            { spider_HardData.BossName, spider_HardData},
-            { wendigo_HardData.BossName, wendigo_HardData},
-            { demon_HardData.BossName, demon_HardData},
-            { crazyMonk_HardData.BossName, crazyMonk_HardData},
-            { bigSlime_HardData.BossName, bigSlime_HardData},
-            { sorcerer_HardData.BossName, sorcerer_HardData},
-            { bossRelayLevelHardData_1.BossName, bossRelayLevelHardData_1},
-            { bossRelayLevelHardData_2.BossName, bossRelayLevelHardData_2},
-            { bossRelayLevelHardData_3.BossName, bossRelayLevelHardData_3}
+            { towerBossData.BossName, towerBossData}
         };
+
+        LoadData();
     }
 
     public void ResetPlayerHP()
@@ -125,20 +167,6 @@ public class GameInGameData : Singleton<GameInGameData>
     public void SetPlayerHP(int _hp)
     {
         playerCurrentHP = _hp;
-    }
-
-    public void ChangeStageCard(StageCard _card)
-    {
-        if (bossDataDictionary.TryGetValue(_card.BossName, out BossData bossData))
-        {
-            _card.SceneName = bossData.SceneName;
-            _card.ClearTime = bossData.ClearTime;
-            _card.GetStar = bossData.GetStar;
-        }
-        else
-        {
-            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
-        }
     }
 
     public void ChangeBossData(string _ClearTime, float _clearTimeSec, bool _isCleared)
@@ -186,6 +214,56 @@ public class GameInGameData : Singleton<GameInGameData>
         {
             Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
             return null;
+        }
+    }
+
+    public BossName GetNextBossName()
+    {
+        if (bossDataDictionary.TryGetValue(currentStageBossName, out BossData bossData))
+        {
+            return bossData.NextBossName;
+        }
+        else
+        {
+            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+            return BossName.None;
+        }
+    }
+
+    public BossData GetBossData(BossName _bossName)
+    {
+        if (bossDataDictionary.TryGetValue(_bossName, out BossData bossData))
+        {
+            return bossData;
+        }
+        else
+        {
+            Debug.Log("카드의 이름과 보스의 이름이 일치하지 않습니다.");
+            return null;
+        }
+    }
+
+    public void SaveData()
+    {
+        foreach (KeyValuePair<BossName, BossData> entry in bossDataDictionary)
+        {
+            BossData bossData = entry.Value;
+            PlayerPrefs.SetString(entry.Key + "_ClearTime", bossData.ClearTime);
+            PlayerPrefs.SetFloat(entry.Key + "_clearTimeSec", bossData.clearTimeSec);
+            PlayerPrefs.SetInt(entry.Key + "_GetStar", bossData.GetStar);
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    public void LoadData()
+    {
+        foreach (KeyValuePair<BossName, BossData> entry in bossDataDictionary)
+        {
+            BossData bossData = entry.Value;
+            bossData.ClearTime = PlayerPrefs.GetString(entry.Key + "_ClearTime", bossData.ClearTime);
+            bossData.clearTimeSec = PlayerPrefs.GetFloat(entry.Key + "_clearTimeSec", bossData.clearTimeSec);
+            bossData.GetStar = PlayerPrefs.GetInt(entry.Key + "_GetStar", bossData.GetStar);
         }
     }
 }

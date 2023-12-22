@@ -116,6 +116,7 @@ MonoBehaviour:
   currentColor: {r: 0, g: 1, b: 0, a: 1}
   hitClip: {fileID: 8300000, guid: 5f5fe7c7a61981f46ba619143ca8ecf9, type: 3}
   runeIn: 0
+  sorcerer: {fileID: 0}
   hand: {fileID: 7891077023952677619, guid: d036d1e6ff011c44b8a13873f93ee8e5, type: 3}
   handPosY: 0.15
   deadEffect: {fileID: 6904852969649960132, guid: 10e756667a03ecb46ad5a41ae2cccad5, type: 3}
@@ -127,6 +128,9 @@ MonoBehaviour:
   animator: {fileID: 5542185793376115565}
   preSummonHandDelay: 2
   posSummonHandDelay: 2
+  speed: 5
+  someThreshold: 1
+  rotationSpeed: 200
 --- !u!95 &5542185793376115565
 Animator:
   serializedVersion: 5

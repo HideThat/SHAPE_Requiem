@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 733103675528645890}
   - component: {fileID: 733103675528645889}
   - component: {fileID: 733103675528645888}
+  - component: {fileID: -366653397405704704}
   m_Layer: 10
   m_Name: Skull_Mislie
   m_TagString: Enemy
@@ -101,8 +102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 74b4e709c3238084a967eced2411c2da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HP: 100
-  maxHP: 100
+  HP: 50
+  maxHP: 50
   damage: 1
   m_collider2D: {fileID: 733103675528645888}
   spriteRenderer: {fileID: 733103675528645916}
@@ -116,8 +117,10 @@ MonoBehaviour:
   currentColor: {r: 1, g: 1, b: 1, a: 1}
   hitClip: {fileID: 8300000, guid: b1f76f3a8e0892946b15912611e81d65, type: 3}
   runeIn: 0
-  speed: 1
+  speed: 2
   target: {fileID: 0}
+  rigid: {fileID: -366653397405704704}
+  pushForce: 10
   effectSource: {fileID: 4675129298002174904}
   voiceSource: {fileID: 621532446971014309}
   summonClip: {fileID: 8300000, guid: b67e0cc7cd4731c42b1e5196fa1d10e4, type: 3}
@@ -160,6 +163,27 @@ CircleCollider2D:
   m_Offset: {x: 0.21, y: 0}
   serializedVersion: 2
   m_Radius: 0.55
+--- !u!50 &-366653397405704704
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 733103675528645917}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 7
+  m_AngularDrag: 0
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 0
 --- !u!1001 &30539740782975872
 PrefabInstance:
   m_ObjectHideFlags: 0

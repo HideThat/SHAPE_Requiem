@@ -340,15 +340,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ac3587223ef53e44b44ed55393d8fb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  BossName: Stage1
-  SceneName: 
-  ClearTime: 
-  GetStar: 0
-  starNeedToOpen: 0
-  beforeSceneName: 
-  LockPanel: {fileID: 1667438120}
+  bossName: 0
+  lockPanel: {fileID: 1667438120}
   clearTimeText: {fileID: 2560098151365891533}
-  BossNameText: {fileID: 2560098150590544070}
+  bossNameText: {fileID: 2560098150590544070}
   totalStarText: {fileID: 2930811412684637415}
   stars:
   - {fileID: 2560098151624302634}

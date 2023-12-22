@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 public class GoToTitleButton : PauseUIButton
 {
-    public string titleSceneName;
+    public SceneName titleSceneName;
     public Image[] subPanelButtonImages;
     public TextMeshProUGUI[] subPanelButtonTexts;
 

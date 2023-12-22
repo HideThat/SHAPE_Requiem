@@ -29,7 +29,7 @@ public class Pause_Manager : Singleton<Pause_Manager>
     {
         Time.timeScale = 1f;
         pausePanel.SetActive(false);
-        SceneChangeManager.Instance.SceneChangeNoDoor("Title");
+        SceneChangeManager.Instance.SceneChangeNoDoor(SceneName.Title);
     }
 
     public void Restart()

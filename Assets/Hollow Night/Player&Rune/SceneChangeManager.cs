@@ -13,17 +13,25 @@ public class SceneChangeManager : Singleton<SceneChangeManager>
 
     Coroutine sceneChangeCoroutine;
 
-    public void SceneChange(string _sceneName)
+    public void SceneChange(SceneName _sceneName)
     {
         if (sceneChangeCoroutine != null) StopCoroutine(sceneChangeCoroutine);
         Sound_Manager.Instance.PlayBGM(0);
+
+        Destroy(PlayerCoroutine.Instance.gameObject);
+        Destroy(Timer.Instance.gameObject);
+        Destroy(CameraManager.Instance.gameObject);
         sceneChangeCoroutine = StartCoroutine(SceneChangeCoroutine(_sceneName));
     }
 
-    public void SceneChangeNoDoor(string _sceneName)
+    public void SceneChangeNoDoor(SceneName _sceneName)
     {
         if (sceneChangeCoroutine != null) StopCoroutine(sceneChangeCoroutine);
         Sound_Manager.Instance.PlayBGM(0);
+
+        Destroy(PlayerCoroutine.Instance.gameObject);
+        Destroy(Timer.Instance.gameObject);
+        Destroy(CameraManager.Instance.gameObject);
         sceneChangeCoroutine = StartCoroutine(SceneChangeCoroutineNoDoor(_sceneName));
     }
 
@@ -31,15 +39,19 @@ public class SceneChangeManager : Singleton<SceneChangeManager>
     {
         if (sceneChangeCoroutine != null) StopCoroutine(sceneChangeCoroutine);
         Sound_Manager.Instance.PlayBGM(0);
+
+        Destroy(PlayerCoroutine.Instance.gameObject);
+        Destroy(Timer.Instance.gameObject);
+        Destroy(CameraManager.Instance.gameObject);
         sceneChangeCoroutine = StartCoroutine(SceneChangeCoroutine(_scene));
     }
 
-    IEnumerator SceneChangeCoroutine(string _sceneName)
+    IEnumerator SceneChangeCoroutine(SceneName _sceneName)
     {
         // 뭔가 연출들
         yield return StartCoroutine(SceneChangeDoor.Instance.FadeIn());
         // 비동기 씬 로딩
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName.ToString());
         yield return StartCoroutine(SceneChangeDoor.Instance.DoorClose());
 
         yield return new WaitForSeconds(waitTime);
@@ -53,12 +65,12 @@ public class SceneChangeManager : Singleton<SceneChangeManager>
         yield return StartCoroutine(SceneChangeDoor.Instance.DoorOpen());
     }
 
-    IEnumerator SceneChangeCoroutineNoDoor(string _sceneName)
+    IEnumerator SceneChangeCoroutineNoDoor(SceneName _sceneName)
     {
         // 뭔가 연출들
         yield return StartCoroutine(SceneChangeDoor.Instance.FadeIn());
         // 비동기 씬 로딩
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName);
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(_sceneName.ToString());
 
         while (!asyncLoad.isDone)
         {

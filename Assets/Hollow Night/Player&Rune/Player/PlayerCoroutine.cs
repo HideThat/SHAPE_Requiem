@@ -207,6 +207,12 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         effect.SetDestroy(_time);
     }
 
+    public void ResetPlayer()
+    {
+        HP = GameInGameData.Instance.playerCurrentHP;
+
+    }
+
     #region Move_System
     void Move()
     {

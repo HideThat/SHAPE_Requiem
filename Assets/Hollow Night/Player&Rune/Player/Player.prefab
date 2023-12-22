@@ -381,7 +381,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 9043111985007376530}
         m_TargetAssemblyTypeName: DeadUI, Assembly-CSharp
-        m_MethodName: GoTitle
+        m_MethodName: GoBeforeScene
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -6468,8 +6468,6 @@ MonoBehaviour:
   panelChangeColor: {r: 0, g: 0, b: 0, a: 0.78431374}
   waitTime: 2
   changeTime: 2
-  currentSceneName: 
-  beforeSceneName: Title
 --- !u!1 &6212999340680198954
 GameObject:
   m_ObjectHideFlags: 0
@@ -7334,15 +7332,39 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: moveSceneName
-      value: Title
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: textChangeColor.a
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: imageChangeColor.a
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: myEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7535,11 +7557,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: textChangeColor.a
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: imageChangeColor.a
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: myEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -7993,11 +8039,35 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: textChangeColor.a
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: textChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: imageChangeColor.a
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.b
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
+      propertyPath: buttonChangeColor.r
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2680737058298983095, guid: dad70c67c2f0cf94a858b5513b9026e4, type: 3}
       propertyPath: myEvent.m_PersistentCalls.m_Calls.Array.data[0].m_Target

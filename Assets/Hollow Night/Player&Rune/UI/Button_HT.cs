@@ -10,7 +10,7 @@ using Unity.VisualScripting;
 
 public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-    public string moveSceneName;
+    public SceneName moveSceneName;
     public GameObject controlObj;
     public AudioSource audioSource;
     public AudioClip buttonHoverClip;
@@ -102,7 +102,7 @@ public class Button_HT : MonoBehaviour, IPointerEnterHandler, IPointerExitHandle
 
     public void GoToTitleNoDoor()
     {
-        SceneChangeManager.Instance.SceneChangeNoDoor("Title");
+        SceneChangeManager.Instance.SceneChangeNoDoor(SceneName.Title);
     }
 
     public void GoToSceneNoDoor()

@@ -115,10 +115,14 @@ MonoBehaviour:
   currentColor: {r: 0, g: 1, b: 0, a: 1}
   hitClip: {fileID: 8300000, guid: b1f76f3a8e0892946b15912611e81d65, type: 3}
   runeIn: 0
+  sorcerer: {fileID: 0}
   waitTime: 1
   animator: {fileID: 8472426789882884199}
   deadEffect: {fileID: 6904852969649960132, guid: 10e756667a03ecb46ad5a41ae2cccad5, type: 3}
   target: {fileID: 0}
+  speed: 5
+  someThreshold: 1
+  rotationSpeed: 200
 --- !u!61 &6075894777263285789
 BoxCollider2D:
   m_ObjectHideFlags: 0

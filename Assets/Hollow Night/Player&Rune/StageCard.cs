@@ -5,34 +5,32 @@ using UnityEngine.UI;
 using TMPro;
 using System;
 
-
-
 public class StageCard : MonoBehaviour
 {
-    public string BossName;
-    public string SceneName;
-    public string ClearTime;
-    public int GetStar;
-    public int starNeedToOpen;
-    public string beforeSceneName;
-    [SerializeField] GameObject LockPanel;
+    public BossName bossName;
+    BossData bossData;
+    SceneName sceneName;
+    string clearTime;
+    int getStar;
+    int starNeedToOpen;
+    SceneName beforeSceneName;
+    [SerializeField] GameObject lockPanel;
     [SerializeField] TextMeshProUGUI clearTimeText;
-    [SerializeField] TextMeshProUGUI BossNameText;
+    [SerializeField] TextMeshProUGUI bossNameText;
     [SerializeField] TextMeshProUGUI totalStarText;
     [SerializeField] Image[] stars;
 
     void Start()
     {
-        GameInGameData.Instance.ChangeStageCard(this);
-        if (starNeedToOpen <= GameInGameData.Instance.totalStar) LockPanel.SetActive(false);
-        BossNameText.text = BossName;
+        InitStageCard();
+        bossNameText.text = bossName.ToString();
 
-        clearTimeText.text = ClearTime;
+        clearTimeText.text = clearTime;
         totalStarText.text = $"¡Ú X {starNeedToOpen}";
 
         for (int i = 0; i < stars.Length; i++)
         {
-            if (i == GetStar) break;
+            if (i == getStar) break;
 
             stars[i].gameObject.SetActive(true);
         }
@@ -42,10 +40,21 @@ public class StageCard : MonoBehaviour
     {
         if (starNeedToOpen > GameInGameData.Instance.totalStar) return;
         GameInGameData.Instance.ResetPlayerHP();
-        GameInGameData.Instance.currentSceneName = SceneName;
+        GameInGameData.Instance.currentSceneName = sceneName;
         GameInGameData.Instance.beforeSceneName = beforeSceneName;
-        StageClearUI.Instance.beforeSceneName = beforeSceneName;
-        GameInGameData.Instance.currentStageBossName = BossName;
-        SceneChangeManager.Instance.SceneChangeNoDoor(SceneName);
+        GameInGameData.Instance.currentStageBossName = bossName;
+        SceneChangeManager.Instance.SceneChangeNoDoor(sceneName);
+    }
+
+    void InitStageCard()
+    {
+        bossData = GameInGameData.Instance.GetBossData(bossName);
+        sceneName = bossData.SceneName;
+        clearTime = bossData.ClearTime;
+        getStar = bossData.GetStar;
+
+        starNeedToOpen = bossData.starNeedToOpen;
+
+        if (starNeedToOpen <= GameInGameData.Instance.totalStar) lockPanel.SetActive(false);
     }
 }

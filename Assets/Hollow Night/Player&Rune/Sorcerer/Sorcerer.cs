@@ -2,6 +2,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Sorcerer : Enemy
@@ -28,18 +29,21 @@ public class Sorcerer : Enemy
     [SerializeField] EffectDestroy lightBlowPrefab;
     public bool isDead;
 
-    Transform lastGhost;
-    Transform lastMisile;
     float scaleX;
     float scaleY;
+
+    Coroutine currentCoroutine;
+    Coroutine FSM;
 
     protected override void Start()
     {
         base.Start();
+        originalHitClip = hitClip;
         targetObject = PlayerCoroutine.Instance.gameObject;
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
         StartCoroutine(StartAppear());
+        StartCoroutine(RandomTeleportCoroutine(preTeleportDelay, posTeleportDelay));
     }
 
     private void Update()
@@ -78,29 +82,28 @@ public class Sorcerer : Enemy
             switch (i)
             {
                 case 0:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
                     break;
                 case 1:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkullMisile));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkullMisile));
                     break;
                 case 2:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkeletons));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkeletons));
                     break;
                 case 3:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
                     break;
                 case 4:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
                     break;
                 case 5:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonGhost));
                     break;
                 case 6:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkeletons));
+                    yield return currentCoroutine = StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkeletons));
                     break;
 
                 default:
-                    yield return StartCoroutine(SpellCast(preSpellCastDelay, posSpellCastDelay, SummonSkeletons));
                     break;
             }
         }
@@ -117,7 +120,7 @@ public class Sorcerer : Enemy
         yield return new WaitForSeconds(appearDelay);
         appearSource.DOFade(0f, 1f);
         if (!setDeveloperMode)
-            StartCoroutine(FSM1());
+            FSM = StartCoroutine(FSM1());
     }
 
     [Header("Spell Cast")]
@@ -136,7 +139,6 @@ public class Sorcerer : Enemy
         yield return new WaitForSeconds(_posDelay / 2);
         animator.Play("A_Sorcerer_Stand");
         yield return new WaitForSeconds(_posDelay / 2);
-        yield return StartCoroutine(RandomTeleport(preTeleportDelay, posTeleportDelay));
     }
 
     IEnumerator SpellCastSky(float _preDelay, float _posDelay, Action _spell)
@@ -148,11 +150,10 @@ public class Sorcerer : Enemy
         yield return new WaitForSeconds(_posDelay / 2);
         animator.Play("A_Sorcerer_Stand");
         yield return new WaitForSeconds(_posDelay / 2);
-
-        yield return StartCoroutine(RandomTeleportSky(preTeleportDelay, posTeleportDelay));
     }
 
     [Header("Random Teleport")]
+    public int hitCount;
     public float preTeleportDelay;
     public float posTeleportDelay;
     public EffectDestroy teleportEffect;
@@ -162,17 +163,58 @@ public class Sorcerer : Enemy
     public float radius = 5f;
     public float trailSpacing = 0.5f;  // The spacing between each trail sprite
     GameObject targetObject;
-    IEnumerator RandomTeleport(float _preDelay, float _posDelay)
+    int currentHitCount;
+
+    public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
     {
-        yield return new WaitForSeconds(_preDelay);
-        SummonTeleportEffect();
-        Vector2 point1 = transform.position;
-        PerformTeleport(GetRandomTeleportPoint());
-        Vector2 point2 = transform.position;
-        voiceSource.PlayOneShot(MoveEffectClip);
-        SummonTeleportEffect();
-        PlaceTeleportTrail(point1, point2);
-        yield return new WaitForSeconds(_posDelay);
+        if (!invincibility)
+        {
+            base.Hit(_damage, _hitDir, _audioSource);
+            currentHitCount++;
+        }
+        else
+        {
+            if (hitClip != null)
+                _audioSource.PlayOneShot(hitClip);
+        }
+    }
+
+    public override void UpAttackHit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
+    {
+        if (!invincibility)
+        {
+            base.UpAttackHit(_damage, _hitDir, _audioSource);
+            currentHitCount++;
+        }
+        else
+        {
+            if (hitClip != null)
+                _audioSource.PlayOneShot(hitClip);
+        }
+    }
+
+    IEnumerator RandomTeleportCoroutine(float _preDelay, float _posDelay)
+    {
+        while (true)
+        {
+            if (currentHitCount >= hitCount)
+            {
+                currentHitCount = 0;
+                yield return new WaitForSeconds(_preDelay);
+                SummonTeleportEffect();
+                Vector2 point1 = transform.position;
+                PerformTeleport(GetRandomTeleportPoint());
+                Vector2 point2 = transform.position;
+                voiceSource.PlayOneShot(MoveEffectClip);
+                SummonTeleportEffect();
+                PlaceTeleportTrail(point1, point2);
+                yield return new WaitForSeconds(_posDelay);
+            }
+            else
+            {
+                yield return null;
+            }
+        }
     }
 
     IEnumerator RandomTeleportSky(float _preDelay, float _posDelay)
@@ -208,7 +250,6 @@ public class Sorcerer : Enemy
 
     public void PerformTeleport(Transform teleportPoint)
     {
-        int rand = UnityEngine.Random.Range(0, 3);
         transform.position = teleportPoint.position;
         RotateBasedOnTargets(teleportPoint, targetObject.transform);
         AppearBoss();
@@ -277,6 +318,8 @@ public class Sorcerer : Enemy
     public Transform ghostPrefab;
     public EffectDestroy summonCirclePrefab;
     public float summonTime;
+    public int summonCount;
+    public int maxGhostCount;
 
     void SummonGhost()
     {
@@ -296,9 +339,17 @@ public class Sorcerer : Enemy
         effect.SetDisappear(0.5f);
         effect.SetDestroy(0.5f);
         Transform ghost = Instantiate(ghostPrefab);
+        ghost.GetComponent<Ghost>().sorcerer = this;
+        ghosts.Add(ghost.GetComponent<Ghost>());
         ghost.position = point;
+        summonCount++;
 
-        lastGhost = ghost;
+        if (summonCount >= maxGhostCount)
+        {
+            summonCount = 0;
+            StopCoroutine(FSM);
+            yield return currentCoroutine = StartCoroutine(HellFireCoroutine());
+        }
     }
 
     [Header("Summon Skull Misile")]
@@ -322,7 +373,6 @@ public class Sorcerer : Enemy
         Transform skullMisile = Instantiate(skullMisilePrefab);
         skullMisile.position = point;
 
-        lastMisile = skullMisile;
     }
 
     [Header("Summon Skeletons")]
@@ -357,6 +407,108 @@ public class Sorcerer : Enemy
         skull2.target = point1;
     }
 
+
+    [Header("Hell Fire")]
+    public EffectDestroy fireAura;
+    public EffectDestroy flameRoutine;
+    public EffectDestroy flameActive;
+    public Transform focusEffect;
+    public Transform fireAuraPos;
+    public Transform hellFirePos;
+    public Transform flameRoutinePos;
+    public Transform focusEffectPos;
+    public List<Ghost> ghosts;
+    public List<Ghost_Hand> ghost_Hands;
+    public float preHellFireDelay;
+    public float middleHellFireDelay;
+    public float posHellFireDelay;
+    public bool invincibility;
+    public AudioClip ChangeHitClip;
+
+    AudioClip originalHitClip;
+
+    IEnumerator HellFireCoroutine()
+    {
+        // 헬파이어 패턴
+        // 맵상에 유령이 4마리 이상 소환될 경우 -> 무적인 상태로 맵 가운데로 이동, 녹색팔과 유령들을 자신에게로 끌어들이고, 화염 분출 시작
+        invincibility = true;
+        hitClip = ChangeHitClip;
+
+        currentHitCount = 0;
+        animator.Play("A_Sorcerer_Stand");
+        // hellFirePos에 위험 표시 해줘야함.
+        EffectDestroy aura = Instantiate(fireAura);
+        aura.transform.position = fireAuraPos.position;
+        yield return new WaitForSeconds(preHellFireDelay);
+        
+        aura.SetDisappear(1f);
+        aura.SetDestroy(1.2f);
+        SummonTeleportEffect();
+        Vector2 point1 = transform.position;
+        PerformTeleport(hellFirePos);
+        Vector2 point2 = transform.position;
+        voiceSource.PlayOneShot(MoveEffectClip);
+        SummonTeleportEffect();
+        PlaceTeleportTrail(point1, point2);
+        animator.Play("A_Sorcerer_SpellCast");
+        foreach (var item in ghosts.ToList())
+            item.HellFireReady();
+        // ghost_Hands 리스트의 복사본을 생성하여 순회
+        foreach (var item in ghost_Hands.ToList())
+            item.HellFireReady();
+        EffectDestroy flame1 = Instantiate(flameRoutine);
+        flame1.transform.position = flameRoutinePos.position;
+        Transform effect = Instantiate(focusEffect);
+        effect.transform.position = focusEffectPos.position;
+        yield return new WaitForSeconds(middleHellFireDelay);
+        flame1.GetComponent<Animator>().Play("A_FlameFinish");
+        flame1.SetDestroy(0.7f);
+        yield return new WaitForSeconds(0.5f);
+        effectSource.Stop();
+        effectSource.PlayOneShot(SpellEffectClip);
+        animator.Play("A_Sorcerer_SpellFire");
+        // 헬파이어 음성
+        yield return new WaitForSeconds(0.5f);
+        yield return StartCoroutine(SummonHellFireActiveCoroutine());
+        animator.Play("A_Sorcerer_Stand");
+        yield return new WaitForSeconds(posHellFireDelay);
+        hitClip = originalHitClip;
+        invincibility = false;
+        SummonTeleportEffect();
+        point1 = transform.position;
+        PerformTeleport(GetRandomTeleportPoint());
+        point2 = transform.position;
+        voiceSource.PlayOneShot(MoveEffectClip);
+        SummonTeleportEffect();
+        PlaceTeleportTrail(point1, point2);
+        FSM = StartCoroutine(FSM1());
+    }
+
+    [SerializeField] private int fireSummonCount = 10; // 소환 횟수
+    [SerializeField] private float delayTime = 1f; // 딜레이 타임
+    [SerializeField] private float sideDistance = 1f; // 사이 거리
+    [SerializeField] private float firePosY;
+    [SerializeField] AudioClip hellfireClip;
+    IEnumerator SummonHellFireActiveCoroutine()
+    {
+        for (int i = 1; i <= fireSummonCount; i++)
+        {
+            // 왼쪽과 오른쪽으로 소환 위치 계산
+            Vector2 leftPosition = new(transform.position.x - sideDistance * i, firePosY);
+            Vector2 rightPosition = new(transform.position.x + sideDistance * i, firePosY);
+
+            // 왼쪽과 오른쪽에 flameActive 소환
+            Instantiate(flameActive, leftPosition, Quaternion.identity).SetDestroy(0.8f);
+            Instantiate(flameActive, rightPosition, Quaternion.identity).SetDestroy(0.8f);
+            effectSource.PlayOneShot(hellfireClip);
+            CameraManager.Instance.CameraShake();
+            // 딜레이 타임만큼 기다림
+            yield return new WaitForSeconds(delayTime);
+        }
+
+        yield return null;
+    }
+
     public override void Dead()
     {
         base.Dead();
@@ -375,7 +527,6 @@ public class Sorcerer : Enemy
 
     IEnumerator DeadCoroutine(float _delay)
     {
-
         voiceSource.PlayOneShot(DeadClip);
         EffectDestroy effect = Instantiate(DeadEffect);
         effect.transform.position = transform.position;
@@ -387,20 +538,7 @@ public class Sorcerer : Enemy
         Destroy(effect.transform.GetChild(0).gameObject);
         SummonLightBlow(1f, transform.position, new Vector2(3f, 3f));
         DisAppearBoss();
-        SummonGhost();
-        SummonGhost();
-        SummonGhost();
-        SummonSkeletons();
-        SummonSkullMisile();
-        SummonSkullMisile();
-        SummonSkullMisile();
         yield return new WaitForSeconds(summonTime+0.1f);
-
-        while (lastGhost != null || lastMisile != null)
-        {
-            yield return null;
-        }
-
         Sound_Manager.Instance.PlayBGM(0);
         torch.TorchMove(4f);
         yield return null;

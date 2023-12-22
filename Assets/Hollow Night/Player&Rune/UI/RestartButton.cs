@@ -9,7 +9,7 @@ using UnityEngine.UI;
 
 public class RestartButton : PauseUIButton
 {
-    public string firstSceneName;
+    public SceneName firstSceneName;
 
     public TextMeshProUGUI[] subPanelTexts;
     public Image[] subPanelButtonImages;

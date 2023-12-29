@@ -7067,6 +7067,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67a572ad46d58dc498bfd703ecdf8f89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &793395552
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 793395553}
+  m_Layer: 10
+  m_Name: HellFirePoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &793395553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 793395552}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.65, y: 0.46, z: 0}
+  m_LocalScale: {x: -2, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 29
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &809896348
 GameObject:
   m_ObjectHideFlags: 0
@@ -7128,6 +7159,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1587970931}
   m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &892992962
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 892992963}
+  m_Layer: 10
+  m_Name: FireAuraPoint
+  m_TagString: Untagged
+  m_Icon: {fileID: 3936346786652291628, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &892992963
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 892992962}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -7.62, y: 1.56, z: 0}
+  m_LocalScale: {x: -2, y: 2, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 30
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &900589371
 GameObject:
@@ -32647,17 +32709,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 784679248}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: DeadClip
+      propertyPath: fireAuraPos
       value: 
-      objectReference: {fileID: 8300000, guid: 72b00ef053928c64c8cf6528826ff9ce, type: 3}
+      objectReference: {fileID: 892992963}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: MoveClip
+      propertyPath: hellFirePos
       value: 
-      objectReference: {fileID: 8300000, guid: f7236bba95aee304192b4fe24d693f1b, type: 3}
+      objectReference: {fileID: 793395553}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: ChargeClip
-      value: 
-      objectReference: {fileID: 8300000, guid: a09bcaf2d31c15148abd00707c175363, type: 3}
+      propertyPath: teleportPointList.Array.size
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: skeletonSummonPoint.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: teleportPointList.Array.data[0]
       value: 
@@ -32694,6 +32760,10 @@ PrefabInstance:
       propertyPath: teleportPointList.Array.data[8]
       value: 
       objectReference: {fileID: 843375884}
+    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
+      propertyPath: teleportPoint_SkyList.Array.size
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: skeletonSummonPoint.Array.data[0]
       value: 
@@ -32762,42 +32832,6 @@ PrefabInstance:
       propertyPath: teleportPoint_SkyList.Array.data[14]
       value: 
       objectReference: {fileID: 2146597494}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[15]
-      value: 
-      objectReference: {fileID: 1346329315}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[16]
-      value: 
-      objectReference: {fileID: 2115639914}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[17]
-      value: 
-      objectReference: {fileID: 192310175}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[18]
-      value: 
-      objectReference: {fileID: 694489454}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[19]
-      value: 
-      objectReference: {fileID: 1940632605}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[20]
-      value: 
-      objectReference: {fileID: 1725065585}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[21]
-      value: 
-      objectReference: {fileID: 201705106}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[22]
-      value: 
-      objectReference: {fileID: 900589372}
-    - target: {fileID: 4567301598653864661, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
-      propertyPath: teleportPoint_SkyList.Array.data[23]
-      value: 
-      objectReference: {fileID: 843375884}
     - target: {fileID: 4567301598653864665, guid: a8c12db82c1458742955ed47b47071e7, type: 3}
       propertyPath: m_Name
       value: Sorcerer

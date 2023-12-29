@@ -1,5 +1,67 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &754836913
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 754836914}
+  m_Layer: 10
+  m_Name: FlameRoutinePos
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &754836914
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754836913}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.001, y: 0.873, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4567301598653864667}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1636116398
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1636116399}
+  m_Layer: 10
+  m_Name: FocusEffectPos
+  m_TagString: Untagged
+  m_Icon: {fileID: -964228994112308473, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1636116399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1636116398}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.329, y: -0.106, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 4567301598653864667}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &4567301598653864665
 GameObject:
   m_ObjectHideFlags: 0
@@ -36,6 +98,8 @@ Transform:
   - {fileID: 2985096223976429458}
   - {fileID: 1354651044563066886}
   - {fileID: 5590851838521524795}
+  - {fileID: 754836914}
+  - {fileID: 1636116399}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -131,14 +195,19 @@ MonoBehaviour:
   MoveVoiceClip: {fileID: 8300000, guid: 4209fb8493f91cb4480fad4a3c6cdb89, type: 3}
   SpellEffectClip: {fileID: 8300000, guid: d17a6672fd8409b4b8442f92cf450265, type: 3}
   SpellGhostClip: {fileID: 8300000, guid: ed3871c0b41861d4295fcaf5d3b20183, type: 3}
-  SpellSkullsClip: {fileID: 8300000, guid: 6012c3399c3202a48a0af09d2b013488, type: 3}
+  SpellSkullsClip: {fileID: 8300000, guid: f852f3dd8c41c9447ab4ea4da5b96746, type: 3}
   DeadClip: {fileID: 8300000, guid: 72b00ef053928c64c8cf6528826ff9ce, type: 3}
+  DeadVoiceClip: {fileID: 8300000, guid: 15a2a967c285f2f40a743d113b95fb4b, type: 3}
+  HellfireClip: {fileID: 8300000, guid: 39c5ba1566999234b846199b3eced3b7, type: 3}
+  HellfireSpellClip: {fileID: 8300000, guid: fb9f6cd8f7aa51347aa185b23cdea490, type: 3}
+  FireBallClip: {fileID: 8300000, guid: 45e17be879664884aade837f72506af4, type: 3}
   appearDelay: 2.5
   DeadEffect: {fileID: 4276443328466573316, guid: ccf0b240097748e4dae248d7e7533af6, type: 3}
   lightBlowPrefab: {fileID: 8492229113843468458, guid: d8e9774cf3f8a8f4b9fc230d276c3df8, type: 3}
   isDead: 0
   preSpellCastDelay: 2
   posSpellCastDelay: 0.5
+  hitCount: 3
   preTeleportDelay: 0
   posTeleportDelay: 1
   teleportEffect: {fileID: 554584786346543735, guid: a72d0fc61cccde949bb9702599eeea2d, type: 3}
@@ -183,6 +252,8 @@ MonoBehaviour:
   ghostPrefab: {fileID: 5542185793376115536, guid: 68347b8b52ad7ec4eaa21a5bc52baf1a, type: 3}
   summonCirclePrefab: {fileID: -5920055838695241964, guid: b8ec0e9305c0a6e489dc91556108a4fb, type: 3}
   summonTime: 2
+  summonCount: 0
+  maxGhostCount: 3
   skullMisilePrefab: {fileID: 733103675528645891, guid: b740955940fff184c960793aabdbccd1, type: 3}
   skeletons:
   - {fileID: -4433187929085978382, guid: 7485fb4c3c62e95459d55b269d33658d, type: 3}
@@ -190,6 +261,26 @@ MonoBehaviour:
   skeletonSummonPoint:
   - {fileID: 0}
   - {fileID: 0}
+  fireAura: {fileID: 999378677443301378, guid: a184213a8b927154189bb4dbba193588, type: 3}
+  flameRoutine: {fileID: -3355489877444689510, guid: 2ef6be6bf7fbacd4ca522bf87cb26769, type: 3}
+  flameActive: {fileID: -5406179222295932621, guid: 7c7c8f5faa8c04344bc0d17d6c73b9cc, type: 3}
+  focusEffect: {fileID: 3986611902124828031, guid: 6fc3399539be3a240ba2349de0303e3a, type: 3}
+  fireAuraPos: {fileID: 0}
+  hellFirePos: {fileID: 0}
+  flameRoutinePos: {fileID: 754836914}
+  focusEffectPos: {fileID: 1636116399}
+  ghosts: []
+  ghost_Hands: []
+  preHellFireDelay: 3
+  middleHellFireDelay: 3
+  posHellFireDelay: 1.5
+  invincibility: 0
+  ChangeHitClip: {fileID: 8300000, guid: 90af103a8dbbc08439ff934edb6f1b8a, type: 3}
+  fireSummonCount: 10
+  delayTime: 0.25
+  sideDistance: 1.5
+  firePosY: -2
+  hellfireClip: {fileID: 8300000, guid: 2bc8e69105ea2354cb94707547e5ee75, type: 3}
 --- !u!61 &4567301598653864666
 BoxCollider2D:
   m_ObjectHideFlags: 0

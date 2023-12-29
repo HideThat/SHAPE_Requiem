@@ -19,7 +19,6 @@ public class SceneChangeManager : Singleton<SceneChangeManager>
         Sound_Manager.Instance.PlayBGM(0);
 
         Destroy(PlayerCoroutine.Instance.gameObject);
-        Destroy(Timer.Instance.gameObject);
         Destroy(CameraManager.Instance.gameObject);
         sceneChangeCoroutine = StartCoroutine(SceneChangeCoroutine(_sceneName));
     }
@@ -32,6 +31,13 @@ public class SceneChangeManager : Singleton<SceneChangeManager>
         Destroy(PlayerCoroutine.Instance.gameObject);
         Destroy(Timer.Instance.gameObject);
         Destroy(CameraManager.Instance.gameObject);
+
+        if (_sceneName == SceneName.None)
+            _sceneName = GameInGameData.Instance.beforeSceneName;
+
+        if (_sceneName == SceneName.None)
+            _sceneName = SceneName.Title;
+
         sceneChangeCoroutine = StartCoroutine(SceneChangeCoroutineNoDoor(_sceneName));
     }
 

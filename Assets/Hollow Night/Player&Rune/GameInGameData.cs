@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -113,6 +114,7 @@ public class GameInGameData : Singleton<GameInGameData>
     [Header("Boss Data")]
     [Header("Single Stage")]
     public int totalStar;
+    public TextMeshProUGUI totalStarText;
     public BossData stage1_Data = new();
     public BossData stage2_Data = new();
     public BossData stage3_Data = new();
@@ -202,6 +204,7 @@ public class GameInGameData : Singleton<GameInGameData>
         {
             totalStar += bossData.GetStar;
         }
+        totalStarText.text = $"X {totalStar.ToString()}";
     }
 
     public Sprite GetBossImage()
@@ -265,5 +268,7 @@ public class GameInGameData : Singleton<GameInGameData>
             bossData.clearTimeSec = PlayerPrefs.GetFloat(entry.Key + "_clearTimeSec", bossData.clearTimeSec);
             bossData.GetStar = PlayerPrefs.GetInt(entry.Key + "_GetStar", bossData.GetStar);
         }
+
+        CalculateTotalStars();
     }
 }

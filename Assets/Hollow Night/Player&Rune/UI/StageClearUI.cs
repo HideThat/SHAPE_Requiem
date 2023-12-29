@@ -101,7 +101,15 @@ public class StageClearUI : Singleton<StageClearUI>
         GameInGameData.Instance.ResetPlayerHP();
         ClosStageClearUI();
 
-        if (GameInGameData.Instance.totalStar < GameInGameData.Instance.GetBossData(GameInGameData.Instance.GetNextBossName()).starNeedToOpen || GameInGameData.Instance.GetNextBossName() == BossName.None)
+        if (GameInGameData.Instance.GetNextBossName() == BossName.None)
+        {
+            GameInGameData.Instance.currentStageBossName = BossName.None;
+            GameInGameData.Instance.currentSceneName = SceneName.None;
+            SceneChangeManager.Instance.SceneChangeNoDoor(GameInGameData.Instance.beforeSceneName);
+            return;
+        }
+
+        if (GameInGameData.Instance.totalStar < GameInGameData.Instance.GetBossData(GameInGameData.Instance.GetNextBossName()).starNeedToOpen)
         {
             if (cannotPanelCoroutine != null)
                 StopCoroutine(cannotPanelCoroutine);

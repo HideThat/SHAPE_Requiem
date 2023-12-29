@@ -24,6 +24,10 @@ public class Sorcerer : Enemy
     public AudioClip SpellGhostClip;
     public AudioClip SpellSkullsClip;
     public AudioClip DeadClip;
+    public AudioClip DeadVoiceClip;
+    public AudioClip HellfireClip;
+    public AudioClip HellfireSpellClip;
+    public AudioClip FireBallClip;
     public float appearDelay;
     [SerializeField] EffectDestroy DeadEffect;
     [SerializeField] EffectDestroy lightBlowPrefab;
@@ -131,7 +135,9 @@ public class Sorcerer : Enemy
     {
         animator.Play("A_Sorcerer_SpellCast");
         effectSource.PlayOneShot(ChargeClip);
+        voiceSource.PlayOneShot(HellfireSpellClip);
         yield return new WaitForSeconds(_preDelay);
+        voiceSource.Stop();
         effectSource.Stop();
         effectSource.PlayOneShot(SpellEffectClip);
         animator.Play("A_Sorcerer_SpellFire");
@@ -366,7 +372,9 @@ public class Sorcerer : Enemy
         EffectDestroy effect = Instantiate(summonCirclePrefab);
         effect.transform.position = point;
         effect.SetRolling(summonTime);
-        yield return new WaitForSeconds(summonTime);
+        yield return new WaitForSeconds(summonTime/2);
+        voiceSource.PlayOneShot(FireBallClip);
+        yield return new WaitForSeconds(summonTime/2);
         SummonLightBlow(0.2f, point, new(0.5f, 0.5f));
         effect.SetDisappear(0.5f);
         effect.SetDestroy(0.5f);
@@ -460,6 +468,8 @@ public class Sorcerer : Enemy
         flame1.transform.position = flameRoutinePos.position;
         Transform effect = Instantiate(focusEffect);
         effect.transform.position = focusEffectPos.position;
+        voiceSource.PlayOneShot(HellfireSpellClip); 
+        effectSource.PlayOneShot(hellfireClip);
         yield return new WaitForSeconds(middleHellFireDelay);
         flame1.GetComponent<Animator>().Play("A_FlameFinish");
         flame1.SetDestroy(0.7f);
@@ -533,6 +543,7 @@ public class Sorcerer : Enemy
         effect.SetDestroy(15f);
         voiceSource.Stop();
         effectSource.PlayOneShot(deadEffectClip);
+        voiceSource.PlayOneShot(DeadVoiceClip);
         animator.Play("A_Sorcerer_SpellCast");
         yield return new WaitForSeconds(_delay);
         Destroy(effect.transform.GetChild(0).gameObject);

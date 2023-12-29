@@ -8,12 +8,12 @@ using System;
 public class StageCard : MonoBehaviour
 {
     public BossName bossName;
+    public SceneName beforeSceneName;
     BossData bossData;
     SceneName sceneName;
     string clearTime;
     int getStar;
     int starNeedToOpen;
-    SceneName beforeSceneName;
     [SerializeField] GameObject lockPanel;
     [SerializeField] TextMeshProUGUI clearTimeText;
     [SerializeField] TextMeshProUGUI bossNameText;

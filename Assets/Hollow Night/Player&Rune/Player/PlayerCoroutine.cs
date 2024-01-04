@@ -89,7 +89,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     [Header("HP")]
     public GameObject deadUI;
-    public SpriteRenderer spriteRenderer;
+    public Image hitSprite;
     public int HP;
     public int maxHP; // 최대 체력
     public bool isHit = false; // 맞음 판정
@@ -192,7 +192,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         canControl = false;
         SummonLightBlow(0.5f, transform.position, new Vector2(2f, 2f));
-        spriteRenderer.color = Color.clear;
+        hitSprite.color = Color.clear;
 
         yield return new WaitForSeconds(_delaytime);
         Destroy(gameObject);
@@ -741,12 +741,17 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         yield return null;
     }
 
-    void Dead(Vector2 _force)
+    public void Dead(Vector2 _force)
     {
         StopAllCoroutines();
         StartCoroutine(DeadCoroutine(_force));
     }
 
+    public void DeadNoneUI(Vector2 _force)
+    {
+        canControl = false;
+        StartCoroutine(DeadCoroutineNoneUI(_force));
+    }
 
     IEnumerator DeadCoroutine(Vector2 _force)
     {
@@ -777,6 +782,22 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
         deadUI.SetActive(true);
     }
 
+    IEnumerator DeadCoroutineNoneUI(Vector2 _force)
+    {
+        Debug.Log("데드 코루틴 실행");
+        animator.SetTrigger("IsDead");
+        isDead = true;
+        Debug.Log(isDead);
+        rigid.AddForce(_force * knockbackForce, ForceMode2D.Impulse);
+        Debug.Log($"밀리는 방향 = {_force * knockbackForce}");
+        moveAudioSource.PlayOneShot(deadClip);
+
+        yield return new WaitForSeconds(2f);
+        animator.Play("Idle");
+        isDead = false;
+        canControl = true;
+    }
+
     IEnumerator PlayerPinch()
     {
         if (pinchTween != null) DOTween.Kill(pinchTween);
@@ -796,32 +817,29 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
     IEnumerator HitEffet()
     {
-        while (true)
+        for (float t = 0; t <= cycleTime; t += Time.deltaTime)
         {
-            for (float t = 0; t <= cycleTime; t += Time.deltaTime)
-            {
-                float normalizedTime = t / cycleTime;
-                float curve = Mathf.Sin(normalizedTime * Mathf.PI);
-                float alpha = Mathf.Lerp(minAlpha, maxAlpha, curve);
-                SetAlpha(alpha);
-                yield return null;
-            }
-            for (float t = 0; t <= cycleTime; t += Time.deltaTime)
-            {
-                float normalizedTime = t / cycleTime;
-                float curve = Mathf.Sin(normalizedTime * Mathf.PI);
-                float alpha = Mathf.Lerp(maxAlpha, minAlpha, curve);
-                SetAlpha(alpha);
-                yield return null;
-            }
+            float normalizedTime = t / cycleTime;
+            float curve = Mathf.Sin(normalizedTime * Mathf.PI);
+            float alpha = Mathf.Lerp(minAlpha, maxAlpha, curve);
+            SetAlpha(alpha);
+            yield return null;
+        }
+        for (float t = 0; t <= cycleTime; t += Time.deltaTime)
+        {
+            float normalizedTime = t / cycleTime;
+            float curve = Mathf.Sin(normalizedTime * Mathf.PI);
+            float alpha = Mathf.Lerp(maxAlpha, minAlpha, curve);
+            SetAlpha(alpha);
+            yield return null;
         }
     }
 
     void SetAlpha(float alpha)
     {
-        Color color = spriteRenderer.color;
+        Color color = hitSprite.color;
         color.a = alpha;
-        spriteRenderer.color = color;
+        hitSprite.color = color;
     }
 
     IEnumerator FinishHitEffect()
@@ -830,7 +848,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
 
         isHit = false;
         StopCoroutine(hitCoroutine);
-        spriteRenderer.color = Color.white;
+        hitSprite.color = Color.clear;
     }
 
     void PlayerCanvasUpdate()

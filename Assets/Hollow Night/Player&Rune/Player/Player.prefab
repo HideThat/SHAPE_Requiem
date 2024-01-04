@@ -1006,7 +1006,7 @@ MonoBehaviour:
   dashDirection: 0
   dashClip: {fileID: 8300000, guid: 1046b79f3e0b1c94487043b40af4cb26, type: 3}
   deadUI: {fileID: 5202919412899972288}
-  spriteRenderer: {fileID: 5082364522794502434}
+  hitSprite: {fileID: 4078096867507759128}
   HP: 5
   maxHP: 5
   isHit: 0
@@ -6503,8 +6503,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -0.117614746}
+  m_SizeDelta: {x: 0, y: 0.2352}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7368335115899191734
 CanvasRenderer:

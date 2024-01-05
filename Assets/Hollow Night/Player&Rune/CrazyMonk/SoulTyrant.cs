@@ -454,7 +454,6 @@ public class SoulTyrant : Enemy
             yield return StartCoroutine(hulauf.ShootHulaufCoroutine(hulaufLastShootList[0], hulaufShootSpeed + 5f, hulaufShootForce + 3f, 1));
             yield return StartCoroutine(RandomTeleport(0f, _posDelay));
         }
-        
     }
 
     void DisAppearBoss()

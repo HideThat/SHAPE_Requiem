@@ -1,28 +1,23 @@
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using DG.Tweening;
 
-public class HomingMisile : Enemy
+public class TutoMisile : Enemy
 {
-    public enum Version
-    {
-        One,
-        Two
-    }
-
     public GameObject target;  // 타겟 오브젝트
     public float waitTime = 1f;  // 대기 시간
     public float initialSpeed = 10f;  // 초기 발사 속도
     public float continuousForce = 2f;  // 지속적으로 가할 힘
     public float destroyTime = 6f;
-    public EffectDestroy destroyEffect;
-    public EffectDestroy trailEffect;
+    public EffectDestroy my;
     public float effectDestroyTime = 0.2f;
     public float pushForce = 5f;
+    public TutorialBoss tutorialBoss;
 
     private Rigidbody2D rigid;
 
+    // Start is called before the first frame update
     protected override void Start()
     {
         target = PlayerCoroutine.Instance.gameObject;
@@ -46,45 +41,12 @@ public class HomingMisile : Enemy
         }
     }
 
-    void SetValue(float _initialSpeed, float _continuousForce)
-    {
-        initialSpeed = _initialSpeed;
-        continuousForce = _continuousForce;
-    }
-
     protected override void OnTriggerStay2D(Collider2D collision)
     {
-        if (collision.CompareTag("Player") || collision.CompareTag("Platform"))
+        if (collision.CompareTag("Player"))
             Impact();
 
         base.OnTriggerStay2D(collision);
-    }
-
-    void Impact()
-    {
-        EffectDestroy effect = Instantiate(destroyEffect);
-        effect.transform.position = transform.position;
-        effect.SetDisappear(effectDestroyTime);
-        effect.SetDestroy(effectDestroyTime + 2f);
-        trailEffect.transform.parent = null;
-        trailEffect.transform.localScale = new Vector3(1f, 1f, 1f);
-        trailEffect.GetComponent<ParticleSystem>().Stop();
-        trailEffect.SetDestroy(2f);
-        Destroy(gameObject);
-    }
-
-    IEnumerator Disappear()
-    {
-        yield return new WaitForSeconds(destroyTime);
-        m_collider2D.enabled = false;
-        transform.DOScale(0.1f, effectDestroyTime).OnComplete(()=>
-        {
-            trailEffect.transform.parent = null;
-            trailEffect.transform.localScale = new Vector3(1f, 1f, 1f);
-            trailEffect.GetComponent<ParticleSystem>().Stop();
-            trailEffect.SetDestroy(2f);
-            Destroy(gameObject);
-        });
     }
 
     public override void Hit(int _damage, Vector2 _hitDir, AudioSource _audioSource)
@@ -99,6 +61,24 @@ public class HomingMisile : Enemy
         base.UpAttackHit(_damage, _hitDir, _audioSource);
 
         rigid.velocity = new Vector2(_hitDir.x * pushForce, _hitDir.y * pushForce);
+    }
+
+    void Impact()
+    {
+        tutorialBoss.checkHit = true;
+        m_collider2D.enabled = false;
+        my.SetSmaller(0.2f);
+        my.SetDestroy(0.2f);
+    }
+
+    IEnumerator Disappear()
+    {
+        yield return new WaitForSeconds(destroyTime);
+        m_collider2D.enabled = false;
+        transform.DOScale(0.1f, effectDestroyTime).OnComplete(() =>
+        {
+            Destroy(gameObject);
+        });
     }
 
     public override void Dead()

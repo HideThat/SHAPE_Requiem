@@ -8,9 +8,7 @@ using UnityEngine.SceneManagement;
 public enum BossName
 {
     None,
-    Stage1,
-    Stage2,
-    Stage3,
+    Tutorial,
     Spider,
     Wendigo,
     Demon,
@@ -19,7 +17,6 @@ public enum BossName
     Sorcerer,
     Level_1,
     Level_2,
-    Level_3,
     TheTower
 }
 public enum SceneName
@@ -30,10 +27,7 @@ public enum SceneName
     ModeChoice,
     SingleStageUI,
     BossRelayStageUI,
-
-    Stage1,
-    Stage2,
-    Stage3,
+    Tutorial,
     Spider,
     Wendigo,
     Demon,
@@ -46,9 +40,6 @@ public enum SceneName
     Level_2,
     Level_2_1,
     Level_2_2,
-    Level_3,
-    Level_3_1,
-    Level_3_2,
     Tower_1,
     Tower_2,
     Tower_3,
@@ -115,9 +106,7 @@ public class GameInGameData : Singleton<GameInGameData>
     [Header("Single Stage")]
     public int totalStar;
     public TextMeshProUGUI totalStarText;
-    public BossData stage1_Data = new();
-    public BossData stage2_Data = new();
-    public BossData stage3_Data = new();
+    public BossData tutorialData = new();
     public BossData spiderData = new();
     public BossData wendigoData = new();
     public BossData demonData = new();
@@ -127,7 +116,6 @@ public class GameInGameData : Singleton<GameInGameData>
     [Header("Boss Relay Stage")]
     public BossData bossRelayLevelData_1 = new();
     public BossData bossRelayLevelData_2 = new();
-    public BossData bossRelayLevelData_3 = new();
     public BossData towerBossData = new();
 
     private Dictionary<BossName, BossData> bossDataDictionary;
@@ -149,12 +137,9 @@ public class GameInGameData : Singleton<GameInGameData>
             { crazyMonkData.BossName, crazyMonkData },
             { bigSlimeData.BossName, bigSlimeData },
             { sorcererData.BossName, sorcererData },
-            { stage1_Data.BossName, stage1_Data},
-            { stage2_Data.BossName, stage2_Data},
-            { stage3_Data.BossName, stage3_Data},
+            { tutorialData.BossName, tutorialData},
             { bossRelayLevelData_1.BossName, bossRelayLevelData_1},
             { bossRelayLevelData_2.BossName, bossRelayLevelData_2},
-            { bossRelayLevelData_3.BossName, bossRelayLevelData_3},
             { towerBossData.BossName, towerBossData}
         };
 

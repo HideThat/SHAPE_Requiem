@@ -192,6 +192,7 @@ public class PlayerCoroutine : Singleton<PlayerCoroutine>
     {
         canControl = false;
         SummonLightBlow(0.5f, transform.position, new Vector2(2f, 2f));
+        GetComponent<SpriteRenderer>().DOColor(Color.clear, 0.2f);
         hitSprite.color = Color.clear;
 
         yield return new WaitForSeconds(_delaytime);

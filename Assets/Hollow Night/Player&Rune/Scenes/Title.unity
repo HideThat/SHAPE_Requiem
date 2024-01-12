@@ -1428,5 +1428,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
+      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[0]
+      value: 170
+      objectReference: {fileID: 0}
+    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
+      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[1]
+      value: 190
+      objectReference: {fileID: 0}
+    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
+      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[2]
+      value: 210
+      objectReference: {fileID: 0}
+    - target: {fileID: 5079285272082157158, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}
+      propertyPath: bossRelayLevelData_2.GetStarStandards.Array.data[3]
+      value: 230
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8ac757f6ff0b6c74e85fd25f3a620062, type: 3}

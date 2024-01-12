@@ -27,12 +27,6 @@ public class TutorialBoss : MonoBehaviour
         StartCoroutine(AppearBoss());
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public Vector2 movePos;
     public float moveTime;
 
@@ -42,6 +36,7 @@ public class TutorialBoss : MonoBehaviour
         yield return Pattern1();
         yield return Pattern2();
         yield return Pattern3();
+        yield return Escape();
     }
 
     IEnumerator AppearBoss()
@@ -228,6 +223,16 @@ public class TutorialBoss : MonoBehaviour
 
         keyX.SetActive(false);
         keyDown.SetActive(false);
+    }
+
+    public SceneChangeTorch changeTorch;
+
+    IEnumerator Escape()
+    {
+        animator.Play("A_FrontFlip");
+        yield return new WaitForSeconds(0.2f);
+        transform.DOMove(new(transform.position.x + 13f, transform.position.y + 13f, transform.position.z), 1f);
+        changeTorch.TorchMove(1f);
     }
 
     IEnumerator FireRock()
